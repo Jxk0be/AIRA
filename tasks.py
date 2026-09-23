@@ -1,0 +1,211 @@
+#!/usr/bin/env python3
+"""AIRA task runner.
+
+There is no `make` on Windows, so this stdlib-only script plays its part:
+
+    python tasks.py db        # start the local Supabase stack (our canonical DB)
+    python tasks.py db-stop
+    python tasks.py db-reset
+    python tasks.py migrate   # alembic upgrade head
+    python tasks.py revision -m "message"
+    python tasks.py sources    # start the fake customer systems (docker compose)
+    python tasks.py sources-stop
+    python tasks.py seed       # fill RegisterOne with 18 months of history
+    python tasks.py simulate-day
+    python tasks.py sources-test
+    python tasks.py backfill    # sync a tenant from its source system
+    python tasks.py incremental
+    python tasks.py conformance # the suite every adapter must pass
+    python tasks.py api
+    python tasks.py web
+    python tasks.py test
+    python tasks.py lint
+    python tasks.py typecheck
+    python tasks.py setup     # install api + web dependencies
+"""
+
+from __future__ import annotations
+
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+API = ROOT / "api"
+WEB = ROOT / "web"
+REGISTERONE = ROOT / "sources" / "registerone"
+
+# The Supabase CLI is not installed globally here; npx fetches the pinned binary.
+SUPABASE = ["npx", "--yes", "supabase@latest"]
+
+
+def run(cmd: list[str], cwd: Path = ROOT) -> int:
+    printable = " ".join(cmd)
+    print(f"\n$ {printable}   (in {cwd.relative_to(ROOT) or '.'})\n", flush=True)
+    return subprocess.call(cmd, cwd=cwd, shell=(sys.platform == "win32"))
+
+
+def uv(args: list[str], cwd: Path = API) -> int:
+    if shutil.which("uv") is None:
+        sys.exit("uv is not installed: https://docs.astral.sh/uv/getting-started/installation/")
+    return run(["uv", *args], cwd=cwd)
+
+
+def npm(args: list[str]) -> int:
+    return run(["npm", *args], cwd=WEB)
+
+
+def task_env(argv: list[str]) -> int:
+    """Report what the .env holds, with secrets masked."""
+    if not (ROOT / ".env").exists():
+        example = ROOT / ".env.example"
+        print(f"\n  No .env yet. Copying {example.name} -> .env\n")
+        shutil.copy(example, ROOT / ".env")
+    return uv(["run", "python", "-m", "app.env", *argv])
+
+
+def task_setup(argv: list[str]) -> int:
+    code = uv(["sync", "--all-groups"])
+    if code:
+        return code
+    code = uv(["sync", "--all-groups"], cwd=REGISTERONE)
+    if code:
+        return code
+    return npm(["install"])
+
+
+def task_sources(argv: list[str]) -> int:
+    """Fake CUSTOMER systems. Not Supabase, on purpose."""
+    return run(["docker", "compose", "up", "-d", "--build", *argv])
+
+
+def task_sources_stop(argv: list[str]) -> int:
+    return run(["docker", "compose", "down", *argv])
+
+
+def task_sources_logs(argv: list[str]) -> int:
+    return run(["docker", "compose", "logs", "-f", *argv])
+
+
+def task_seed(argv: list[str]) -> int:
+    """Eighteen months of Tsundoku & Tabletop history, plus a summary."""
+    return uv(["run", "python", "-m", "registerone.seed", "--reset", *argv], cwd=REGISTERONE)
+
+
+def task_simulate_day(argv: list[str]) -> int:
+    """One more day of sales, so incremental sync has something to find."""
+    return run(
+        [
+            "curl", "-s", "-X", "POST",
+            "-H", "Authorization: Bearer ro_admin_9c3e77",
+            "-H", "Content-Type: application/json",
+            "-d", "{}",
+            "http://localhost:8100/_simulate/day",
+            *argv,
+        ]
+    )
+
+
+def task_sources_test(argv: list[str]) -> int:
+    return uv(["run", "pytest", "tests", *argv], cwd=REGISTERONE)
+
+
+def _sync(mode: str, argv: list[str]) -> int:
+    tenant = argv[0] if argv and not argv[0].startswith("-") else "tsundoku"
+    rest = argv[1:] if argv and not argv[0].startswith("-") else argv
+    return uv(["run", "python", "-m", "app.sync", "--tenant", tenant, "--mode", mode, *rest])
+
+
+def task_backfill(argv: list[str]) -> int:
+    return _sync("backfill", argv)
+
+
+def task_incremental(argv: list[str]) -> int:
+    return _sync("incremental", argv)
+
+
+def task_conformance(argv: list[str]) -> int:
+    """The objective answer to "is this adapter done?"."""
+    return uv(["run", "pytest", "tests/conformance", "-v", *argv])
+
+
+def task_db(argv: list[str]) -> int:
+    return run([*SUPABASE, "start", *argv])
+
+
+def task_db_stop(argv: list[str]) -> int:
+    return run([*SUPABASE, "stop", *argv])
+
+
+def task_db_reset(argv: list[str]) -> int:
+    return run([*SUPABASE, "db", "reset", *argv])
+
+
+def task_migrate(argv: list[str]) -> int:
+    return uv(["run", "alembic", "upgrade", "head", *argv])
+
+
+def task_revision(argv: list[str]) -> int:
+    return uv(["run", "alembic", "revision", "--autogenerate", *argv])
+
+
+def task_api(argv: list[str]) -> int:
+    return uv(["run", "uvicorn", "app.main:app", "--reload", *argv])
+
+
+def task_web(argv: list[str]) -> int:
+    return npm(["run", "dev", *argv])
+
+
+def task_test(argv: list[str]) -> int:
+    return uv(["run", "pytest", *argv])
+
+
+def task_lint(argv: list[str]) -> int:
+    code = uv(["run", "ruff", "check", "."])
+    return uv(["run", "ruff", "format", "--check", "."]) or code
+
+
+def task_typecheck(argv: list[str]) -> int:
+    return uv(["run", "mypy", "app"])
+
+
+TASKS = {
+    "env": task_env,
+    "setup": task_setup,
+    "sources": task_sources,
+    "sources-stop": task_sources_stop,
+    "sources-logs": task_sources_logs,
+    "sources-test": task_sources_test,
+    "seed": task_seed,
+    "backfill": task_backfill,
+    "incremental": task_incremental,
+    "conformance": task_conformance,
+    "simulate-day": task_simulate_day,
+    "db": task_db,
+    "db-stop": task_db_stop,
+    "db-reset": task_db_reset,
+    "migrate": task_migrate,
+    "revision": task_revision,
+    "api": task_api,
+    "web": task_web,
+    "test": task_test,
+    "lint": task_lint,
+    "typecheck": task_typecheck,
+}
+
+
+def main() -> int:
+    if len(sys.argv) < 2 or sys.argv[1] in {"-h", "--help", "help"}:
+        print(__doc__)
+        return 0
+    name = sys.argv[1]
+    if name not in TASKS:
+        print(f"unknown task {name!r}. known tasks: {', '.join(TASKS)}", file=sys.stderr)
+        return 2
+    return TASKS[name](sys.argv[2:])
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,55 @@
+# Fake CUSTOMER SOURCE systems.
+#
+# Nothing in this file belongs to AIRA's own storage: our canonical database is
+# the local Supabase stack, started with `python tasks.py db`. Source systems
+# are deliberately kept outside Supabase so that "can we read a system we don't
+# own?" stays an honest question.
+#
+#   python tasks.py sources        # start them
+#   python tasks.py seed           # fill RegisterOne with 18 months of history
+#   python tasks.py sources-stop
+
+services:
+  # A plain Postgres playing the part of a cloud POS's backend. Our adapter is
+  # never allowed to touch this directly — it goes through registerone_api.
+  registerone_db:
+    image: postgres:16-alpine
+    container_name: registerone_db
+    environment:
+      POSTGRES_USER: registerone
+      POSTGRES_PASSWORD: registerone
+      POSTGRES_DB: registerone
+    ports:
+      - "5433:5432"
+    volumes:
+      - registerone_data:/var/lib/postgresql/data
+      - ./sources/registerone/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U registerone -d registerone"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  # The cloud API the merchant actually gets: bearer auth, cursor pagination,
+  # rate limits, and the occasional 503.
+  registerone_api:
+    build: ./sources/registerone
+    container_name: registerone_api
+    depends_on:
+      registerone_db:
+        condition: service_healthy
+    environment:
+      REGISTERONE_DSN: postgresql://registerone:registerone@registerone_db:5432/registerone
+      REGISTERONE_TOKEN: ro_test_tsundoku_2f8a41
+      REGISTERONE_ADMIN_TOKEN: ro_admin_9c3e77
+      # Requests per second before the API starts answering 429.
+      REGISTERONE_RATE_LIMIT: "10"
+      # Share of calls that fail with a random 503, so adapters have to retry.
+      # Set to 0 in tests that are not specifically about retry behaviour.
+      REGISTERONE_FAULT_RATE: "0.01"
+      REGISTERONE_PAGE_SIZE: "100"
+    ports:
+      - "8100:8100"
+
+volumes:
+  registerone_data:

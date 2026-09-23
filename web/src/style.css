@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+/* Tailwind v4 ships no opinion about page background. Set one here, in both
+   themes, so the app never borrows whatever is behind it. */
+@theme {
+  --color-surface: #ffffff;
+  --color-surface-muted: #f8fafc;
+  --color-ink: #0f172a;
+  --color-ink-muted: #64748b;
+  --color-hairline: #e2e8f0;
+}
+
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-surface: #0b1020;
+    --color-surface-muted: #131a2e;
+    --color-ink: #e6e9f5;
+    --color-ink-muted: #94a3b8;
+    --color-hairline: #26304a;
+  }
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  background: var(--color-surface);
+  color: var(--color-ink);
+}

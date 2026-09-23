@@ -216,3 +216,28 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- Node / web ---
+node_modules/
+.vite/
+*.tsbuildinfo
+npm-debug.log*
+yarn-error.log*
+
+# --- Supabase CLI ---
+supabase/.branches/
+supabase/.temp/
+
+# --- editors / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- secrets ---
+# Ignore every .env variant, then re-allow the committed template. Without the
+# wildcard, a stray .env.backup or .env.local is one `git add -A` from being
+# published.
+.env
+.env.*
+!.env.example
