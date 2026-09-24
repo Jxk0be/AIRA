@@ -1,0 +1,1198 @@
+{
+  "tenant": "tsundoku",
+  "name": "Tsundoku & Tabletop",
+  "timezone": "America/New_York",
+  "integrations": [
+    {
+      "id": "bef1abb8-e636-41e4-93de-9f32dfb62be5",
+      "adapter": "registerone",
+      "source": "registerone",
+      "is_active": true,
+      "capabilities": {
+        "has_costs": true,
+        "has_vendors": true,
+        "has_payments": true,
+        "has_customers": true,
+        "multi_location": true,
+        "has_online_channel": true,
+        "supports_incremental": true,
+        "has_inventory_history": true
+      },
+      "config": {
+        "base_url": "http://localhost:8100",
+        "event_location_ids": [
+          "LOC_CON"
+        ]
+      },
+      "secret_ref": "env:REGISTERONE_TOKEN"
+    }
+  ],
+  "last_sync": {
+    "id": "90c47dd4-c4b2-4f7f-87ce-2d8a219c1434",
+    "mode": "incremental",
+    "status": "succeeded",
+    "started_at": "2026-09-24T20:05:50.423975Z",
+    "finished_at": "2026-09-24T20:05:54.512976Z",
+    "duration_ms": 4089,
+    "counts": {
+      "_notes": [],
+      "orders": {
+        "fetched": 1,
+        "children": 2,
+        "upserted": 1,
+        "watermark": "2026-10-01T23:50:00+00:00",
+        "soft_deleted": 0
+      },
+      "refunds": {
+        "fetched": 1,
+        "children": 0,
+        "upserted": 1,
+        "watermark": "2026-09-24T20:00:00+00:00",
+        "soft_deleted": 0
+      },
+      "vendors": {
+        "fetched": 5,
+        "children": 0,
+        "upserted": 5,
+        "watermark": null,
+        "soft_deleted": 0
+      },
+      "payments": {
+        "fetched": 1,
+        "children": 0,
+        "upserted": 1,
+        "watermark": "2026-10-01T23:50:00+00:00",
+        "soft_deleted": 0
+      },
+      "products": {
+        "fetched": 1,
+        "children": 0,
+        "upserted": 1,
+        "watermark": "2026-07-21T18:37:00+00:00",
+        "soft_deleted": 0
+      },
+      "variants": {
+        "fetched": 1,
+        "children": 0,
+        "upserted": 1,
+        "watermark": "2026-07-21T18:37:00+00:00",
+        "soft_deleted": 0
+      },
+      "customers": {
+        "fetched": 1,
+        "children": 0,
+        "upserted": 1,
+        "watermark": "2026-09-23T19:00:00+00:00",
+        "soft_deleted": 0
+      },
+      "locations": {
+        "fetched": 2,
+        "children": 0,
+        "upserted": 2,
+        "watermark": null,
+        "soft_deleted": 0
+      },
+      "categories": {
+        "fetched": 1,
+        "children": 0,
+        "upserted": 1,
+        "watermark": "2025-12-24T08:00:00+00:00",
+        "soft_deleted": 0
+      },
+      "variant_vendors": {
+        "fetched": 1,
+        "children": 0,
+        "upserted": 1,
+        "watermark": "2026-07-21T18:37:00+00:00",
+        "soft_deleted": 0
+      },
+      "inventory_levels": {
+        "fetched": 578,
+        "children": 0,
+        "upserted": 578,
+        "watermark": "2026-10-01T23:00:00+00:00",
+        "soft_deleted": 0
+      },
+      "_customers_merged": 0,
+      "inventory_movements": {
+        "fetched": 2,
+        "children": 0,
+        "upserted": 2,
+        "watermark": "2026-10-01T23:43:00+00:00",
+        "soft_deleted": 0
+      }
+    },
+    "errors": []
+  },
+  "history": [
+    {
+      "id": "90c47dd4-c4b2-4f7f-87ce-2d8a219c1434",
+      "mode": "incremental",
+      "status": "succeeded",
+      "started_at": "2026-09-24T20:05:50.423975Z",
+      "finished_at": "2026-09-24T20:05:54.512976Z",
+      "duration_ms": 4089,
+      "counts": {
+        "_notes": [],
+        "orders": {
+          "fetched": 1,
+          "children": 2,
+          "upserted": 1,
+          "watermark": "2026-10-01T23:50:00+00:00",
+          "soft_deleted": 0
+        },
+        "refunds": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-09-24T20:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "vendors": {
+          "fetched": 5,
+          "children": 0,
+          "upserted": 5,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "payments": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-10-01T23:50:00+00:00",
+          "soft_deleted": 0
+        },
+        "products": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "variants": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "customers": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-09-23T19:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "locations": {
+          "fetched": 2,
+          "children": 0,
+          "upserted": 2,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "categories": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2025-12-24T08:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "variant_vendors": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "inventory_levels": {
+          "fetched": 578,
+          "children": 0,
+          "upserted": 578,
+          "watermark": "2026-10-01T23:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "_customers_merged": 0,
+        "inventory_movements": {
+          "fetched": 2,
+          "children": 0,
+          "upserted": 2,
+          "watermark": "2026-10-01T23:43:00+00:00",
+          "soft_deleted": 0
+        }
+      },
+      "errors": []
+    },
+    {
+      "id": "2c34f59c-af47-4229-a68e-391c92e0277d",
+      "mode": "incremental",
+      "status": "succeeded",
+      "started_at": "2026-09-24T19:05:42.449379Z",
+      "finished_at": "2026-09-24T19:05:46.541851Z",
+      "duration_ms": 4092,
+      "counts": {
+        "_notes": [],
+        "orders": {
+          "fetched": 1,
+          "children": 2,
+          "upserted": 1,
+          "watermark": "2026-10-01T23:50:00+00:00",
+          "soft_deleted": 0
+        },
+        "refunds": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-09-24T20:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "vendors": {
+          "fetched": 5,
+          "children": 0,
+          "upserted": 5,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "payments": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-10-01T23:50:00+00:00",
+          "soft_deleted": 0
+        },
+        "products": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "variants": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "customers": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-09-23T19:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "locations": {
+          "fetched": 2,
+          "children": 0,
+          "upserted": 2,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "categories": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2025-12-24T08:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "variant_vendors": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "inventory_levels": {
+          "fetched": 578,
+          "children": 0,
+          "upserted": 578,
+          "watermark": "2026-10-01T23:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "_customers_merged": 0,
+        "inventory_movements": {
+          "fetched": 2,
+          "children": 0,
+          "upserted": 2,
+          "watermark": "2026-10-01T23:43:00+00:00",
+          "soft_deleted": 0
+        }
+      },
+      "errors": []
+    },
+    {
+      "id": "c534347a-5824-4c3c-9cf1-4524529c5da9",
+      "mode": "incremental",
+      "status": "succeeded",
+      "started_at": "2026-09-24T19:00:13.956178Z",
+      "finished_at": "2026-09-24T19:00:18.195178Z",
+      "duration_ms": 4239,
+      "counts": {
+        "_notes": [],
+        "orders": {
+          "fetched": 8,
+          "children": 13,
+          "upserted": 8,
+          "watermark": "2026-10-01T23:50:00+00:00",
+          "soft_deleted": 0
+        },
+        "refunds": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-09-24T20:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "vendors": {
+          "fetched": 5,
+          "children": 0,
+          "upserted": 5,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "payments": {
+          "fetched": 8,
+          "children": 0,
+          "upserted": 8,
+          "watermark": "2026-10-01T23:50:00+00:00",
+          "soft_deleted": 0
+        },
+        "products": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "variants": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "customers": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-09-23T19:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "locations": {
+          "fetched": 2,
+          "children": 0,
+          "upserted": 2,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "categories": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2025-12-24T08:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "variant_vendors": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "inventory_levels": {
+          "fetched": 578,
+          "children": 0,
+          "upserted": 578,
+          "watermark": "2026-10-01T23:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "_customers_merged": 0,
+        "inventory_movements": {
+          "fetched": 19,
+          "children": 0,
+          "upserted": 19,
+          "watermark": "2026-10-01T23:43:00+00:00",
+          "soft_deleted": 0
+        }
+      },
+      "errors": []
+    },
+    {
+      "id": "550dba8d-db2e-4bf3-b5ef-1d49d5f17151",
+      "mode": "backfill",
+      "status": "succeeded",
+      "started_at": "2026-09-24T18:58:50.105395Z",
+      "finished_at": "2026-09-24T18:59:28.963623Z",
+      "duration_ms": 38858,
+      "counts": {
+        "_notes": [],
+        "orders": {
+          "fetched": 3247,
+          "children": 7881,
+          "upserted": 3247,
+          "watermark": "2026-09-30T18:45:00+00:00",
+          "soft_deleted": 0
+        },
+        "refunds": {
+          "fetched": 59,
+          "children": 0,
+          "upserted": 59,
+          "watermark": "2026-09-24T20:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "vendors": {
+          "fetched": 5,
+          "children": 0,
+          "upserted": 5,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "payments": {
+          "fetched": 3326,
+          "children": 0,
+          "upserted": 3326,
+          "watermark": "2026-09-30T18:45:00+00:00",
+          "soft_deleted": 0
+        },
+        "products": {
+          "fetched": 238,
+          "children": 0,
+          "upserted": 238,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "variants": {
+          "fetched": 347,
+          "children": 0,
+          "upserted": 347,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "customers": {
+          "fetched": 735,
+          "children": 0,
+          "upserted": 735,
+          "watermark": "2026-09-23T19:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "locations": {
+          "fetched": 2,
+          "children": 0,
+          "upserted": 2,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "categories": {
+          "fetched": 11,
+          "children": 0,
+          "upserted": 11,
+          "watermark": "2025-12-24T08:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "variant_vendors": {
+          "fetched": 347,
+          "children": 0,
+          "upserted": 347,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "inventory_levels": {
+          "fetched": 578,
+          "children": 0,
+          "upserted": 578,
+          "watermark": "2026-09-30T23:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "_customers_merged": 0,
+        "inventory_movements": {
+          "fetched": 13266,
+          "children": 0,
+          "upserted": 13266,
+          "watermark": "2026-09-30T18:42:00+00:00",
+          "soft_deleted": 0
+        }
+      },
+      "errors": []
+    },
+    {
+      "id": "7b0280a5-d3c1-45dd-99e4-aff6483eb885",
+      "mode": "backfill",
+      "status": "succeeded",
+      "started_at": "2026-09-24T18:58:12.397323Z",
+      "finished_at": "2026-09-24T18:58:50.036394Z",
+      "duration_ms": 37639,
+      "counts": {
+        "_notes": [],
+        "orders": {
+          "fetched": 3247,
+          "children": 7881,
+          "upserted": 3247,
+          "watermark": "2026-09-30T18:45:00+00:00",
+          "soft_deleted": 0
+        },
+        "refunds": {
+          "fetched": 59,
+          "children": 0,
+          "upserted": 59,
+          "watermark": "2026-09-24T20:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "vendors": {
+          "fetched": 5,
+          "children": 0,
+          "upserted": 5,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "payments": {
+          "fetched": 3326,
+          "children": 0,
+          "upserted": 3326,
+          "watermark": "2026-09-30T18:45:00+00:00",
+          "soft_deleted": 0
+        },
+        "products": {
+          "fetched": 238,
+          "children": 0,
+          "upserted": 238,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "variants": {
+          "fetched": 347,
+          "children": 0,
+          "upserted": 347,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "customers": {
+          "fetched": 735,
+          "children": 0,
+          "upserted": 735,
+          "watermark": "2026-09-23T19:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "locations": {
+          "fetched": 2,
+          "children": 0,
+          "upserted": 2,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "categories": {
+          "fetched": 11,
+          "children": 0,
+          "upserted": 11,
+          "watermark": "2025-12-24T08:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "variant_vendors": {
+          "fetched": 347,
+          "children": 0,
+          "upserted": 347,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "inventory_levels": {
+          "fetched": 578,
+          "children": 0,
+          "upserted": 578,
+          "watermark": "2026-09-30T23:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "_customers_merged": 0,
+        "inventory_movements": {
+          "fetched": 13266,
+          "children": 0,
+          "upserted": 13266,
+          "watermark": "2026-09-30T18:42:00+00:00",
+          "soft_deleted": 0
+        }
+      },
+      "errors": []
+    },
+    {
+      "id": "4f808679-405e-4173-a002-f07da861ae32",
+      "mode": "incremental",
+      "status": "succeeded",
+      "started_at": "2026-09-24T18:05:34.264187Z",
+      "finished_at": "2026-09-24T18:05:38.430706Z",
+      "duration_ms": 4166,
+      "counts": {
+        "_notes": [],
+        "orders": {
+          "fetched": 1,
+          "children": 2,
+          "upserted": 1,
+          "watermark": "2026-09-30T18:45:00+00:00",
+          "soft_deleted": 0
+        },
+        "refunds": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-09-24T20:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "vendors": {
+          "fetched": 5,
+          "children": 0,
+          "upserted": 5,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "payments": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-09-30T18:45:00+00:00",
+          "soft_deleted": 0
+        },
+        "products": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "variants": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "customers": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-09-23T19:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "locations": {
+          "fetched": 2,
+          "children": 0,
+          "upserted": 2,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "categories": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2025-12-24T08:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "variant_vendors": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "inventory_levels": {
+          "fetched": 578,
+          "children": 0,
+          "upserted": 578,
+          "watermark": "2026-09-30T23:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "_customers_merged": 0,
+        "inventory_movements": {
+          "fetched": 2,
+          "children": 0,
+          "upserted": 2,
+          "watermark": "2026-09-30T18:42:00+00:00",
+          "soft_deleted": 0
+        }
+      },
+      "errors": []
+    },
+    {
+      "id": "2c7019d0-8d70-4b55-8dcd-25e91fa7f839",
+      "mode": "backfill",
+      "status": "succeeded",
+      "started_at": "2026-09-24T17:26:15.037852Z",
+      "finished_at": "2026-09-24T17:26:49.683087Z",
+      "duration_ms": 34645,
+      "counts": {
+        "_notes": [],
+        "orders": {
+          "fetched": 3247,
+          "children": 7881,
+          "upserted": 3247,
+          "watermark": "2026-09-30T18:45:00+00:00",
+          "soft_deleted": 0
+        },
+        "refunds": {
+          "fetched": 59,
+          "children": 0,
+          "upserted": 59,
+          "watermark": "2026-09-24T20:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "vendors": {
+          "fetched": 5,
+          "children": 0,
+          "upserted": 5,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "payments": {
+          "fetched": 3326,
+          "children": 0,
+          "upserted": 3326,
+          "watermark": "2026-09-30T18:45:00+00:00",
+          "soft_deleted": 0
+        },
+        "products": {
+          "fetched": 238,
+          "children": 0,
+          "upserted": 238,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "variants": {
+          "fetched": 347,
+          "children": 0,
+          "upserted": 347,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "customers": {
+          "fetched": 735,
+          "children": 0,
+          "upserted": 735,
+          "watermark": "2026-09-23T19:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "locations": {
+          "fetched": 2,
+          "children": 0,
+          "upserted": 2,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "categories": {
+          "fetched": 11,
+          "children": 0,
+          "upserted": 11,
+          "watermark": "2025-12-24T08:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "variant_vendors": {
+          "fetched": 347,
+          "children": 0,
+          "upserted": 347,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "inventory_levels": {
+          "fetched": 578,
+          "children": 0,
+          "upserted": 578,
+          "watermark": "2026-09-30T23:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "_customers_merged": 0,
+        "inventory_movements": {
+          "fetched": 13266,
+          "children": 0,
+          "upserted": 13266,
+          "watermark": "2026-09-30T18:42:00+00:00",
+          "soft_deleted": 0
+        }
+      },
+      "errors": []
+    },
+    {
+      "id": "fab330df-c79c-4cec-92f9-759e8ca1727d",
+      "mode": "backfill",
+      "status": "succeeded",
+      "started_at": "2026-09-24T17:25:39.068674Z",
+      "finished_at": "2026-09-24T17:26:14.971353Z",
+      "duration_ms": 35902,
+      "counts": {
+        "_notes": [],
+        "orders": {
+          "fetched": 3247,
+          "children": 7881,
+          "upserted": 3247,
+          "watermark": "2026-09-30T18:45:00+00:00",
+          "soft_deleted": 0
+        },
+        "refunds": {
+          "fetched": 59,
+          "children": 0,
+          "upserted": 59,
+          "watermark": "2026-09-24T20:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "vendors": {
+          "fetched": 5,
+          "children": 0,
+          "upserted": 5,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "payments": {
+          "fetched": 3326,
+          "children": 0,
+          "upserted": 3326,
+          "watermark": "2026-09-30T18:45:00+00:00",
+          "soft_deleted": 0
+        },
+        "products": {
+          "fetched": 238,
+          "children": 0,
+          "upserted": 238,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "variants": {
+          "fetched": 347,
+          "children": 0,
+          "upserted": 347,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "customers": {
+          "fetched": 735,
+          "children": 0,
+          "upserted": 735,
+          "watermark": "2026-09-23T19:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "locations": {
+          "fetched": 2,
+          "children": 0,
+          "upserted": 2,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "categories": {
+          "fetched": 11,
+          "children": 0,
+          "upserted": 11,
+          "watermark": "2025-12-24T08:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "variant_vendors": {
+          "fetched": 347,
+          "children": 0,
+          "upserted": 347,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "inventory_levels": {
+          "fetched": 578,
+          "children": 0,
+          "upserted": 578,
+          "watermark": "2026-09-30T23:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "_customers_merged": 0,
+        "inventory_movements": {
+          "fetched": 13266,
+          "children": 0,
+          "upserted": 13266,
+          "watermark": "2026-09-30T18:42:00+00:00",
+          "soft_deleted": 0
+        }
+      },
+      "errors": []
+    },
+    {
+      "id": "6f549f3d-a03c-4571-91ae-46a2ee2e4153",
+      "mode": "incremental",
+      "status": "succeeded",
+      "started_at": "2026-09-24T17:24:55.801948Z",
+      "finished_at": "2026-09-24T17:24:59.987710Z",
+      "duration_ms": 4185,
+      "counts": {
+        "_notes": [],
+        "orders": {
+          "fetched": 8,
+          "children": 15,
+          "upserted": 8,
+          "watermark": "2026-09-30T18:45:00+00:00",
+          "soft_deleted": 0
+        },
+        "refunds": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-09-24T20:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "vendors": {
+          "fetched": 5,
+          "children": 0,
+          "upserted": 5,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "payments": {
+          "fetched": 8,
+          "children": 0,
+          "upserted": 8,
+          "watermark": "2026-09-30T18:45:00+00:00",
+          "soft_deleted": 0
+        },
+        "products": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "variants": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "customers": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-09-23T19:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "locations": {
+          "fetched": 2,
+          "children": 0,
+          "upserted": 2,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "categories": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2025-12-24T08:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "variant_vendors": {
+          "fetched": 1,
+          "children": 0,
+          "upserted": 1,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "inventory_levels": {
+          "fetched": 578,
+          "children": 0,
+          "upserted": 578,
+          "watermark": "2026-09-30T23:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "_customers_merged": 0,
+        "inventory_movements": {
+          "fetched": 21,
+          "children": 0,
+          "upserted": 21,
+          "watermark": "2026-09-30T18:42:00+00:00",
+          "soft_deleted": 0
+        }
+      },
+      "errors": []
+    },
+    {
+      "id": "30358a9b-092b-4dfa-b9f1-642ac565c432",
+      "mode": "backfill",
+      "status": "succeeded",
+      "started_at": "2026-09-24T17:23:33.457865Z",
+      "finished_at": "2026-09-24T17:24:11.472339Z",
+      "duration_ms": 38014,
+      "counts": {
+        "_notes": [],
+        "orders": {
+          "fetched": 3240,
+          "children": 7867,
+          "upserted": 3240,
+          "watermark": "2026-09-29T23:38:00+00:00",
+          "soft_deleted": 0
+        },
+        "refunds": {
+          "fetched": 59,
+          "children": 0,
+          "upserted": 59,
+          "watermark": "2026-09-24T20:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "vendors": {
+          "fetched": 5,
+          "children": 0,
+          "upserted": 5,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "payments": {
+          "fetched": 3319,
+          "children": 0,
+          "upserted": 3319,
+          "watermark": "2026-09-29T23:38:00+00:00",
+          "soft_deleted": 0
+        },
+        "products": {
+          "fetched": 238,
+          "children": 0,
+          "upserted": 238,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "variants": {
+          "fetched": 347,
+          "children": 0,
+          "upserted": 347,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "customers": {
+          "fetched": 735,
+          "children": 0,
+          "upserted": 735,
+          "watermark": "2026-09-23T19:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "locations": {
+          "fetched": 2,
+          "children": 0,
+          "upserted": 2,
+          "watermark": null,
+          "soft_deleted": 0
+        },
+        "categories": {
+          "fetched": 11,
+          "children": 0,
+          "upserted": 11,
+          "watermark": "2025-12-24T08:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "variant_vendors": {
+          "fetched": 347,
+          "children": 0,
+          "upserted": 347,
+          "watermark": "2026-07-21T18:37:00+00:00",
+          "soft_deleted": 0
+        },
+        "inventory_levels": {
+          "fetched": 578,
+          "children": 0,
+          "upserted": 578,
+          "watermark": "2026-09-29T23:00:00+00:00",
+          "soft_deleted": 0
+        },
+        "_customers_merged": 0,
+        "inventory_movements": {
+          "fetched": 13246,
+          "children": 0,
+          "upserted": 13246,
+          "watermark": "2026-09-29T23:37:00+00:00",
+          "soft_deleted": 0
+        }
+      },
+      "errors": []
+    }
+  ],
+  "quality": {
+    "generated_at": "2026-09-24T20:05:54.508477Z",
+    "metrics": {
+      "orders": 3217,
+      "adapter": "registerone",
+      "refunds": 59,
+      "products": 230,
+      "variants": 333,
+      "customers": 735,
+      "gross_sales": 166270.82,
+      "order_lines": 7821,
+      "capabilities": {
+        "has_costs": true,
+        "has_vendors": true,
+        "has_payments": true,
+        "has_customers": true,
+        "multi_location": true,
+        "has_online_channel": true,
+        "supports_incremental": true,
+        "has_inventory_history": true
+      },
+      "refund_total": 1483.45,
+      "last_order_at": "2026-10-01T23:43:00+00:00",
+      "units_on_hand": 3805,
+      "first_order_at": "2025-03-25T16:30:06+00:00",
+      "lines_with_cost": 6808,
+      "customers_merged": 37,
+      "inventory_levels": 578,
+      "cost_coverage_share": 0.8705,
+      "custom_amount_gross": 4430,
+      "custom_amount_share": 0.026643279921275423,
+      "days_since_last_order": -8,
+      "negative_stock_levels": 0,
+      "products_thin_content": 43,
+      "variants_missing_cost": 39,
+      "orders_not_reconciling": 0,
+      "products_uncategorised": 0,
+      "variants_missing_price": 5,
+      "variants_missing_cost_share": 0.1171,
+      "products_uncategorised_share": 0
+    },
+    "findings": [
+      {
+        "code": "missing_costs",
+        "severity": "warning",
+        "message": "39 of 333 items have no cost recorded, so margin covers 87% of sales. Adding costs in your POS fixes this.",
+        "count": 39,
+        "share": 0.1171
+      },
+      {
+        "code": "thin_product_descriptions",
+        "severity": "info",
+        "message": "43 products have little or no description, so searching for them by what they are rather than by name works less well.",
+        "count": 43,
+        "share": 0.187
+      },
+      {
+        "code": "customers_merged",
+        "severity": "info",
+        "message": "37 duplicate customer records were matched to an existing customer, so repeat-customer figures count each person once.",
+        "count": 37,
+        "share": null
+      },
+      {
+        "code": "custom_amount_sales",
+        "severity": "info",
+        "message": "2.7% of sales were rung up as a custom amount with no product attached, so they count toward revenue but not toward any product's numbers.",
+        "count": 0,
+        "share": 0.0266
+      }
+    ]
+  },
+  "documents": [
+    {
+      "id": "460da32c-15a1-481d-a16f-bedd3939f1c2",
+      "title": "Events and conventions",
+      "filename": "events-and-conventions.md",
+      "characters": 2217,
+      "chunks": 2,
+      "created_at": "2026-09-24T15:56:24.696963Z"
+    },
+    {
+      "id": "ad29d5b9-466b-4f74-9795-899bb3fcf447",
+      "title": "Frequently asked questions",
+      "filename": "faq.md",
+      "characters": 2345,
+      "chunks": 2,
+      "created_at": "2026-09-24T15:56:24.696963Z"
+    },
+    {
+      "id": "1737e19f-5349-405e-a2b1-08c46ac66c8f",
+      "title": "Returns and exchanges",
+      "filename": "returns-and-exchanges.md",
+      "characters": 2506,
+      "chunks": 2,
+      "created_at": "2026-09-24T15:56:24.696963Z"
+    }
+  ],
+  "syncing": false
+}

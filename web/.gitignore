@@ -1,0 +1,5 @@
+# Playwright run output. The screenshots we keep go to docs/ui/after/
+test-results/
+playwright-report/
+blob-report/
+.playwright/

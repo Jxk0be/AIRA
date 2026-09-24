@@ -1,0 +1,18 @@
+[
+  {
+    "id": "dfb0b3b2-b39d-4ce3-9ab7-956e8e38879e",
+    "label": "August 2026",
+    "period_start": "2026-08-01",
+    "period_end": "2026-08-31",
+    "generated_at": "2026-09-24T18:59:38.708085Z",
+    "notes": [
+      "2.9% of these sales ($253.50) were rung up as a custom amount with no product attached, so they count toward the total but not toward any one product.",
+      "Costs are recorded for 83% of the month's sales. Margin is worked out over that part only, never spread across the rest.",
+      "Opening inventory: Rebuilt from stock movements since this date.",
+      "Closing inventory: Stock as of the last sync, not as of midnight on the date shown.",
+      "Figures are as recorded in the shop's point-of-sale system. Tax shown is what was collected, not what is owed."
+    ],
+    "emailed_to": null,
+    "figures": null
+  }
+]

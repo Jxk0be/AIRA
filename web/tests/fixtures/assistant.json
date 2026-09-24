@@ -1,0 +1,45 @@
+{
+  "tenant": "tsundoku",
+  "shop": "Tsundoku & Tabletop",
+  "timezone": "America/New_York",
+  "currency": "USD",
+  "today": "2026-09-24",
+  "data_from": "2025-03-25",
+  "data_to": "2026-10-01",
+  "capabilities": {
+    "has_costs": true,
+    "has_customers": true,
+    "has_inventory_history": true,
+    "multi_location": true,
+    "has_online_channel": true,
+    "supports_incremental": true,
+    "has_vendors": true,
+    "has_payments": true
+  },
+  "tools": [
+    "search_catalog",
+    "sales_summary",
+    "sales_over_time",
+    "top_products",
+    "category_breakdown",
+    "location_channel_breakdown",
+    "low_stock",
+    "dead_stock",
+    "sell_through",
+    "inventory_value",
+    "margin_report",
+    "customer_stats",
+    "reorder_suggestions",
+    "busiest_hours",
+    "make_chart"
+  ],
+  "caveats": [
+    "39 of 333 items have no cost recorded, so margin covers 87% of sales. Adding costs in your POS fixes this."
+  ],
+  "starters": [
+    "How did last month go?",
+    "What should I reorder this week?",
+    "Which categories make me the most money?",
+    "How did the event booth do against a normal weekend?"
+  ]
+}

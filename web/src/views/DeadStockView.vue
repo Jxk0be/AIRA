@@ -14,7 +14,9 @@ import { useRoute } from 'vue-router'
 
 import { api } from '../api/client'
 import type { DeadStockScreen, RescueAction, StaleItem } from '../api/types'
-import PanelCard from '../components/PanelCard.vue'
+import SectionCard from '../components/SectionCard.vue'
+import UiButton from '../ui/UiButton.vue'
+import { withToast } from '../ui/toast'
 import { money, moneyShort, percent, quantity, shopDate } from '../lib/format'
 import { useTenantStore } from '../stores/tenant'
 
@@ -26,7 +28,6 @@ const screen = ref<DeadStockScreen | null>(null)
 const actions = ref<RescueAction[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
-const notice = ref<string | null>(null)
 const expanded = ref<string | null>(null)
 
 const GRADE: Record<string, string> = {
@@ -60,19 +61,20 @@ async function load() {
  * after without having to guess which rung the owner took.
  */
 async function log(item: StaleItem, priceAfter?: string) {
-  notice.value = null
-  try {
-    await api.logRescue(slug.value, {
-      variant_id: item.variant_id,
-      kind: item.play,
-      detail: item.detail,
-      price_after: priceAfter ?? null,
-    })
-    notice.value = `Logged. We will check what happened to ${item.label} in 30 days.`
-    await load()
-  } catch (cause) {
-    error.value = cause instanceof Error ? cause.message : String(cause)
-  }
+  const done = await withToast(
+    () =>
+      api.logRescue(slug.value, {
+        variant_id: item.variant_id,
+        kind: item.play,
+        detail: item.detail,
+        price_after: priceAfter ?? null,
+      }),
+    {
+      success: `Logged. We will check back on ${item.label} in 30 days`,
+      failure: 'Could not log that',
+    },
+  )
+  if (done !== undefined) await load()
 }
 
 function result(item: StaleItem) {
@@ -85,23 +87,17 @@ watch(slug, load)
 
 <template>
   <div class="mx-auto max-w-5xl px-4 py-6 lg:px-8">
-    <header class="mb-5">
-      <h1 class="display text-2xl font-semibold tracking-tight text-ink">Dead stock</h1>
-      <p class="mt-0.5 text-sm text-ink-muted">
-        Money sitting still, worst first, with something specific to do about each one.
-      </p>
-    </header>
-
-    <p v-if="error" class="mb-4 border-l-2 border-down bg-panel px-4 py-3 text-sm text-ink" role="alert">
-      {{ error }}
+    <p class="mb-4 text-sm text-ink-muted">
+      Money sitting still, worst first, with something specific to do about each one.
     </p>
-    <p v-if="notice" class="mb-4 border-l-2 border-brand bg-panel px-4 py-3 text-sm text-ink">
-      {{ notice }}
+
+    <p v-if="error" class="mb-4 rounded-lg border border-danger bg-danger-subtle px-4 py-3 text-base text-ink" role="alert">
+      {{ error }}
     </p>
 
     <div
       v-if="screen"
-      class="mb-5 flex flex-wrap items-baseline gap-x-6 gap-y-1 border border-rule bg-panel px-4 py-3"
+      class="mb-4 flex flex-wrap items-baseline gap-x-6 gap-y-1 rounded-lg border border-border bg-surface px-4 py-3"
     >
       <span class="tabular text-2xl font-semibold text-ink">
         {{ moneyShort(screen.total_cash, shop.currency) }}
@@ -112,66 +108,60 @@ watch(slug, load)
         <template v-if="screen.counts.stale">· {{ screen.counts.stale }} stale</template>
         <template v-if="screen.counts.slowing">· {{ screen.counts.slowing }} slowing</template>
       </span>
-      <span v-if="screen.cost_coverage" class="ml-auto text-xs text-ink-faint">
+      <span v-if="screen.cost_coverage" class="ml-auto text-sm text-ink-muted">
         {{ percent(screen.cost_coverage, 0) }} valued at cost, the rest at retail
       </span>
     </div>
 
-    <PanelCard
+    <SectionCard
       title="Worth starting on"
       :subtitle="screen ? `As of ${shopDate(screen.as_of, shop.timezone)}` : undefined"
       :loading="loading"
       :empty="!loading && !screen?.items.length"
       empty-text="Nothing is sitting still. Unusual, and good."
     >
-      <ul class="-my-1 divide-y divide-rule">
+      <ul class="-my-1 divide-y divide-border">
         <li v-for="item in screen?.items ?? []" :key="item.variant_id" class="py-3.5">
           <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
             <div class="min-w-0">
-              <span class="font-medium text-ink">{{ item.label }}</span>
-              <span class="ml-2 text-xs text-ink-faint">
+              <span class="text-base font-semibold text-ink">{{ item.label }}</span>
+              <span class="ml-2 text-sm text-ink-muted">
                 {{ quantity(item.units_on_hand) }} on hand ·
                 {{ item.never_sold ? 'never sold' : `${item.days_since_last_sale} days` }}
               </span>
             </div>
-            <span class="tabular text-sm text-ink">
+            <span class="tabular text-base font-semibold text-ink">
               {{ money(item.cash_tied_up, shop.currency) }}
             </span>
           </div>
 
-          <p class="mt-1 text-sm text-ink">{{ item.headline }}</p>
-          <p class="text-sm text-ink-muted">{{ item.why }}</p>
+          <p class="mt-1 text-base text-ink">{{ item.headline }}</p>
+          <p class="text-base text-ink-muted">{{ item.why }}</p>
 
-          <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs">
+          <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm">
             <template v-if="done.has(item.variant_id)">
-              <span class="text-ink-faint">
+              <span class="text-ink-muted">
                 Logged {{ shopDate(result(item)?.taken_at ?? null, shop.timezone) }}
                 <template v-if="result(item)?.measured_at"> · measured</template>
                 <template v-else> · we will check back in 30 days</template>
               </span>
             </template>
             <template v-else>
-              <button
-                type="button"
-                class="rounded-sm bg-brand px-2.5 py-1 font-medium text-white"
-                @click="log(item, item.ladder[0]?.price)"
-              >
-                I did this
-              </button>
-              <button
+              <UiButton size="sm" @click="log(item, item.ladder[0]?.price)">I did this</UiButton>
+              <UiButton
                 v-if="item.ladder.length"
-                type="button"
-                class="text-ink-muted hover:text-ink"
+                size="sm"
+                variant="ghost"
                 @click="expanded = expanded === item.variant_id ? null : item.variant_id"
               >
                 {{ expanded === item.variant_id ? 'Hide' : 'Other prices' }}
-              </button>
+              </UiButton>
             </template>
-            <span class="text-ink-faint">{{ GRADE[item.kind] }}</span>
+            <span class="text-ink-muted">{{ GRADE[item.kind] }}</span>
           </div>
 
-          <div v-if="expanded === item.variant_id" class="mt-2 border-t border-rule pt-2">
-            <p class="mb-1 text-xs text-ink-faint">
+          <div v-if="expanded === item.variant_id" class="mt-2 border-t border-border pt-2">
+            <p class="mb-1 text-sm text-ink-muted">
               Break-even is {{ money(item.cost, shop.currency) }} a copy.
             </p>
             <div class="flex flex-wrap gap-2">
@@ -179,22 +169,26 @@ watch(slug, load)
                 v-for="rung in item.ladder"
                 :key="rung.discount"
                 type="button"
-                class="rounded-sm border px-2.5 py-1 text-xs"
+                class="min-h-11 rounded-md border px-3 text-sm"
                 :class="
-                  rung.clears_cost ? 'border-rule text-ink hover:border-rule-strong' : 'border-down text-down'
+                  rung.clears_cost
+                    ? 'border-border-strong text-ink hover:bg-raised'
+                    : 'border-danger text-ink'
                 "
                 @click="log(item, rung.price)"
               >
                 {{ Math.round(Number(rung.discount) * 100) }}% off →
                 {{ money(rung.price, shop.currency) }}
-                <span v-if="rung.margin_per_unit" class="text-ink-faint">
+                <span v-if="rung.margin_per_unit" class="text-ink-muted">
                   ({{ money(rung.margin_per_unit, shop.currency) }} a copy)
                 </span>
+                <!-- Below cost is a word, not just a red border (audit A4). -->
+                <span v-if="!rung.clears_cost" class="font-semibold text-danger">below cost</span>
               </button>
             </div>
           </div>
         </li>
       </ul>
-    </PanelCard>
+    </SectionCard>
   </div>
 </template>

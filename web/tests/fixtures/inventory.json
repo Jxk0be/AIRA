@@ -1,0 +1,1411 @@
+{
+  "tenant": "tsundoku",
+  "currency": "USD",
+  "timezone": "America/New_York",
+  "rows": [
+    {
+      "variant_id": "c1dc0356-9cce-4dce-a10a-482b5abc86be",
+      "product_id": "986f9859-1d72-4d31-8ad0-3427d4820d68",
+      "product_name": "9-Pocket Binder",
+      "variant_name": null,
+      "sku": "SUP-9-POCK-00073",
+      "barcode": "836675254599",
+      "category": "Supplies",
+      "price": "24.99",
+      "cost": "12.99",
+      "unit_margin": "0.4802",
+      "units_on_hand": "1",
+      "retail_value": "24.99",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "1"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "0"
+        }
+      ],
+      "last_sold_at": "2026-09-02T18:42:12Z",
+      "is_active": true,
+      "label": "9-Pocket Binder"
+    },
+    {
+      "variant_id": "71db43ad-42b2-493f-a697-1fcaf282415e",
+      "product_id": "11550200-ee41-4052-a85d-5c17dac0beb7",
+      "product_name": "Ash Herald (AC01)",
+      "variant_name": "LP",
+      "sku": "SGL-AC01-ASH -LP-00235",
+      "barcode": "082148628902",
+      "category": "Singles",
+      "price": "3.00",
+      "cost": "1.50",
+      "unit_margin": "0.5000",
+      "units_on_hand": "17",
+      "retail_value": "51.00",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "5"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "12"
+        }
+      ],
+      "last_sold_at": "2026-09-04T17:37:21Z",
+      "is_active": true,
+      "label": "Ash Herald (AC01) — LP"
+    },
+    {
+      "variant_id": "f43553cd-72af-4d80-be8e-e7dc10e268c8",
+      "product_id": "11550200-ee41-4052-a85d-5c17dac0beb7",
+      "product_name": "Ash Herald (AC01)",
+      "variant_name": "MP",
+      "sku": "SGL-AC01-ASH -MP-00236",
+      "barcode": "030705345786",
+      "category": "Singles",
+      "price": null,
+      "cost": null,
+      "unit_margin": null,
+      "units_on_hand": "4",
+      "retail_value": "0.00",
+      "stock": [
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "4"
+        }
+      ],
+      "last_sold_at": null,
+      "is_active": true,
+      "label": "Ash Herald (AC01) — MP"
+    },
+    {
+      "variant_id": "330b2aed-a162-42dd-9c79-facdd2e5f4f0",
+      "product_id": "11550200-ee41-4052-a85d-5c17dac0beb7",
+      "product_name": "Ash Herald (AC01)",
+      "variant_name": "NM",
+      "sku": "SGL-AC01-ASH -NM-00234",
+      "barcode": "475469137367",
+      "category": "Singles",
+      "price": "3.75",
+      "cost": "1.87",
+      "unit_margin": "0.5013",
+      "units_on_hand": "12",
+      "retail_value": "45.00",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "6"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "6"
+        }
+      ],
+      "last_sold_at": "2026-09-20T00:33:58Z",
+      "is_active": true,
+      "label": "Ash Herald (AC01) — NM"
+    },
+    {
+      "variant_id": "619289fd-da29-42d2-9435-0614c4970581",
+      "product_id": "51ea02b2-fd63-4da6-be06-e458809d63fd",
+      "product_name": "Ash Herald (AC02)",
+      "variant_name": "LP",
+      "sku": "SGL-AC02-ASH -LP-00278",
+      "barcode": "085887704358",
+      "category": "Singles",
+      "price": "39.75",
+      "cost": "19.87",
+      "unit_margin": "0.5001",
+      "units_on_hand": "6",
+      "retail_value": "238.50",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "4"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "2"
+        }
+      ],
+      "last_sold_at": "2026-09-30T15:07:00Z",
+      "is_active": true,
+      "label": "Ash Herald (AC02) — LP"
+    },
+    {
+      "variant_id": "9eb83ea0-5ca4-4576-b340-67ba542daa72",
+      "product_id": "51ea02b2-fd63-4da6-be06-e458809d63fd",
+      "product_name": "Ash Herald (AC02)",
+      "variant_name": "MP",
+      "sku": "SGL-AC02-ASH -MP-00279",
+      "barcode": "288013361386",
+      "category": "Singles",
+      "price": "29.75",
+      "cost": "14.87",
+      "unit_margin": "0.5002",
+      "units_on_hand": "10",
+      "retail_value": "297.50",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "5"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "5"
+        }
+      ],
+      "last_sold_at": "2026-08-16T17:05:43Z",
+      "is_active": true,
+      "label": "Ash Herald (AC02) — MP"
+    },
+    {
+      "variant_id": "31f2048c-7396-4a15-8d24-a287d0719bef",
+      "product_id": "51ea02b2-fd63-4da6-be06-e458809d63fd",
+      "product_name": "Ash Herald (AC02)",
+      "variant_name": "NM",
+      "sku": "SGL-AC02-ASH -NM-00277",
+      "barcode": "573993056164",
+      "category": "Singles",
+      "price": "49.75",
+      "cost": "24.87",
+      "unit_margin": "0.5001",
+      "units_on_hand": "12",
+      "retail_value": "597.00",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "6"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "6"
+        }
+      ],
+      "last_sold_at": "2026-06-27T23:32:59Z",
+      "is_active": true,
+      "label": "Ash Herald (AC02) — NM"
+    },
+    {
+      "variant_id": "1f13d05f-0577-420d-b882-a49bc434b3cb",
+      "product_id": "46b55c1b-b2cc-4bfa-aa59-83cb876d2b6a",
+      "product_name": "Ash Herald (AC03)",
+      "variant_name": "LP",
+      "sku": "SGL-AC03-ASH -LP-00257",
+      "barcode": "667467621202",
+      "category": "Singles",
+      "price": "5.50",
+      "cost": "2.75",
+      "unit_margin": "0.5000",
+      "units_on_hand": "3",
+      "retail_value": "16.50",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "1"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "2"
+        }
+      ],
+      "last_sold_at": "2026-07-11T23:12:01Z",
+      "is_active": true,
+      "label": "Ash Herald (AC03) — LP"
+    },
+    {
+      "variant_id": "06e7b84e-83b4-4dbb-9e2f-ec638fab7a03",
+      "product_id": "46b55c1b-b2cc-4bfa-aa59-83cb876d2b6a",
+      "product_name": "Ash Herald (AC03)",
+      "variant_name": "MP",
+      "sku": "SGL-AC03-ASH -MP-00258",
+      "barcode": "979729659027",
+      "category": "Singles",
+      "price": "4.00",
+      "cost": "2.00",
+      "unit_margin": "0.5000",
+      "units_on_hand": "7",
+      "retail_value": "28.00",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "4"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "3"
+        }
+      ],
+      "last_sold_at": "2026-09-29T18:47:00Z",
+      "is_active": true,
+      "label": "Ash Herald (AC03) — MP"
+    },
+    {
+      "variant_id": "1f9156ab-a5ae-4db2-92f0-1ddb1243cdfa",
+      "product_id": "46b55c1b-b2cc-4bfa-aa59-83cb876d2b6a",
+      "product_name": "Ash Herald (AC03)",
+      "variant_name": "NM",
+      "sku": "SGL-AC03-ASH -NM-00256",
+      "barcode": "002255794155",
+      "category": "Singles",
+      "price": "6.75",
+      "cost": "3.37",
+      "unit_margin": "0.5007",
+      "units_on_hand": "8",
+      "retail_value": "54.00",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "4"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "4"
+        }
+      ],
+      "last_sold_at": "2026-09-13T18:11:36Z",
+      "is_active": true,
+      "label": "Ash Herald (AC03) — NM"
+    },
+    {
+      "variant_id": "c8333757-6989-40a8-89d1-99fe44dbc235",
+      "product_id": "0b1e2eb5-dab4-4630-8e55-60b45d5dea34",
+      "product_name": "Ashfall Frame Basic Grade Model Kit",
+      "variant_name": null,
+      "sku": "KIT-ASHF-BA-00149",
+      "barcode": "560932048996",
+      "category": "Model Kits",
+      "price": "34.99",
+      "cost": "22.39",
+      "unit_margin": "0.3601",
+      "units_on_hand": "3",
+      "retail_value": "104.97",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "3"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "0"
+        }
+      ],
+      "last_sold_at": "2026-08-30T18:18:22Z",
+      "is_active": true,
+      "label": "Ashfall Frame Basic Grade Model Kit"
+    },
+    {
+      "variant_id": "34df4581-0f23-4c80-a1f7-f21c2bec13cc",
+      "product_id": "02e463a6-72d2-40e5-be95-33ae9cd53cf4",
+      "product_name": "Ashfall Frame High Grade Model Kit",
+      "variant_name": null,
+      "sku": "KIT-ASHF-HI-00298",
+      "barcode": "369292984257",
+      "category": "Model Kits",
+      "price": "34.99",
+      "cost": "22.39",
+      "unit_margin": "0.3601",
+      "units_on_hand": "7",
+      "retail_value": "244.93",
+      "stock": [
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "7"
+        }
+      ],
+      "last_sold_at": "2026-09-30T15:52:00Z",
+      "is_active": true,
+      "label": "Ashfall Frame High Grade Model Kit"
+    },
+    {
+      "variant_id": "3043dcab-3314-4f70-a31e-80d4a48fb64c",
+      "product_id": "62179107-83d3-4608-b3e9-5b9bf596e2cb",
+      "product_name": "Ashfall Frame Master Grade Model Kit",
+      "variant_name": null,
+      "sku": "KIT-ASHF-MA-00207",
+      "barcode": "249035213568",
+      "category": "Model Kits",
+      "price": "34.99",
+      "cost": "22.39",
+      "unit_margin": "0.3601",
+      "units_on_hand": "6",
+      "retail_value": "209.94",
+      "stock": [
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "6"
+        }
+      ],
+      "last_sold_at": "2026-09-07T21:33:21Z",
+      "is_active": true,
+      "label": "Ashfall Frame Master Grade Model Kit"
+    },
+    {
+      "variant_id": "d51e710c-bfd9-4bfd-a053-02b4aa2eaa25",
+      "product_id": "4e3c6be1-fd4f-4bee-b594-4c3b40847dff",
+      "product_name": "Ashfall Frame Mini Model Kit",
+      "variant_name": null,
+      "sku": "KIT-ASHF-MI-00297",
+      "barcode": "242869904137",
+      "category": "Model Kits",
+      "price": "15.74",
+      "cost": "10.07",
+      "unit_margin": "0.3602",
+      "units_on_hand": "13",
+      "retail_value": "204.62",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "7"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "6"
+        }
+      ],
+      "last_sold_at": "2026-10-01T21:08:00Z",
+      "is_active": true,
+      "label": "Ashfall Frame Mini Model Kit"
+    },
+    {
+      "variant_id": "9641808a-5b91-4e4c-8018-2c897eb8faed",
+      "product_id": "ab91bb10-af7c-459e-ba6d-a1c939f4c615",
+      "product_name": "Astral Clash: Ember Accord Booster Box",
+      "variant_name": null,
+      "sku": "SLD-AC02-BOO-00075",
+      "barcode": "497840369003",
+      "category": "Sealed Product",
+      "price": "129.99",
+      "cost": "88.39",
+      "unit_margin": "0.3200",
+      "units_on_hand": "18",
+      "retail_value": "2339.82",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "9"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "9"
+        }
+      ],
+      "last_sold_at": "2026-09-02T22:46:50Z",
+      "is_active": true,
+      "label": "Astral Clash: Ember Accord Booster Box"
+    },
+    {
+      "variant_id": "77d8fff3-3bd2-47e1-95ef-2594e12941f8",
+      "product_id": "ce647a0d-5433-4f78-85ec-36c627b6755f",
+      "product_name": "Astral Clash: Ember Accord Booster Pack",
+      "variant_name": null,
+      "sku": "SLD-AC02-BOO-00139",
+      "barcode": "656766182512",
+      "category": "Sealed Product",
+      "price": "4.99",
+      "cost": "3.39",
+      "unit_margin": "0.3206",
+      "units_on_hand": "3",
+      "retail_value": "14.97",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "2"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "1"
+        }
+      ],
+      "last_sold_at": "2026-09-08T20:04:30Z",
+      "is_active": true,
+      "label": "Astral Clash: Ember Accord Booster Pack"
+    },
+    {
+      "variant_id": "7cc6c4f0-6b77-4d03-9a21-1a5aeb469c87",
+      "product_id": "942c7f51-80b4-44ba-ad4e-950a304fbc34",
+      "product_name": "Astral Clash: Ember Accord Collector Bundle",
+      "variant_name": null,
+      "sku": "SLD-AC02-COL-00224",
+      "barcode": "368844431069",
+      "category": "Sealed Product",
+      "price": "54.99",
+      "cost": "37.39",
+      "unit_margin": "0.3201",
+      "units_on_hand": "4",
+      "retail_value": "219.96",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "3"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "1"
+        }
+      ],
+      "last_sold_at": "2026-08-30T20:22:10Z",
+      "is_active": true,
+      "label": "Astral Clash: Ember Accord Collector Bundle"
+    },
+    {
+      "variant_id": "c8241448-e155-4cd5-b2d3-2bd8b933f8b8",
+      "product_id": "ce3b811d-10f3-4053-b178-832748a2abc6",
+      "product_name": "Astral Clash: Ember Accord Starter Deck",
+      "variant_name": null,
+      "sku": "SLD-AC02-STA-00021",
+      "barcode": "669096705466",
+      "category": "Sealed Product",
+      "price": "21.99",
+      "cost": "14.95",
+      "unit_margin": "0.3201",
+      "units_on_hand": "34",
+      "retail_value": "747.66",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "17"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "17"
+        }
+      ],
+      "last_sold_at": "2026-09-18T19:40:44Z",
+      "is_active": true,
+      "label": "Astral Clash: Ember Accord Starter Deck"
+    },
+    {
+      "variant_id": "dcd79422-8b97-47aa-b11a-4399e5ac952c",
+      "product_id": "263f3c9d-b59b-47fc-8c78-f4e31241a8f3",
+      "product_name": "Astral Clash: Gilded Static Booster Box",
+      "variant_name": null,
+      "sku": "SLD-AC04-BOO-00189",
+      "barcode": "426221890927",
+      "category": "Sealed Product",
+      "price": "129.99",
+      "cost": "88.39",
+      "unit_margin": "0.3200",
+      "units_on_hand": "34",
+      "retail_value": "4419.66",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "17"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "17"
+        }
+      ],
+      "last_sold_at": "2026-08-23T18:26:49Z",
+      "is_active": true,
+      "label": "Astral Clash: Gilded Static Booster Box"
+    },
+    {
+      "variant_id": "ddc2a337-12f7-4bb6-87cd-4ae3fe401715",
+      "product_id": "3970813f-ba9f-4760-8719-5ceb8f1b5b70",
+      "product_name": "Astral Clash: Gilded Static Booster Pack",
+      "variant_name": null,
+      "sku": "SLD-AC04-BOO-00151",
+      "barcode": "280801006231",
+      "category": "Sealed Product",
+      "price": "4.99",
+      "cost": "3.39",
+      "unit_margin": "0.3206",
+      "units_on_hand": "10",
+      "retail_value": "49.90",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "5"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "5"
+        }
+      ],
+      "last_sold_at": "2026-09-26T16:34:00Z",
+      "is_active": true,
+      "label": "Astral Clash: Gilded Static Booster Pack"
+    },
+    {
+      "variant_id": "3142e67a-cb70-4f9b-8960-949616017564",
+      "product_id": "f5977edd-037d-4ae5-8607-1b8b5dbbc4b6",
+      "product_name": "Astral Clash: Gilded Static Collector Bundle",
+      "variant_name": null,
+      "sku": "SLD-AC04-COL-00260",
+      "barcode": "562890028772",
+      "category": "Sealed Product",
+      "price": "54.99",
+      "cost": "37.39",
+      "unit_margin": "0.3201",
+      "units_on_hand": "36",
+      "retail_value": "1979.64",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "18"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "18"
+        }
+      ],
+      "last_sold_at": "2026-07-26T20:48:15Z",
+      "is_active": true,
+      "label": "Astral Clash: Gilded Static Collector Bundle"
+    },
+    {
+      "variant_id": "b58c5ad0-04e8-4c55-b407-345f1ed2fbb6",
+      "product_id": "f4ea00a5-74da-4f25-818d-6db349f299b2",
+      "product_name": "Astral Clash: Gilded Static Starter Deck",
+      "variant_name": null,
+      "sku": "SLD-AC04-STA-00126",
+      "barcode": "198665240415",
+      "category": "Sealed Product",
+      "price": "21.99",
+      "cost": "14.95",
+      "unit_margin": "0.3201",
+      "units_on_hand": "18",
+      "retail_value": "395.82",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "16"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "2"
+        }
+      ],
+      "last_sold_at": "2026-09-11T20:22:27Z",
+      "is_active": true,
+      "label": "Astral Clash: Gilded Static Starter Deck"
+    },
+    {
+      "variant_id": "8928a3ee-a4cb-4b53-8e5e-a4abf98b2aec",
+      "product_id": "b2916d2b-b428-41c2-a120-8c44cfdb209d",
+      "product_name": "Astral Clash: Tidebreak Booster Box",
+      "variant_name": null,
+      "sku": "SLD-AC01-BOO-00226",
+      "barcode": "677418625652",
+      "category": "Sealed Product",
+      "price": "129.99",
+      "cost": "88.39",
+      "unit_margin": "0.3200",
+      "units_on_hand": "12",
+      "retail_value": "1559.88",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "6"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "6"
+        }
+      ],
+      "last_sold_at": "2026-09-14T18:07:13Z",
+      "is_active": true,
+      "label": "Astral Clash: Tidebreak Booster Box"
+    },
+    {
+      "variant_id": "89ff813b-a92a-4ca6-89e1-efdcf4f5342e",
+      "product_id": "e8be907d-163e-4a7e-b53b-9c8a75c9635e",
+      "product_name": "Astral Clash: Tidebreak Booster Pack",
+      "variant_name": null,
+      "sku": "SLD-AC01-BOO-00110",
+      "barcode": "143842498182",
+      "category": "Sealed Product",
+      "price": "4.99",
+      "cost": null,
+      "unit_margin": null,
+      "units_on_hand": "15",
+      "retail_value": "74.85",
+      "stock": [
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "15"
+        }
+      ],
+      "last_sold_at": null,
+      "is_active": true,
+      "label": "Astral Clash: Tidebreak Booster Pack"
+    },
+    {
+      "variant_id": "a6f4db08-9d89-4c39-a268-9d366f08db20",
+      "product_id": "1bfa234a-2681-4d6d-a531-325cdf8f2614",
+      "product_name": "Astral Clash: Tidebreak Collector Bundle",
+      "variant_name": null,
+      "sku": "SLD-AC01-COL-00264",
+      "barcode": "571130554885",
+      "category": "Sealed Product",
+      "price": "54.99",
+      "cost": "37.39",
+      "unit_margin": "0.3201",
+      "units_on_hand": "4",
+      "retail_value": "219.96",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "1"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "3"
+        }
+      ],
+      "last_sold_at": "2026-09-22T23:37:30Z",
+      "is_active": true,
+      "label": "Astral Clash: Tidebreak Collector Bundle"
+    },
+    {
+      "variant_id": "baf7fc2c-054a-44b6-922a-94270fd562d8",
+      "product_id": "32ee23ee-384a-4a0d-8b8e-71c6842d7ddc",
+      "product_name": "Astral Clash: Tidebreak Starter Deck",
+      "variant_name": null,
+      "sku": "SLD-AC01-STA-00319",
+      "barcode": "647292931438",
+      "category": "Sealed Product",
+      "price": "21.99",
+      "cost": "14.95",
+      "unit_margin": "0.3201",
+      "units_on_hand": "23",
+      "retail_value": "505.77",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "12"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "11"
+        }
+      ],
+      "last_sold_at": "2026-09-29T23:37:00Z",
+      "is_active": true,
+      "label": "Astral Clash: Tidebreak Starter Deck"
+    },
+    {
+      "variant_id": "2388aa7c-cc86-425c-ad33-e65d15cba8e1",
+      "product_id": "87d71fd7-9094-425e-bda3-7642212a02f3",
+      "product_name": "Astral Clash: Veil of Nine Booster Box",
+      "variant_name": null,
+      "sku": "SLD-AC03-BOO-00265",
+      "barcode": "261493316373",
+      "category": "Sealed Product",
+      "price": "129.99",
+      "cost": "88.39",
+      "unit_margin": "0.3200",
+      "units_on_hand": "14",
+      "retail_value": "1819.86",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "7"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "7"
+        }
+      ],
+      "last_sold_at": "2026-09-09T15:28:35Z",
+      "is_active": true,
+      "label": "Astral Clash: Veil of Nine Booster Box"
+    },
+    {
+      "variant_id": "b6fbffa6-7eca-41bc-9506-c2d9b0e80a5d",
+      "product_id": "a7896540-47d4-47b5-9c06-7d67600089cd",
+      "product_name": "Astral Clash: Veil of Nine Booster Pack",
+      "variant_name": null,
+      "sku": "SLD-AC03-BOO-00304",
+      "barcode": "368872588744",
+      "category": "Sealed Product",
+      "price": "4.99",
+      "cost": "3.39",
+      "unit_margin": "0.3206",
+      "units_on_hand": "16",
+      "retail_value": "79.84",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "11"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "5"
+        }
+      ],
+      "last_sold_at": "2026-09-20T20:49:22Z",
+      "is_active": true,
+      "label": "Astral Clash: Veil of Nine Booster Pack"
+    },
+    {
+      "variant_id": "581fc1a6-3498-45d4-945f-03daa800917b",
+      "product_id": "6dcf2c1b-aaf9-4bed-8a75-ed7f2e153a87",
+      "product_name": "Astral Clash: Veil of Nine Collector Bundle",
+      "variant_name": null,
+      "sku": "SLD-AC03-COL-00285",
+      "barcode": "908781414139",
+      "category": "Sealed Product",
+      "price": "54.99",
+      "cost": "37.39",
+      "unit_margin": "0.3201",
+      "units_on_hand": "11",
+      "retail_value": "604.89",
+      "stock": [
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "11"
+        }
+      ],
+      "last_sold_at": null,
+      "is_active": true,
+      "label": "Astral Clash: Veil of Nine Collector Bundle"
+    },
+    {
+      "variant_id": "3047ef67-0860-49b7-b6be-2c75ca67ce07",
+      "product_id": "ea54d897-b7ab-48e3-934d-2f2824c567ed",
+      "product_name": "Astral Clash: Veil of Nine Starter Deck",
+      "variant_name": null,
+      "sku": "SLD-AC03-STA-00034",
+      "barcode": "082400842710",
+      "category": "Sealed Product",
+      "price": "21.99",
+      "cost": "14.95",
+      "unit_margin": "0.3201",
+      "units_on_hand": "1",
+      "retail_value": "21.99",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "0"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "1"
+        }
+      ],
+      "last_sold_at": "2026-08-22T14:52:27Z",
+      "is_active": true,
+      "label": "Astral Clash: Veil of Nine Starter Deck"
+    },
+    {
+      "variant_id": "78c02a0f-15f7-4d3e-8287-ecb9db2d7354",
+      "product_id": "a1bfc8dd-9e8f-47b9-9719-63184cf734dd",
+      "product_name": "Barista Jin Prize Figure",
+      "variant_name": "Standard",
+      "sku": "FIG-BARI-07-00206",
+      "barcode": "127756185374",
+      "category": "Prize Figures",
+      "price": "18.99",
+      "cost": "11.77",
+      "unit_margin": "0.3802",
+      "units_on_hand": "12",
+      "retail_value": "227.88",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "6"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "6"
+        }
+      ],
+      "last_sold_at": "2026-09-12T20:56:56Z",
+      "is_active": true,
+      "label": "Barista Jin Prize Figure — Standard"
+    },
+    {
+      "variant_id": "8c110c7b-5d7f-4f64-932a-1dbd37e0d12f",
+      "product_id": "6caa59df-b100-4436-b2d3-7ea121ac4b16",
+      "product_name": "Bento Alchemist (AC01)",
+      "variant_name": "LP",
+      "sku": "SGL-AC01-BENT-LP-00240",
+      "barcode": "691085899441",
+      "category": "Singles",
+      "price": "10.25",
+      "cost": "5.12",
+      "unit_margin": "0.5005",
+      "units_on_hand": "16",
+      "retail_value": "164.00",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "4"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "12"
+        }
+      ],
+      "last_sold_at": "2026-08-18T16:44:26Z",
+      "is_active": true,
+      "label": "Bento Alchemist (AC01) — LP"
+    },
+    {
+      "variant_id": "46452594-b857-46f3-991e-0c81233d4a92",
+      "product_id": "6caa59df-b100-4436-b2d3-7ea121ac4b16",
+      "product_name": "Bento Alchemist (AC01)",
+      "variant_name": "MP",
+      "sku": "SGL-AC01-BENT-MP-00241",
+      "barcode": "545444328309",
+      "category": "Singles",
+      "price": "7.75",
+      "cost": "3.87",
+      "unit_margin": "0.5006",
+      "units_on_hand": "20",
+      "retail_value": "155.00",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "6"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "14"
+        }
+      ],
+      "last_sold_at": "2026-05-29T19:32:03Z",
+      "is_active": true,
+      "label": "Bento Alchemist (AC01) — MP"
+    },
+    {
+      "variant_id": "6f14b6f6-fd80-4101-ab5e-8ff43dbea1f1",
+      "product_id": "6caa59df-b100-4436-b2d3-7ea121ac4b16",
+      "product_name": "Bento Alchemist (AC01)",
+      "variant_name": "NM",
+      "sku": "SGL-AC01-BENT-NM-00239",
+      "barcode": "494466574374",
+      "category": "Singles",
+      "price": "12.75",
+      "cost": "6.37",
+      "unit_margin": "0.5004",
+      "units_on_hand": "16",
+      "retail_value": "204.00",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "8"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "8"
+        }
+      ],
+      "last_sold_at": "2026-09-19T00:57:48Z",
+      "is_active": true,
+      "label": "Bento Alchemist (AC01) — NM"
+    },
+    {
+      "variant_id": "1295ad94-cbdb-49b0-b548-8b8c175ab268",
+      "product_id": "8f6b38dd-8962-4784-b6c0-d7c2a27d0b20",
+      "product_name": "Bento Alchemist (AC02)",
+      "variant_name": "LP",
+      "sku": "SGL-AC02-BENT-LP-00301",
+      "barcode": "863765991624",
+      "category": "Singles",
+      "price": "3.00",
+      "cost": "1.50",
+      "unit_margin": "0.5000",
+      "units_on_hand": "5",
+      "retail_value": "15.00",
+      "stock": [
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "5"
+        }
+      ],
+      "last_sold_at": "2026-08-17T21:05:08Z",
+      "is_active": true,
+      "label": "Bento Alchemist (AC02) — LP"
+    },
+    {
+      "variant_id": "92334bce-43db-4e00-b9e9-31f2f84f0d4e",
+      "product_id": "8f6b38dd-8962-4784-b6c0-d7c2a27d0b20",
+      "product_name": "Bento Alchemist (AC02)",
+      "variant_name": "MP",
+      "sku": "SGL-AC02-BENT-MP-00302",
+      "barcode": "149864300981",
+      "category": "Singles",
+      "price": "2.25",
+      "cost": "1.12",
+      "unit_margin": "0.5022",
+      "units_on_hand": "8",
+      "retail_value": "18.00",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "4"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "4"
+        }
+      ],
+      "last_sold_at": "2026-08-02T17:48:38Z",
+      "is_active": true,
+      "label": "Bento Alchemist (AC02) — MP"
+    },
+    {
+      "variant_id": "91213ead-ab07-415a-8971-b2bbee480093",
+      "product_id": "8f6b38dd-8962-4784-b6c0-d7c2a27d0b20",
+      "product_name": "Bento Alchemist (AC02)",
+      "variant_name": "NM",
+      "sku": "SGL-AC02-BENT-NM-00300",
+      "barcode": "881172980686",
+      "category": "Singles",
+      "price": "3.75",
+      "cost": "1.87",
+      "unit_margin": "0.5013",
+      "units_on_hand": "8",
+      "retail_value": "30.00",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "4"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "4"
+        }
+      ],
+      "last_sold_at": "2026-09-13T21:50:54Z",
+      "is_active": true,
+      "label": "Bento Alchemist (AC02) — NM"
+    },
+    {
+      "variant_id": "04ff819d-d67c-4dc7-af8c-bc97dde0a4a7",
+      "product_id": "bf4a716f-bf82-41b7-80a8-476ebba18857",
+      "product_name": "Bento Alchemist (AC03)",
+      "variant_name": "LP",
+      "sku": "SGL-AC03-BENT-LP-00043",
+      "barcode": "516808760385",
+      "category": "Singles",
+      "price": "5.50",
+      "cost": "2.75",
+      "unit_margin": "0.5000",
+      "units_on_hand": "14",
+      "retail_value": "77.00",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "7"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "7"
+        }
+      ],
+      "last_sold_at": "2026-09-03T22:30:32Z",
+      "is_active": true,
+      "label": "Bento Alchemist (AC03) — LP"
+    },
+    {
+      "variant_id": "dced0f59-107c-4ced-8c65-276b3c2b9424",
+      "product_id": "bf4a716f-bf82-41b7-80a8-476ebba18857",
+      "product_name": "Bento Alchemist (AC03)",
+      "variant_name": "MP",
+      "sku": "SGL-AC03-BENT-MP-00044",
+      "barcode": "703482477109",
+      "category": "Singles",
+      "price": "4.00",
+      "cost": "2.00",
+      "unit_margin": "0.5000",
+      "units_on_hand": "5",
+      "retail_value": "20.00",
+      "stock": [
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "5"
+        }
+      ],
+      "last_sold_at": "2026-09-13T20:27:33Z",
+      "is_active": true,
+      "label": "Bento Alchemist (AC03) — MP"
+    },
+    {
+      "variant_id": "1d6c42bd-7b4c-43df-bcb3-3e22a9165738",
+      "product_id": "bf4a716f-bf82-41b7-80a8-476ebba18857",
+      "product_name": "Bento Alchemist (AC03)",
+      "variant_name": "NM",
+      "sku": "SGL-AC03-BENT-NM-00042",
+      "barcode": "512567468071",
+      "category": "Singles",
+      "price": "6.75",
+      "cost": "3.37",
+      "unit_margin": "0.5007",
+      "units_on_hand": "15",
+      "retail_value": "101.25",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "6"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "9"
+        }
+      ],
+      "last_sold_at": "2026-10-01T18:08:00Z",
+      "is_active": true,
+      "label": "Bento Alchemist (AC03) — NM"
+    },
+    {
+      "variant_id": "a51cb4d3-9d4e-4003-ad4d-7a7b0444aa3b",
+      "product_id": "7337e43a-df82-4292-a464-fb4bdc88be4a",
+      "product_name": "Bento Cat Plush (Large)",
+      "variant_name": "Large",
+      "sku": "PLU-BENT-L-00125",
+      "barcode": "733484344375",
+      "category": "Plush",
+      "price": "32.99",
+      "cost": "16.49",
+      "unit_margin": "0.5002",
+      "units_on_hand": "20",
+      "retail_value": "659.80",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "10"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "10"
+        }
+      ],
+      "last_sold_at": "2026-07-21T15:23:01Z",
+      "is_active": true,
+      "label": "Bento Cat Plush (Large) — Large"
+    },
+    {
+      "variant_id": "85a9dbfe-8e8a-44ad-8471-4449c7453f11",
+      "product_id": "d95d3610-465a-4062-bfd2-235ff1f14236",
+      "product_name": "Bento Cat Plush (Small)",
+      "variant_name": "Small",
+      "sku": "PLU-BENT-S-00057",
+      "barcode": "588424745171",
+      "category": "Plush",
+      "price": "16.99",
+      "cost": "8.49",
+      "unit_margin": "0.5003",
+      "units_on_hand": "15",
+      "retail_value": "254.85",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "8"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "7"
+        }
+      ],
+      "last_sold_at": "2026-10-01T15:48:00Z",
+      "is_active": true,
+      "label": "Bento Cat Plush (Small) — Small"
+    },
+    {
+      "variant_id": "f80d4320-0712-4c8e-b9da-97d95c5079a7",
+      "product_id": "41afaa91-2944-45f6-9971-62a83a6cc4fd",
+      "product_name": "Captain Brine Prize Figure",
+      "variant_name": "Standard",
+      "sku": "FIG-CAPT-04-00157",
+      "barcode": "396856218501",
+      "category": "Prize Figures",
+      "price": "26.99",
+      "cost": "16.73",
+      "unit_margin": "0.3801",
+      "units_on_hand": "9",
+      "retail_value": "242.91",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "5"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "4"
+        }
+      ],
+      "last_sold_at": "2026-09-28T22:46:00Z",
+      "is_active": true,
+      "label": "Captain Brine Prize Figure — Standard"
+    },
+    {
+      "variant_id": "9d90b2dd-83bd-466c-915d-a22a65d7af10",
+      "product_id": "69815cb5-822a-4b8e-88a6-9a37d24274a1",
+      "product_name": "Cinder & Clockwork Vol. 1",
+      "variant_name": "Paperback",
+      "sku": "MNG-CIND-01-00198",
+      "barcode": "917785079252",
+      "category": "Manga",
+      "price": "14.99",
+      "cost": "8.24",
+      "unit_margin": "0.4503",
+      "units_on_hand": "3",
+      "retail_value": "44.97",
+      "stock": [
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "3"
+        }
+      ],
+      "last_sold_at": "2026-09-30T15:07:00Z",
+      "is_active": true,
+      "label": "Cinder & Clockwork Vol. 1 — Paperback"
+    },
+    {
+      "variant_id": "bd9fc4c6-0583-4de2-9a83-c02e3d8a7fae",
+      "product_id": "419d13ab-2214-4616-beb0-429e0f3138ff",
+      "product_name": "Cinder & Clockwork Vol. 2",
+      "variant_name": "Paperback",
+      "sku": "MNG-CIND-02-00138",
+      "barcode": "391065180170",
+      "category": "Manga",
+      "price": "14.99",
+      "cost": "8.24",
+      "unit_margin": "0.4503",
+      "units_on_hand": "22",
+      "retail_value": "329.78",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "7"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "15"
+        }
+      ],
+      "last_sold_at": "2026-08-12T18:30:36Z",
+      "is_active": true,
+      "label": "Cinder & Clockwork Vol. 2 — Paperback"
+    },
+    {
+      "variant_id": "e560abfe-f3d2-4a26-815d-f5d66a7cd993",
+      "product_id": "ff3c0d57-f37e-4d99-a072-a0b72e10b108",
+      "product_name": "Cinder & Clockwork Vol. 3",
+      "variant_name": "Paperback",
+      "sku": "MNG-CIND-03-00060",
+      "barcode": "711382675869",
+      "category": "Manga",
+      "price": "14.99",
+      "cost": "8.24",
+      "unit_margin": "0.4503",
+      "units_on_hand": "14",
+      "retail_value": "209.86",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "7"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "7"
+        }
+      ],
+      "last_sold_at": "2026-08-25T16:22:34Z",
+      "is_active": true,
+      "label": "Cinder & Clockwork Vol. 3 — Paperback"
+    },
+    {
+      "variant_id": "3575625c-b21a-4fab-b4f4-7d28595f0fd8",
+      "product_id": "5192b35b-0431-4a83-bc11-d1b2a1ba9dfd",
+      "product_name": "Cinder & Clockwork Vol. 4",
+      "variant_name": "Paperback",
+      "sku": "MNG-CIND-04-00339",
+      "barcode": "271950052812",
+      "category": "Manga",
+      "price": "14.99",
+      "cost": "8.24",
+      "unit_margin": "0.4503",
+      "units_on_hand": "11",
+      "retail_value": "164.89",
+      "stock": [
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "11"
+        }
+      ],
+      "last_sold_at": "2026-09-08T17:45:43Z",
+      "is_active": true,
+      "label": "Cinder & Clockwork Vol. 4 — Paperback"
+    },
+    {
+      "variant_id": "ce56fe08-f41d-4fcd-a2dc-3efea2a892ae",
+      "product_id": "def59570-d1ea-4aaa-a0c5-8cd8d6fe44a3",
+      "product_name": "Cinder & Clockwork Vol. 5",
+      "variant_name": "Paperback",
+      "sku": "MNG-CIND-05-00286",
+      "barcode": "314913577594",
+      "category": "Manga",
+      "price": "14.99",
+      "cost": "8.24",
+      "unit_margin": "0.4503",
+      "units_on_hand": "5",
+      "retail_value": "74.95",
+      "stock": [
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "5"
+        }
+      ],
+      "last_sold_at": "2026-09-18T17:30:15Z",
+      "is_active": true,
+      "label": "Cinder & Clockwork Vol. 5 — Paperback"
+    },
+    {
+      "variant_id": "66980e4e-a158-4c98-8988-5a99afa21519",
+      "product_id": "6ce31f9b-ef53-4812-8bf0-cc4ef79043b7",
+      "product_name": "Cinder & Clockwork Vol. 6",
+      "variant_name": "Paperback",
+      "sku": "MNG-CIND-06-00067",
+      "barcode": "998569847896",
+      "category": "Manga",
+      "price": "14.99",
+      "cost": "8.24",
+      "unit_margin": "0.4503",
+      "units_on_hand": "18",
+      "retail_value": "269.82",
+      "stock": [
+        {
+          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+          "location": "Con Booth",
+          "on_hand": "9"
+        },
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "9"
+        }
+      ],
+      "last_sold_at": "2026-07-11T14:21:37Z",
+      "is_active": true,
+      "label": "Cinder & Clockwork Vol. 6 — Paperback"
+    },
+    {
+      "variant_id": "4586dafe-c415-42bd-b033-1e5ebda0f4f8",
+      "product_id": "93078d6c-bd20-4202-8000-dd6013593d30",
+      "product_name": "Cinder & Clockwork Vol. 7",
+      "variant_name": "Paperback",
+      "sku": "MNG-CIND-07-00303",
+      "barcode": "565126944869",
+      "category": "Manga",
+      "price": "14.99",
+      "cost": "8.24",
+      "unit_margin": "0.4503",
+      "units_on_hand": "8",
+      "retail_value": "119.92",
+      "stock": [
+        {
+          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "location": "Tsundoku & Tabletop — Gay St",
+          "on_hand": "8"
+        }
+      ],
+      "last_sold_at": "2026-07-11T14:21:37Z",
+      "is_active": true,
+      "label": "Cinder & Clockwork Vol. 7 — Paperback"
+    }
+  ],
+  "total": 333,
+  "limit": 50,
+  "offset": 0,
+  "caveats": [
+    {
+      "code": "missing_cost",
+      "message": "2 of the 50 items on this page have no cost recorded, so their margin is blank rather than zero."
+    }
+  ]
+}

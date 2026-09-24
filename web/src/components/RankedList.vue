@@ -29,19 +29,19 @@ function width(row: BreakdownRow): string {
     <li
       v-for="(row, index) in shown()"
       :key="row.key ?? row.label"
-      class="relative flex items-baseline justify-between gap-3 px-2 py-1.5 text-sm"
+      class="relative flex items-baseline justify-between gap-3 rounded-sm px-2 py-2 text-base"
     >
       <span
-        class="absolute inset-y-0 left-0 bg-brand-soft"
+        class="absolute inset-y-0 left-0 rounded-sm bg-primary-subtle"
         :style="{ width: width(row) }"
         aria-hidden="true"
       />
       <span class="relative flex min-w-0 items-baseline gap-2">
-        <span class="tabular w-4 shrink-0 text-xs text-ink-faint">{{ index + 1 }}</span>
+        <span class="tabular w-5 shrink-0 text-sm text-ink-muted">{{ index + 1 }}</span>
         <span class="truncate text-ink">{{ row.label }}</span>
       </span>
       <span class="relative flex shrink-0 items-baseline gap-3">
-        <span v-if="row.share_of_net_sales !== null" class="tabular text-xs text-ink-faint">
+        <span v-if="row.share_of_net_sales !== null" class="tabular text-sm text-ink-muted">
           {{ percent(row.share_of_net_sales, 0) }}
         </span>
         <span class="tabular font-medium text-ink">{{ money(row.net_sales, currency) }}</span>

@@ -8,15 +8,36 @@
  * sentence behind it: "sells 3.1/week, 4 on hand, 14-day lead time" is what
  * turns a suggestion into something an owner can disagree with, which is the
  * only way they will ever trust the ones they agree with.
+ *
+ * What the rebuild fixed:
+ *
+ *   A supplier's name was `text-sm font-semibold`, one notch above the item
+ *   names beside it — not enough to read as a divider, so the group heading
+ *   looked like another row (audit U7). It is a heading on its own rule now.
+ *
+ *   "GONE FIRST" was a 9.6px badge sitting *inside* the item cell, wrapping the
+ *   name onto three lines and knocking every figure in the row out of line with
+ *   its header. It is a labelled badge under the name, and the figures keep
+ *   their columns.
+ *
+ *   The quantity input had no label at all — a screen reader read "spin button"
+ *   with no clue which line it belonged to (audit A6).
+ *
+ *   Every write said so in a paragraph that shoved the page down. Now they are
+ *   toasts (audit U13).
  */
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { api } from '../api/client'
 import type { PurchaseOrder, ReorderScreen } from '../api/types'
-import PanelCard from '../components/PanelCard.vue'
+import SectionCard from '../components/SectionCard.vue'
 import { money, moneyShort, percent, quantity, shopDate } from '../lib/format'
 import { useTenantStore } from '../stores/tenant'
+import UiBadge from '../ui/UiBadge.vue'
+import UiButton from '../ui/UiButton.vue'
+import UiSkeleton from '../ui/UiSkeleton.vue'
+import { toast, withToast } from '../ui/toast'
 
 const route = useRoute()
 const shop = useTenantStore()
@@ -28,7 +49,6 @@ const open = ref<PurchaseOrder | null>(null)
 const loading = ref(true)
 const working = ref(false)
 const error = ref<string | null>(null)
-const notice = ref<string | null>(null)
 
 const skipped = computed(() => Object.entries(screen.value?.skipped ?? {}))
 
@@ -50,40 +70,56 @@ async function load() {
 
 async function draft(vendorId: string | null) {
   working.value = true
-  notice.value = null
-  try {
-    const created = await api.createDrafts(slug.value, vendorId ?? undefined)
-    notice.value = created.length
-      ? `${created.length} draft order${created.length === 1 ? '' : 's'} ready to review.`
-      : 'Nothing to order from that supplier right now.'
-    await load()
-  } catch (cause) {
-    error.value = cause instanceof Error ? cause.message : String(cause)
-  } finally {
-    working.value = false
-  }
+  const created = await withToast(() => api.createDrafts(slug.value, vendorId ?? undefined), {
+    success: (made) =>
+      made.length
+        ? `${made.length} draft order${made.length === 1 ? '' : 's'} ready to review`
+        : 'Nothing to order from that supplier right now',
+    failure: 'Could not build that draft',
+  })
+  if (created !== undefined) await load()
+  working.value = false
 }
 
 async function review(order: PurchaseOrder) {
-  open.value = await api.purchaseOrder(slug.value, order.id)
+  try {
+    open.value = await api.purchaseOrder(slug.value, order.id)
+  } catch {
+    toast.danger('Could not open that draft')
+  }
 }
 
 async function setQuantity(lineId: string, value: string) {
   if (!open.value) return
-  await api.updatePurchaseOrderLine(slug.value, lineId, { quantity: value })
-  open.value = await api.purchaseOrder(slug.value, open.value.id)
+  const done = await withToast(
+    () => api.updatePurchaseOrderLine(slug.value, lineId, { quantity: value }),
+    { success: 'Quantity updated', failure: 'Could not change that quantity' },
+  )
+  if (done !== undefined) open.value = await api.purchaseOrder(slug.value, open.value.id)
 }
 
 async function removeLine(lineId: string) {
   if (!open.value) return
-  await api.updatePurchaseOrderLine(slug.value, lineId, { remove: true })
-  open.value = await api.purchaseOrder(slug.value, open.value.id)
+  const done = await withToast(
+    () => api.updatePurchaseOrderLine(slug.value, lineId, { remove: true }),
+    { success: 'Line removed', failure: 'Could not remove that line' },
+  )
+  if (done !== undefined) open.value = await api.purchaseOrder(slug.value, open.value.id)
 }
 
 async function mark(status: 'sent' | 'received') {
   if (!open.value) return
-  open.value = await api.setPurchaseOrderStatus(slug.value, open.value.id, status)
-  await load()
+  const updated = await withToast(
+    () => api.setPurchaseOrderStatus(slug.value, open.value!.id, status),
+    {
+      success: status === 'sent' ? 'Marked as sent' : 'Marked as arrived',
+      failure: 'Could not update that order',
+    },
+  )
+  if (updated) {
+    open.value = updated
+    await load()
+  }
 }
 
 onMounted(load)
@@ -91,249 +127,225 @@ watch(slug, load)
 </script>
 
 <template>
-  <div class="mx-auto max-w-5xl px-4 py-6 lg:px-8">
-    <header class="mb-5">
-      <h1 class="display text-2xl font-semibold tracking-tight text-ink">Reorder</h1>
-      <p class="mt-0.5 text-sm text-ink-muted">
-        From the last four weeks of sales, each supplier's lead time, and what is already on
-        an open order.
-      </p>
-    </header>
+  <div class="mx-auto max-w-4xl px-4 py-5 sm:px-6">
+    <p class="mb-4 text-sm text-ink-muted">
+      From the last four weeks of sales, each supplier's lead time, and what is already on an open
+      order.
+    </p>
 
-    <p v-if="error" class="mb-4 border-l-2 border-down bg-panel px-4 py-3 text-sm text-ink" role="alert">
-      {{ error }}
-    </p>
-    <p v-if="notice" class="mb-4 border-l-2 border-brand bg-panel px-4 py-3 text-sm text-ink">
-      {{ notice }}
-    </p>
+    <div v-if="error" class="rounded-lg border border-danger bg-danger-subtle p-4" role="alert">
+      <p class="font-medium text-ink">We could not work out what to reorder.</p>
+      <p class="mt-1 text-sm text-ink-muted">{{ error }}</p>
+      <UiButton class="mt-3" size="sm" variant="secondary" @click="load">Try again</UiButton>
+    </div>
 
     <!-- The draft under review takes over the screen: editing quantities is a
          one-thing-at-a-time job. -->
-    <PanelCard
-      v-if="open"
+    <SectionCard
+      v-else-if="open"
       :title="`${open.reference} — ${open.vendor_name}`"
       :subtitle="open.expected_at ? `Expected ${shopDate(open.expected_at, shop.timezone)}` : undefined"
     >
       <template #actions>
-        <button type="button" class="text-xs text-ink-muted hover:text-ink" @click="open = null">
-          Back to suggestions
-        </button>
+        <UiButton size="sm" variant="ghost" @click="open = null">Back to suggestions</UiButton>
       </template>
 
-      <div class="mb-3 flex flex-wrap items-baseline gap-x-5 gap-y-1 text-sm">
+      <div class="mb-4 flex flex-wrap items-baseline gap-x-5 gap-y-1 text-base">
         <span class="tabular text-ink">{{ quantity(open.units) }} units</span>
         <span class="tabular text-ink">{{ money(open.total_at_cost, shop.currency) }} at cost</span>
-        <span v-if="open.unpriced_lines" class="text-ink-faint">
+        <span v-if="open.unpriced_lines" class="text-sm text-ink-muted">
           {{ open.unpriced_lines }} line{{ open.unpriced_lines === 1 ? '' : 's' }} have no cost on
           file, so the total is only the part we can price
         </span>
       </div>
 
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="border-b border-rule text-left text-xs text-ink-faint">
-              <th class="py-1.5 pr-3 font-normal">Item</th>
-              <th class="py-1.5 pr-3 text-right font-normal">On hand</th>
-              <th class="py-1.5 pr-3 text-right font-normal">Order</th>
-              <th class="py-1.5 pr-3 text-right font-normal">Line</th>
-              <th class="py-1.5 font-normal"></th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-rule">
-            <tr v-for="line in open.lines" :key="line.id">
-              <td class="py-2 pr-3">
-                <div class="text-ink">{{ line.name }}</div>
-                <div class="text-xs text-ink-faint">{{ line.why }}</div>
-                <div v-for="caveat in line.caveats" :key="caveat" class="text-xs text-note-ink">
-                  {{ caveat }}
-                </div>
-              </td>
-              <td class="tabular py-2 pr-3 text-right text-ink-muted">
-                {{ quantity(line.on_hand_at_draft) }}
-              </td>
-              <td class="py-2 pr-3 text-right">
+      <ul class="divide-y divide-border">
+        <li v-for="line in open.lines" :key="line.id" class="py-3">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div class="min-w-0 flex-1">
+              <p class="text-base font-medium text-ink">{{ line.name }}</p>
+              <p class="text-sm text-ink-muted">{{ line.why }}</p>
+              <p v-for="caveat in line.caveats" :key="caveat" class="text-sm text-warning">
+                {{ caveat }}
+              </p>
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="flex items-center gap-2">
+                <!-- Named, so a screen reader says which line this is (audit A6). -->
+                <span class="sr-only">Order quantity for {{ line.name }}</span>
+                <span class="text-sm text-ink-muted" aria-hidden="true">Order</span>
                 <input
-                  class="tabular w-16 rounded-sm border border-rule bg-panel px-2 py-1 text-right text-sm text-ink"
+                  class="tabular min-h-11 w-20 rounded-md border border-border-strong bg-surface px-2 text-right text-base text-ink"
                   type="number"
                   min="0"
                   step="1"
                   :value="Number(line.quantity)"
-                  @change="setQuantity(line.id, (($event.target as HTMLInputElement).value))"
+                  @change="setQuantity(line.id, ($event.target as HTMLInputElement).value)"
                 />
-              </td>
-              <td class="tabular py-2 pr-3 text-right text-ink">
+              </label>
+              <span class="tabular w-20 text-right text-base text-ink">
                 {{ money(line.line_cost, shop.currency) }}
-              </td>
-              <td class="py-2 text-right">
-                <button
-                  type="button"
-                  class="text-xs text-ink-faint hover:text-down"
-                  @click="removeLine(line.id)"
-                >
-                  Remove
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+              </span>
+              <UiButton size="sm" variant="ghost" @click="removeLine(line.id)">Remove</UiButton>
+            </div>
+          </div>
+        </li>
+      </ul>
 
-      <div class="mt-4 flex flex-wrap items-center gap-3">
-        <a
-          class="rounded-sm border border-rule px-3 py-1.5 text-sm text-ink hover:border-rule-strong"
-          :href="api.purchaseOrderFile(slug, open.id, 'pdf')"
-          target="_blank"
-          rel="noopener"
-        >
-          Download PDF
-        </a>
-        <a
-          class="rounded-sm border border-rule px-3 py-1.5 text-sm text-ink hover:border-rule-strong"
-          :href="api.purchaseOrderFile(slug, open.id, 'csv')"
-        >
-          Download CSV
-        </a>
-        <a
+      <div class="mt-4 flex flex-wrap items-center gap-2">
+        <UiButton
           v-if="open.mailto"
-          class="rounded-sm bg-brand px-3 py-1.5 text-sm font-medium text-white"
-          :href="open.mailto"
+          as="a"
+          as-child
         >
-          Email {{ open.vendor_name }}
-        </a>
-        <button
-          v-if="open.status === 'draft'"
-          type="button"
-          class="text-sm text-ink-muted hover:text-ink"
-          @click="mark('sent')"
-        >
+          <a :href="open.mailto">Email {{ open.vendor_name }}</a>
+        </UiButton>
+        <UiButton as="a" as-child variant="secondary">
+          <a :href="api.purchaseOrderFile(slug, open.id, 'pdf')" target="_blank" rel="noopener">
+            Download PDF
+          </a>
+        </UiButton>
+        <UiButton as="a" as-child variant="secondary">
+          <a :href="api.purchaseOrderFile(slug, open.id, 'csv')">Download spreadsheet</a>
+        </UiButton>
+        <UiButton v-if="open.status === 'draft'" variant="ghost" @click="mark('sent')">
           I sent this
-        </button>
-        <button
-          v-if="open.status === 'sent'"
-          type="button"
-          class="text-sm text-ink-muted hover:text-ink"
-          @click="mark('received')"
-        >
+        </UiButton>
+        <UiButton v-if="open.status === 'sent'" variant="ghost" @click="mark('received')">
           It arrived
-        </button>
-        <span class="text-xs text-ink-faint">
-          We never send an order ourselves — this opens your own mail.
-        </span>
+        </UiButton>
       </div>
-    </PanelCard>
+      <p class="mt-2 text-sm text-ink-muted">
+        We never send an order ourselves — this opens your own mail.
+      </p>
+    </SectionCard>
 
     <template v-else>
-      <PanelCard
-        v-if="orders.length"
-        title="Drafts you have not finished"
-        class="mb-4"
-      >
-        <ul class="divide-y divide-rule text-sm">
+      <SectionCard v-if="orders.length" title="Drafts you have not finished" class="mb-4">
+        <ul class="divide-y divide-border">
           <li
             v-for="order in orders"
             :key="order.id"
-            class="flex flex-wrap items-baseline justify-between gap-2 py-2"
+            class="flex flex-wrap items-center justify-between gap-3 py-2.5"
           >
-            <span class="text-ink">{{ order.reference }} — {{ order.vendor_name }}</span>
-            <span class="tabular text-ink-muted">
-              {{ quantity(order.units) }} units · {{ money(order.total_at_cost, shop.currency) }}
-            </span>
-            <span class="text-xs text-ink-faint">{{ order.status }}</span>
-            <button type="button" class="text-xs text-brand" @click="review(order)">Review</button>
+            <div class="min-w-0">
+              <p class="text-base text-ink">{{ order.reference }} — {{ order.vendor_name }}</p>
+              <p class="tabular text-sm text-ink-muted">
+                {{ quantity(order.units) }} units · {{ money(order.total_at_cost, shop.currency) }}
+                · {{ order.status }}
+              </p>
+            </div>
+            <UiButton size="sm" variant="secondary" @click="review(order)">Review</UiButton>
           </li>
         </ul>
-      </PanelCard>
+      </SectionCard>
 
-      <PanelCard
-        title="Suggestions"
-        :subtitle="screen ? `As of ${shopDate(screen.as_of, shop.timezone)}` : undefined"
-        :loading="loading"
-        :empty="!loading && !screen?.groups.length"
-        empty-text="Nothing needs ordering at the moment."
+      <div v-if="loading" class="rounded-lg border border-border bg-surface p-4">
+        <UiSkeleton :lines="6" />
+      </div>
+
+      <div
+        v-else-if="!screen?.groups.length"
+        class="rounded-lg border border-border bg-surface px-4 py-8 text-center"
       >
-        <template #actions>
-          <span v-if="screen" class="tabular text-xs text-ink-faint">
+        <p class="text-base font-medium text-ink">Nothing needs ordering at the moment.</p>
+      </div>
+
+      <template v-else>
+        <div class="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+          <p class="text-sm text-ink-muted">
+            As of {{ shopDate(screen.as_of, shop.timezone) }}
+          </p>
+          <p class="tabular text-sm text-ink-muted">
             {{ moneyShort(screen.total_at_cost, shop.currency) }} at cost
             <template v-if="screen.cost_coverage">
               · {{ percent(screen.cost_coverage, 0) }} of lines priced
             </template>
-          </span>
-        </template>
+          </p>
+        </div>
 
-        <div v-for="group in screen?.groups ?? []" :key="group.vendor_name" class="mb-6 last:mb-0">
-          <div class="mb-2 flex flex-wrap items-baseline justify-between gap-2">
-            <h3 class="text-sm font-semibold text-ink">{{ group.vendor_name }}</h3>
-            <div class="flex items-center gap-3">
-              <span class="tabular text-xs text-ink-muted">
+        <!-- One section per supplier, each with a real heading. -->
+        <section
+          v-for="group in screen.groups"
+          :key="group.vendor_name"
+          class="mb-4 rounded-lg border border-border bg-surface"
+        >
+          <!-- Stacked on a phone, side by side from `sm`. Left to wrap, the
+               button sat inline for short supplier names and dropped to its own
+               line for long ones, so a column of suppliers looked ragged. -->
+          <header
+            class="flex flex-col items-start gap-2 border-b-2 border-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3"
+          >
+            <div class="min-w-0">
+              <h2 class="text-lg font-bold text-ink">{{ group.vendor_name }}</h2>
+              <p class="tabular text-sm text-ink-muted">
                 {{ group.lines.length }} lines · {{ money(group.total_at_cost, shop.currency) }}
-              </span>
-              <button
-                type="button"
-                class="rounded-sm border border-rule px-2.5 py-1 text-xs text-ink hover:border-rule-strong disabled:opacity-50"
-                :disabled="working"
-                @click="draft(group.vendor_id)"
-              >
-                Make a draft
-              </button>
+              </p>
             </div>
-          </div>
+            <UiButton size="sm" :loading="working" @click="draft(group.vendor_id)">
+              Make a draft
+            </UiButton>
+          </header>
 
-          <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-              <thead>
-                <tr class="border-b border-rule text-left text-xs text-ink-faint">
-                  <th class="py-1.5 pr-3 font-normal">Item</th>
-                  <th class="py-1.5 pr-3 text-right font-normal">On hand</th>
-                  <th class="py-1.5 pr-3 text-right font-normal">Cover</th>
-                  <th class="py-1.5 pr-3 text-right font-normal">Order</th>
-                  <th class="py-1.5 text-right font-normal">At cost</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-rule">
-                <tr v-for="line in group.lines" :key="line.variant_id">
-                  <td class="py-2 pr-3">
-                    <div class="flex items-baseline gap-2">
-                      <span class="text-ink">{{ line.label }}</span>
-                      <span
-                        v-if="line.urgent"
-                        class="rounded-sm border border-down px-1 text-[0.6rem] tracking-wide text-down uppercase"
-                      >
-                        gone first
-                      </span>
-                    </div>
-                    <div class="text-xs text-ink-faint">{{ line.why }}</div>
-                  </td>
-                  <td class="tabular py-2 pr-3 text-right text-ink-muted">
-                    {{ quantity(line.on_hand) }}
-                  </td>
-                  <td class="tabular py-2 pr-3 text-right text-ink-muted">
-                    {{ line.days_of_cover ? `${Number(line.days_of_cover).toFixed(0)}d` : '—' }}
-                  </td>
-                  <td class="tabular py-2 pr-3 text-right font-medium text-ink">
-                    {{ quantity(line.suggested_qty) }}
-                  </td>
-                  <td class="tabular py-2 text-right text-ink-muted">
-                    {{ money(line.line_cost, shop.currency) }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <ul class="divide-y divide-border">
+            <li v-for="line in group.lines" :key="line.variant_id" class="px-4 py-3">
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0 flex-1">
+                  <p class="text-base font-medium text-ink">{{ line.label }}</p>
+                  <UiBadge v-if="line.urgent" tone="danger" class="mt-1">Gone first</UiBadge>
+                  <p class="mt-1 text-sm text-ink-muted">{{ line.why }}</p>
+                </div>
+                <!-- Fixed columns, so every figure sits under its own label. -->
+                <dl class="shrink-0 text-right">
+                  <div class="flex items-baseline justify-end gap-2">
+                    <dt class="text-sm text-ink-muted">Order</dt>
+                    <dd class="tabular w-12 text-base font-semibold text-ink">
+                      {{ quantity(line.suggested_qty) }}
+                    </dd>
+                  </div>
+                  <div class="flex items-baseline justify-end gap-2">
+                    <dt class="text-sm text-ink-muted">On hand</dt>
+                    <dd class="tabular w-12 text-base text-ink-muted">
+                      {{ quantity(line.on_hand) }}
+                    </dd>
+                  </div>
+                  <div class="flex items-baseline justify-end gap-2">
+                    <dt class="text-sm text-ink-muted">At cost</dt>
+                    <dd class="tabular w-12 text-base text-ink-muted">
+                      {{ money(line.line_cost, shop.currency) }}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <div v-if="screen.caveats.length || skipped.length" class="mt-4 flex gap-2">
+          <svg
+            class="mt-0.5 h-4 w-4 flex-none text-warning"
+            viewBox="0 0 20 20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            aria-hidden="true"
+          >
+            <circle cx="10" cy="10" r="8" />
+            <path d="M10 6.2v4.4M10 13.4h.01" stroke-linecap="round" />
+          </svg>
+          <div class="min-w-0">
+            <p v-for="caveat in screen.caveats" :key="caveat" class="text-sm leading-snug text-ink-muted">
+              {{ caveat }}
+            </p>
+            <p v-if="skipped.length" class="text-sm leading-snug text-ink-muted">
+              Left out:
+              <span v-for="([reason, total], index) in skipped" :key="reason">
+                {{ total }} {{ reason }}{{ index < skipped.length - 1 ? ', ' : '' }}
+              </span>
+            </p>
           </div>
         </div>
-      </PanelCard>
-
-      <div v-if="screen && (screen.caveats.length || skipped.length)" class="mt-4 space-y-1">
-        <p v-for="caveat in screen.caveats" :key="caveat" class="text-xs text-note-ink">
-          {{ caveat }}
-        </p>
-        <p v-if="skipped.length" class="text-xs text-ink-faint">
-          Left out:
-          <span v-for="([reason, total], index) in skipped" :key="reason">
-            {{ total }} {{ reason }}{{ index < skipped.length - 1 ? ', ' : '' }}
-          </span>
-        </p>
-      </div>
+      </template>
     </template>
   </div>
 </template>

@@ -1,0 +1,16 @@
+- I want things to flow naturally
+- I want the names to be easy to understand, not confusing
+- I want there to be light/dark mode as an option, default to light mode
+- I want text to be super visible, nice spacing, not too small of text
+- I want mobile to work super nicely, no overflowing the width of the screen
+- I want clear CTAs
+- If there are lists of stuff, I want columns within those items to line up symettrically
+- I would like a clean layout on desktop where the user can see everything they need to without having to scroll horizontally at all
+- I would like text to be smoother and a bit thicker
+- There should be more bold/stand out font weights when talking about important things
+- I want there to be clear dividers and ways of separating content in lists so I know what's a clear heading versus another item in a list
+- On the Net Sales graph for example, I'd like to be able to drag and zoom in or change the graph to be per day instead of per week
+- I'd like to be able to pick a "business color" in the Data & sync page so I can choose what the main color is for my current business I am looking at
+- I want skeleton pulsing UI, I want toast messages if we make a POST of any sort or update data etc.
+- I would like everything to flow nicely and look great even on mobile
+- Most customers would probably want this on Mobile anyways, so mobile comes first

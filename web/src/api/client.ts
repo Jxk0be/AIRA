@@ -110,8 +110,12 @@ export const api = {
 
   profile: (tenant: string) => request<ShopProfile>(`/tenants/${tenant}/profile`),
 
-  dashboard: (tenant: string, days = 30, weeks = 52) =>
-    request<Dashboard>(`/tenants/${tenant}/dashboard${query({ days, weeks })}`),
+  /**
+   * `grain` is optional and the API defaults to weeks, so leaving it off is the
+   * same request this made before it existed.
+   */
+  dashboard: (tenant: string, days = 30, weeks = 52, grain?: 'day' | 'week' | 'month') =>
+    request<Dashboard>(`/tenants/${tenant}/dashboard${query({ days, weeks, grain })}`),
 
   inventory: (
     tenant: string,

@@ -42,32 +42,35 @@ const props = withDefaults(
     spec: ChartSpec
     currency?: string
     height?: number
+    /** Drag across the plot to zoom. Only the time series asks for it. */
+    zoomable?: boolean
   }>(),
-  { currency: 'USD', height: 260 },
+  { currency: 'USD', height: 260, zoomable: false },
 )
 
-/** Read the palette off the page so a chart is never a different product. */
-const ink = ref('#17150f')
-const muted = ref('#6f675a')
-const rule = ref('#e4ddd0')
-const brand = ref('#1b4d3e')
+/**
+ * Read the palette off the page, so a chart is never a different product.
+ *
+ * The six series colours are tokens rather than literals here. They are chosen
+ * by `scripts/check-contrast.ts`, which holds them to 3:1 against the surface
+ * and 20 CIEDE2000 apart from each other — 11 apart after simulating
+ * protanopia, deuteranopia and tritanopia. Hand-picked hues passed the contrast
+ * half of that and still left two series indistinguishable to a deuteranope,
+ * which is why they are not hand-picked any more.
+ */
+const ink = ref('#1a1a17')
+const muted = ref('#5c5c55')
+const rule = ref('#e4e4df')
+const brand = ref('#3d46b8')
 const panel = ref('#ffffff')
+const palette = ref<string[]>(['#3d46b8', '#794060', '#bb754b', '#9280b1', '#605535', '#119681'])
 
-// Five steps around the brand, warm-to-cool, distinguishable in both themes
-// and still distinguishable in greyscale — a printed dashboard is a real thing
-// in a back office.
-const series = computed(() => [
-  brand.value,
-  '#c07a2c',
-  '#4c6b8a',
-  '#9b4b52',
-  '#6d7f4a',
-  '#8a6ba3',
-])
+const series = computed(() => palette.value)
 
 const holder = ref<HTMLElement | null>(null)
 let watcher: MediaQueryList | null = null
 let observer: ResizeObserver | null = null
+let themeWatcher: MutationObserver | null = null
 
 /**
  * Re-measure, through the ECharts instance itself.
@@ -94,14 +97,23 @@ function readTheme() {
     styles.getPropertyValue(name).trim() || fallback
   ink.value = pick('--ink', ink.value)
   muted.value = pick('--ink-muted', muted.value)
-  rule.value = pick('--rule', rule.value)
-  brand.value = pick('--brand', brand.value)
-  panel.value = pick('--panel', panel.value)
+  rule.value = pick('--border', rule.value)
+  brand.value = pick('--primary', brand.value)
+  panel.value = pick('--surface', panel.value)
+  palette.value = palette.value.map((fallback, index) => pick(`--chart-${index + 1}`, fallback))
 }
 
 onMounted(() => {
   readTheme()
   requestAnimationFrame(fit)
+  // The theme is an attribute on <html> now, not just an OS preference: a
+  // matchMedia listener alone would leave every chart in the old palette when
+  // the owner flips the toggle by hand.
+  themeWatcher = new MutationObserver(readTheme)
+  themeWatcher.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme'],
+  })
   watcher = window.matchMedia('(prefers-color-scheme: dark)')
   watcher.addEventListener('change', readTheme)
   if (holder.value) {
@@ -120,6 +132,7 @@ watch(
 
 onBeforeUnmount(() => {
   watcher?.removeEventListener('change', readTheme)
+  themeWatcher?.disconnect()
   observer?.disconnect()
 })
 
@@ -152,19 +165,45 @@ function readable(raw: unknown): string {
 
 const categories = computed(() => props.spec.data.map((row) => String(row[props.spec.x] ?? '')))
 
+/**
+ * A chart is a picture, and a picture needs words.
+ *
+ * `role="img"` plus this label is what a screen reader reads instead of the
+ * SVG's several hundred meaningless nodes; the table toggle underneath is for
+ * everyone else who wants the actual figures. The `table` spec type already
+ * renders through this same component, so the toggle is a flag, not a fork.
+ */
+const asTable = ref(false)
+
+const summary = computed(() => {
+  const rows = props.spec.data
+  const key = props.spec.y[0]
+  if (!rows.length || !key) return props.spec.title || 'Chart with no data.'
+  const values = rows.map((row) => value(row, key))
+  const lowest = Math.min(...values)
+  const highest = Math.max(...values)
+  const peak = categories.value[values.indexOf(highest)]
+  const what = props.spec.title || label(key)
+  return (
+    `${what}: ${rows.length} points from ${categories.value[0]} to ` +
+    `${categories.value[categories.value.length - 1]}, ` +
+    `ranging from ${readable(lowest)} to ${readable(highest)}, highest at ${peak}.`
+  )
+})
+
 const option = computed(() => {
   const base = {
     backgroundColor: 'transparent',
     color: series.value,
     animationDuration: 420,
-    textStyle: { fontFamily: 'IBM Plex Sans, sans-serif', color: muted.value, fontSize: 11 },
+    textStyle: { fontFamily: 'Inter, system-ui, sans-serif', color: muted.value, fontSize: 13 },
     tooltip: {
       trigger: props.spec.type === 'pie' ? 'item' : 'axis',
       backgroundColor: panel.value,
       borderColor: rule.value,
       borderWidth: 1,
       padding: [6, 10],
-      textStyle: { color: ink.value, fontSize: 12 },
+      textStyle: { color: ink.value, fontSize: 13 },
       valueFormatter: (raw: unknown) => readable(raw),
     },
     legend:
@@ -174,7 +213,7 @@ const option = computed(() => {
             itemWidth: 8,
             itemHeight: 8,
             icon: 'rect',
-            textStyle: { color: muted.value, fontSize: 11 },
+            textStyle: { color: muted.value, fontSize: 13 },
           }
         : undefined,
   }
@@ -204,10 +243,39 @@ const option = computed(() => {
     grid: {
       top: 16,
       right: 8,
-      bottom: props.spec.y.length > 1 ? 34 : 18,
+      // Room for the zoom slider when there is one to make room for.
+      bottom: (props.spec.y.length > 1 ? 34 : 18) + (props.zoomable ? 26 : 0),
       left: 4,
       containLabel: true,
     },
+    /**
+     * `inside` is the drag-to-zoom on the plot itself; the slider underneath is
+     * what makes it discoverable and, more to the point, operable without a
+     * mouse — its handles are focusable.
+     */
+    dataZoom: props.zoomable
+      ? [
+          { type: 'inside', throttle: 50 },
+          {
+            type: 'slider',
+            height: 18,
+            bottom: 2,
+            borderColor: rule.value,
+            fillerColor: 'transparent',
+            handleStyle: { color: brand.value, borderColor: brand.value },
+            moveHandleStyle: { color: brand.value },
+            dataBackground: {
+              lineStyle: { color: muted.value, opacity: 0.5 },
+              areaStyle: { color: muted.value, opacity: 0.15 },
+            },
+            selectedDataBackground: {
+              lineStyle: { color: brand.value },
+              areaStyle: { color: brand.value, opacity: 0.2 },
+            },
+            textStyle: { color: muted.value, fontSize: 13 },
+          },
+        ]
+      : undefined,
     xAxis: {
       type: 'category',
       data: categories.value,
@@ -215,14 +283,14 @@ const option = computed(() => {
       axisTick: { show: false },
       axisLabel: {
         color: muted.value,
-        fontSize: 10,
+        fontSize: 13,
         hideOverlap: true,
       },
     },
     yAxis: {
       type: 'value',
       splitLine: { lineStyle: { color: rule.value, type: 'dashed' } },
-      axisLabel: { color: muted.value, fontSize: 10, formatter: axisText },
+      axisLabel: { color: muted.value, fontSize: 13, formatter: axisText },
     },
     series: props.spec.y.map((key, index) => ({
       name: label(key),
@@ -245,10 +313,17 @@ const option = computed(() => {
     </figcaption>
 
     <!-- A table is a chart type here. Sometimes the honest picture is a list. -->
-    <div v-if="spec.type === 'table'" class="-mx-1 overflow-x-auto">
+    <div
+      v-if="spec.type === 'table'"
+      class="-mx-1 overflow-x-auto"
+      tabindex="0"
+      role="region"
+      :aria-label="summary"
+    >
       <table class="w-full text-sm">
+        <caption class="sr-only">{{ summary }}</caption>
         <thead>
-          <tr class="border-b border-rule text-left">
+          <tr class="border-b border-border text-left">
             <th class="px-1 py-1.5 font-medium text-ink-muted">{{ label(spec.x) }}</th>
             <th
               v-for="key in spec.y"
@@ -260,7 +335,7 @@ const option = computed(() => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(row, index) in spec.data" :key="index" class="border-b border-rule/60">
+          <tr v-for="(row, index) in spec.data" :key="index" class="border-b border-border/60">
             <td class="px-1 py-1.5">{{ row[spec.x] }}</td>
             <td v-for="key in spec.y" :key="key" class="tabular px-1 py-1.5 text-right">
               {{ readable(row[key]) }}
@@ -270,14 +345,54 @@ const option = computed(() => {
       </table>
     </div>
 
-    <div v-else ref="holder" class="w-full">
-      <VChart
-        :option="option"
-        :style="{ height: `${height}px`, width: '100%' }"
-        :autoresize="true"
-      />
-    </div>
+    <template v-else>
+      <div v-if="asTable" class="-mx-1 overflow-x-auto" tabindex="0" role="region" :aria-label="summary">
+        <table class="w-full text-sm">
+          <caption class="sr-only">{{ summary }}</caption>
+          <thead>
+            <tr class="border-b border-border text-left">
+              <th scope="col" class="px-1 py-1.5 font-medium text-ink-muted">{{ label(spec.x) }}</th>
+              <th
+                v-for="key in spec.y"
+                :key="key"
+                scope="col"
+                class="px-1 py-1.5 text-right font-medium text-ink-muted"
+              >
+                {{ label(key) }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row, index) in spec.data" :key="index" class="border-b border-border/60">
+              <td class="px-1 py-1.5">{{ row[spec.x] }}</td>
+              <td v-for="key in spec.y" :key="key" class="tabular px-1 py-1.5 text-right">
+                {{ readable(row[key]) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-    <p v-if="spec.note" class="mt-1 text-xs text-ink-faint">{{ spec.note }}</p>
+      <div v-show="!asTable" ref="holder" class="w-full" role="img" :aria-label="summary">
+        <VChart
+          :option="option"
+          :style="{ height: `${height}px`, width: '100%' }"
+          :autoresize="true"
+        />
+      </div>
+
+      <div class="mt-1 flex justify-end">
+        <button
+          type="button"
+          class="min-h-11 rounded-sm px-1 text-sm text-ink-muted underline underline-offset-4 hover:text-ink"
+          :aria-pressed="asTable"
+          @click="asTable = !asTable"
+        >
+          {{ asTable ? 'View as chart' : 'View as table' }}
+        </button>
+      </div>
+    </template>
+
+    <p v-if="spec.note" class="mt-1 text-sm text-ink-muted">{{ spec.note }}</p>
   </figure>
 </template>

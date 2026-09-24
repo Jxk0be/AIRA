@@ -325,8 +325,20 @@ async def dashboard(
     session: Annotated[AsyncSession, Depends(get_session)],
     days: Annotated[int, Query(ge=1, le=400, description="length of the headline period")] = 30,
     weeks: Annotated[int, Query(ge=4, le=104, description="how far the chart looks back")] = 52,
+    grain: Annotated[Grain, Query(description="bucket size for the chart")] = Grain.WEEK,
 ) -> DashboardResponse:
-    """The whole first paint, cut from one period and one read of the data."""
+    """The whole first paint, cut from one period and one read of the data.
+
+    `grain` is additive and defaults to the weekly buckets every caller before
+    it assumed, so an old client asking without it gets exactly what it got
+    before. The analytics layer has always supported day and month — only this
+    route was hardcoded — so the owner can now ask "per day" of the same
+    definitions rather than a different query.
+
+    The window stays `weeks`, so a caller wanting daily detail asks for fewer of
+    them: 52 weeks of daily points is 364 marks on a phone-width axis, which is
+    a smear rather than a chart.
+    """
     ctx = await _context(session, slug)
     period = ctx.last_days(days)
     previous = period.previous()
@@ -372,7 +384,7 @@ async def dashboard(
         previous=Period.of(previous),
         kpis=kpis,
         kpi_caveats=kpi_caveats,
-        sales_over_time=await _widget(lambda: sales_series(session, ctx, chart_period, Grain.WEEK)),
+        sales_over_time=await _widget(lambda: sales_series(session, ctx, chart_period, grain)),
         top_products=await _widget(lambda: top_products(session, ctx, period, limit=RANKED_ROWS)),
         category_mix=await _widget(
             lambda: category_breakdown(session, ctx, period, limit=RANKED_ROWS)

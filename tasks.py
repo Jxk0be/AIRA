@@ -38,6 +38,8 @@ There is no `make` on Windows, so this stdlib-only script plays its part:
 
 from __future__ import annotations
 
+import os
+import re
 import shutil
 import subprocess
 import sys
@@ -257,7 +259,77 @@ def task_web(argv: list[str]) -> int:
 
 
 def task_test(argv: list[str]) -> int:
-    return uv(["run", "pytest", *argv])
+    """Both sides. The UI checks run too, so a token that fails AA fails here."""
+    code = uv(["run", "pytest", *argv])
+    return task_ui_check([]) or code
+
+
+def task_ui_check(argv: list[str]) -> int:
+    """The whole UI gate: contrast, then raw colours, then Playwright and axe.
+
+    Every check runs even when an earlier one fails, for the same reason `lint`
+    does it: one command should tell you everything that is wrong rather than
+    the first thing.
+
+    Needs no database. The API is replayed from `web/tests/fixtures`, recorded
+    by `ui-fixtures`, so this runs on a machine with nothing else started.
+    """
+    code = run(["node", "scripts/check-contrast.ts"], cwd=WEB)
+    code = _check_no_raw_colours() or code
+    return npm(["run", "test:e2e", "--", *argv]) or code
+
+
+def task_ui_shots(argv: list[str]) -> int:
+    """Full-page screenshots of every screen into docs/ui/after/.
+
+    Separate from `ui-check` on purpose: writing 40 PNGs into the repo is
+    something you ask for, not a side effect of running the tests.
+    """
+    os.environ["UI_SHOTS"] = "1"
+    print("\n  writing screenshots into docs/ui/after", flush=True)
+    return npm(["run", "test:e2e", "--", "shots.spec.ts", *argv])
+
+
+def task_ui_fixtures(argv: list[str]) -> int:
+    """Re-record the API responses the UI tests replay. Needs `tasks.py api`."""
+    return run(["node", "scripts/record-fixtures.ts", *argv], cwd=WEB)
+
+
+# Hex, rgb()/hsl() and Tailwind's own palette are all ways of smuggling a colour
+# past the gate. Components get semantic tokens; style.css holds the palette.
+_COLOUR_PATTERNS = (
+    re.compile(r"#[0-9a-fA-F]{3,8}"),
+    re.compile(r"(?:rgb|rgba|hsl|hsla)\("),
+    re.compile(
+        r"(?:bg|text|border|ring|from|to|via|fill|stroke|divide|outline|shadow)-"
+        r"(?:slate|gray|grey|zinc|neutral|stone|red|orange|amber|yellow|lime|green|"
+        r"emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}"
+    ),
+)
+
+
+def _check_no_raw_colours() -> int:
+    """A colour written into a component is a colour no theme can reach."""
+    offenders: list[str] = []
+    for path in sorted((WEB / "src").rglob("*")):
+        if path.suffix not in {".vue", ".ts"} or not path.is_file():
+            continue
+        # style.css is the palette; theme.ts and the chart reader carry the
+        # fallbacks that keep a chart drawable before the CSS has loaded.
+        if path.name in {"style.css", "ChartRenderer.vue"}:
+            continue
+        for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            if any(pattern.search(line) for pattern in _COLOUR_PATTERNS):
+                offenders.append(f"{path.relative_to(ROOT)}:{number}: {line.strip()[:96]}")
+
+    if offenders:
+        print("\nRaw colours in components — use a semantic token instead:\n", flush=True)
+        for line in offenders:
+            print(f"  {line}", flush=True)
+        print(f"\n{len(offenders)} to fix.", flush=True)
+        return 1
+    print("\n  ok   no raw colours in components", flush=True)
+    return 0
 
 
 def task_build(argv: list[str]) -> int:
@@ -312,6 +384,9 @@ TASKS = {
     "web": task_web,
     "build": task_build,
     "test": task_test,
+    "ui-check": task_ui_check,
+    "ui-shots": task_ui_shots,
+    "ui-fixtures": task_ui_fixtures,
     "lint": task_lint,
     "typecheck": task_typecheck,
 }
