@@ -63,12 +63,21 @@ class DayObservation:
 class Baseline:
     """What this weekday at this location usually looks like.
 
-    The spread is kept per side, and that is not fussiness. A shop's takings
-    are skewed right: most Saturdays cluster, and once in a while one is
-    enormous. A single symmetric spread computed across that has the big day
-    widening the band in *both* directions, which is exactly backwards — it
-    makes a genuinely terrible Saturday look ordinary because a brilliant one
-    happened a month ago.
+    The spread is kept per side because a shop's daily takings are skewed
+    right. A Saturday can be double the usual; it cannot be less than nothing.
+    So the days above the median are spread much wider than the days below it,
+    and one figure averaged across both is the wrong yardstick for either.
+
+    In practice this mostly buys quiet on the upside. Measured against a
+    symmetric spread, an ordinary good Saturday at a shop like this reads as a
+    two-sigma spike and gets reported every few weeks; measured against the
+    other good Saturdays it is unremarkable, which is what it is. On the
+    downside the two are close, because the low half is where a symmetric
+    median-of-deviations tends to land anyway.
+
+    Worth being clear about what this is *not* for: outliers. A median absolute
+    deviation already ignores those. This is about the distribution not being
+    symmetric in the first place.
     """
 
     location_id: uuid.UUID | None

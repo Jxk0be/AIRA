@@ -34,6 +34,19 @@ Align = Literal["left", "right"]
 # anything outside it falls back to the average, which is close enough for
 # right-alignment of numbers and never used for layout decisions.
 _HELVETICA_AVERAGE = 0.5
+
+# Typographic characters the fourteen core fonts have no glyph for, and the
+# plain equivalents a purchase order can live with.
+SWAPS = {
+    "—": "-",
+    "–": "-",
+    "‘": "'",
+    "’": "'",
+    "“": '"',
+    "”": '"',
+    "…": "...",
+    " ": " ",
+}
 _WIDE = set("MW@%")
 _NARROW = set("iljtfIr.,:;'`|!()[]{} ")
 
@@ -252,20 +265,17 @@ def _escape(text: str) -> str:
     transliterated rather than written as a byte the reader would render as
     something else entirely. An em dash becoming a hyphen on a purchase order
     is fine; a mojibake product name is not.
+
+    Note that a swap can be longer than one character — an ellipsis becomes
+    three dots — so the substitution happens to the whole string first and the
+    escaping walks the result.
     """
-    swaps = {
-        "—": "-",
-        "–": "-",
-        "‘": "'",
-        "’": "'",
-        "“": '"',
-        "”": '"',
-        "…": "...",
-        " ": " ",
-    }
+    swapped = text
+    for original, plain in SWAPS.items():
+        swapped = swapped.replace(original, plain)
+
     out = []
-    for char in text:
-        char = swaps.get(char, char)
+    for char in swapped:
         if char in "()\\":
             out.append("\\" + char)
         elif ord(char) < 128:
@@ -276,7 +286,7 @@ def _escape(text: str) -> str:
             except UnicodeEncodeError:
                 out.append("?")
             else:
-                out.append(f"\\{ord(char):03o}")
+                out.append("\\" + f"{ord(char):03o}")
     return "".join(out)
 
 
