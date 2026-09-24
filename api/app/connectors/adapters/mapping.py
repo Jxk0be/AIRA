@@ -36,6 +36,8 @@ from app.canonical.models import (
     CanonicalOrderLine,
     CanonicalProduct,
     CanonicalVariant,
+    CanonicalVariantVendor,
+    CanonicalVendor,
     Capabilities,
 )
 from app.config import REPO_ROOT
@@ -359,6 +361,25 @@ class MappingAdapter(SourceAdapter):
         self, since: datetime | None = None, resume_cursor: str | None = None
     ) -> AsyncIterator[Fetched[CanonicalVariant]]:
         async for item in self._distinct("variants", CanonicalVariant):
+            yield item
+
+    async def iter_vendors(
+        self, since: datetime | None = None, resume_cursor: str | None = None
+    ) -> AsyncIterator[Fetched[CanonicalVendor]]:
+        async for item in self._distinct("vendors", CanonicalVendor):
+            yield item
+
+    async def iter_variant_vendors(
+        self, since: datetime | None = None, resume_cursor: str | None = None
+    ) -> AsyncIterator[Fetched[CanonicalVariantVendor]]:
+        """Buying terms, where a spreadsheet happens to carry them.
+
+        Unlike a POS, a spreadsheet often *does* have a lead time and a case
+        size, because whoever built it was using it to order from. So all four
+        columns are mappable here, and the ones the file leaves out fall back
+        to the canonical defaults.
+        """
+        async for item in self._distinct("variant_vendors", CanonicalVariantVendor):
             yield item
 
     async def _distinct(self, name: str, model: type) -> AsyncIterator[Fetched[Any]]:

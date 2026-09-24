@@ -64,3 +64,67 @@ class Severity(StrEnum):
     INFO = "info"
     WARNING = "warning"
     ERROR = "error"
+
+
+class Tender(StrEnum):
+    """How a payment was taken. Every provider's own list collapses to these."""
+
+    CARD = "card"
+    CASH = "cash"
+    OTHER = "other"
+
+
+class InsightSeverity(StrEnum):
+    """How loudly an insight asks to be dealt with.
+
+    `urgent` is the only one that may interrupt a shop owner's evening, so the
+    bar for it is "money is leaving the building right now".
+    """
+
+    INFO = "info"
+    WARN = "warn"
+    URGENT = "urgent"
+
+
+class InsightStatus(StrEnum):
+    NEW = "new"
+    SEEN = "seen"
+    ACTED = "acted"
+    DISMISSED = "dismissed"
+    EXPIRED = "expired"
+    SNOOZED = "snoozed"
+
+
+class JobStatus(StrEnum):
+    RUNNING = "running"
+    SUCCEEDED = "succeeded"
+    FAILED = "failed"
+    SKIPPED = "skipped"
+
+
+class NotifyChannel(StrEnum):
+    EMAIL = "email"
+    SMS = "sms"
+    CONSOLE = "console"
+
+
+class MessageStatus(StrEnum):
+    QUEUED = "queued"
+    SENT = "sent"
+    FAILED = "failed"
+    SUPPRESSED = "suppressed"
+
+
+class PurchaseOrderStatus(StrEnum):
+    DRAFT = "draft"
+    SENT = "sent"
+    RECEIVED = "received"
+    CANCELED = "canceled"
+
+
+class StaleKind(StrEnum):
+    """Dead stock, graded. Each grade gets a different rescue plan."""
+
+    SLOWING = "slowing"
+    STALE = "stale"
+    DEAD = "dead"

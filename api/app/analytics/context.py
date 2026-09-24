@@ -68,6 +68,15 @@ CAPABILITY_REASONS: dict[str, str] = {
     "multi_location": "{shop} has a single location, so there is nothing to split by location.",
     "has_online_channel": "{shop} has no online channel, so every sale is an in-person one.",
     "supports_incremental": "{shop}'s system can only be re-read in full, never in changes only.",
+    "has_vendors": (
+        "{shop}'s system doesn't record who they buy from or on what terms, so "
+        "there is nothing to group a purchase order by. Adding suppliers and "
+        "lead times in the app turns this on."
+    ),
+    "has_payments": (
+        "{shop}'s system doesn't report payments separately from sales, so "
+        "there is no way to split takings into card and cash."
+    ),
 }
 
 

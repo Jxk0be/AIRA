@@ -139,12 +139,15 @@ SUPPLIES: tuple[tuple[str, int, float], ...] = (
     ("Figure Display Case, Small", 3499, 0.3),
 )
 
-VENDORS: tuple[tuple[str, str], ...] = (
-    ("Blue Kettle Distribution", "BK-40118"),
-    ("Riverbend Hobby Supply", "RH-22907"),
-    ("Neon Ward Imports", "NW-77310"),
-    ("Southeast Game Wholesale", "SGW-10044"),
-    ("Paper Lantern Books", "PLB-58231"),
+# name, account number, orders address, phone. A POS supplier record holds
+# contact details; it does not hold a lead time or a case size, which is why
+# those are entered by the owner on our side rather than synced.
+VENDORS: tuple[tuple[str, str, str, str], ...] = (
+    ("Blue Kettle Distribution", "BK-40118", "orders@bluekettledist.example", "865-555-0118"),
+    ("Riverbend Hobby Supply", "RH-22907", "sales@riverbendhobby.example", "423-555-0229"),
+    ("Neon Ward Imports", "NW-77310", "hello@neonward.example", "865-555-0773"),
+    ("Southeast Game Wholesale", "SGW-10044", "orders@segamewholesale.example", "770-555-1004"),
+    ("Paper Lantern Books", "PLB-58231", "trade@paperlanternbooks.example", "865-555-5823"),
 )
 
 

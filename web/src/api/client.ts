@@ -9,18 +9,35 @@
  */
 
 import type {
+  AssistantInfo,
   CatalogPage,
   CatalogSort,
   ChartSpec,
   ConversationSummary,
   Dashboard,
   DataScreen,
-  AssistantInfo,
+  DeadStockScreen,
+  DetectorRun,
+  DigestPreview,
+  Inbox,
+  Insight,
+  InsightStatus,
+  JobsScreen,
+  MonthEndPacket,
+  NotificationRecipient,
+  OutboundMessage,
   PinnedChart,
+  PurchaseOrder,
+  PurchaseOrderStatus,
+  ReorderScreen,
+  RescueAction,
+  RescuePlay,
   ShopProfile,
+  StaffingScreen,
   StoredMessage,
   SyncStarted,
   TenantSummary,
+  ValueLedger,
 } from './types'
 
 /** Dev goes through Vite's proxy; a deployed build talks to the API directly. */
@@ -142,6 +159,184 @@ export const api = {
 
   startSync: (tenant: string, mode: 'incremental' | 'backfill' = 'incremental') =>
     request<SyncStarted>(`/tenants/${tenant}/sync${query({ mode })}`, { method: 'POST' }),
+
+  // -- findings ------------------------------------------------------------
+
+  insights: (
+    tenant: string,
+    options: { kind?: string; status?: string; limit?: number; offset?: number } = {},
+  ) => request<Inbox>(`/tenants/${tenant}/insights${query({ ...options })}`),
+
+  setInsightStatus: (
+    tenant: string,
+    id: string,
+    status: Extract<InsightStatus, 'seen' | 'acted' | 'dismissed' | 'snoozed'>,
+    snoozeDays?: number,
+  ) =>
+    request<Insight>(`/tenants/${tenant}/insights/${id}/status`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status, snooze_days: snoozeDays ?? null }),
+    }),
+
+  rateInsight: (tenant: string, id: string, useful: boolean, note?: string) =>
+    request<void>(`/tenants/${tenant}/insights/${id}/feedback`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ useful, note: note ?? null }),
+    }),
+
+  runDetectors: (tenant: string) =>
+    request<DetectorRun[]>(`/tenants/${tenant}/insights/run`, { method: 'POST' }),
+
+  value: (tenant: string) => request<ValueLedger>(`/tenants/${tenant}/value`),
+
+  // -- reordering ----------------------------------------------------------
+
+  reorder: (tenant: string) => request<ReorderScreen>(`/tenants/${tenant}/reorder`),
+
+  createDrafts: (tenant: string, vendorId?: string) =>
+    request<string[]>(`/tenants/${tenant}/reorder/drafts${query({ vendor_id: vendorId })}`, {
+      method: 'POST',
+    }),
+
+  purchaseOrders: (tenant: string, status?: string) =>
+    request<PurchaseOrder[]>(`/tenants/${tenant}/purchase-orders${query({ status })}`),
+
+  purchaseOrder: (tenant: string, id: string) =>
+    request<PurchaseOrder>(`/tenants/${tenant}/purchase-orders/${id}`),
+
+  updatePurchaseOrderLine: (
+    tenant: string,
+    lineId: string,
+    body: { quantity?: string; remove?: boolean },
+  ) =>
+    request<void>(`/tenants/${tenant}/purchase-orders/lines/${lineId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }),
+
+  setPurchaseOrderStatus: (tenant: string, id: string, status: PurchaseOrderStatus) =>
+    request<PurchaseOrder>(`/tenants/${tenant}/purchase-orders/${id}/status`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    }),
+
+  purchaseOrderFile: (tenant: string, id: string, kind: 'pdf' | 'csv') =>
+    `${BASE}/tenants/${tenant}/purchase-orders/${id}.${kind}`,
+
+  // -- dead stock ----------------------------------------------------------
+
+  deadStock: (tenant: string) => request<DeadStockScreen>(`/tenants/${tenant}/dead-stock`),
+
+  logRescue: (
+    tenant: string,
+    body: {
+      variant_id: string
+      kind: RescuePlay
+      detail?: Record<string, unknown>
+      price_after?: string | null
+      insight_id?: string | null
+      note?: string | null
+    },
+  ) =>
+    request<RescueAction>(`/tenants/${tenant}/dead-stock/actions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }),
+
+  rescueActions: (tenant: string) =>
+    request<RescueAction[]>(`/tenants/${tenant}/dead-stock/actions`),
+
+  // -- staffing ------------------------------------------------------------
+
+  staffing: (tenant: string, includeEvents = false) =>
+    request<StaffingScreen>(`/tenants/${tenant}/staffing${query({ include_events: includeEvents })}`),
+
+  saveShift: (
+    tenant: string,
+    body: {
+      weekday: number
+      start_time: string
+      end_time: string
+      staff_count: number
+      location_id?: string | null
+      note?: string | null
+    },
+  ) =>
+    request<string>(`/tenants/${tenant}/staffing/shifts`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }),
+
+  deleteShift: (tenant: string, id: string) =>
+    request<void>(`/tenants/${tenant}/staffing/shifts/${id}`, { method: 'DELETE' }),
+
+  // -- month end -----------------------------------------------------------
+
+  packets: (tenant: string) => request<MonthEndPacket[]>(`/tenants/${tenant}/month-end`),
+
+  generatePacket: (tenant: string, year?: number, month?: number) =>
+    request<MonthEndPacket>(`/tenants/${tenant}/month-end`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ year: year ?? null, month: month ?? null }),
+    }),
+
+  packetFile: (tenant: string, id: string, kind: 'pdf' | 'xlsx') =>
+    `${BASE}/tenants/${tenant}/month-end/${id}.${kind}`,
+
+  emailPacket: (tenant: string, id: string, bookkeeper?: string) =>
+    request<{ sent: number }>(`/tenants/${tenant}/month-end/${id}/email`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ bookkeeper: bookkeeper ?? null }),
+    }),
+
+  // -- digest and notifications --------------------------------------------
+
+  digestPreview: (tenant: string) => request<DigestPreview>(`/tenants/${tenant}/digest/preview`),
+
+  digestPreviewUrl: (tenant: string) => `${BASE}/tenants/${tenant}/digest/preview.html`,
+
+  sendTestDigest: (tenant: string, email?: string) =>
+    request<{ to: string; status: string; detail: string }>(`/tenants/${tenant}/digest/test`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email ?? null }),
+    }),
+
+  recipients: (tenant: string) =>
+    request<NotificationRecipient[]>(`/tenants/${tenant}/notifications`),
+
+  saveRecipient: (
+    tenant: string,
+    body: {
+      email: string
+      name?: string | null
+      phone?: string | null
+      channels?: string[]
+      quiet_hours_start?: string | null
+      quiet_hours_end?: string | null
+      max_per_day?: number
+      wants_digest?: boolean
+    },
+  ) =>
+    request<string>(`/tenants/${tenant}/notifications`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }),
+
+  // Named for what it is, because `messages` already means a conversation's.
+  outboundMessages: (tenant: string) =>
+    request<OutboundMessage[]>(`/tenants/${tenant}/notifications/messages`),
+
+  jobs: (tenant: string) => request<JobsScreen>(`/tenants/${tenant}/jobs`),
 
   uploadDocument: async (tenant: string, file: File) => {
     const body = new FormData()

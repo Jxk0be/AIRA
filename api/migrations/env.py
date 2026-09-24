@@ -15,7 +15,8 @@ from sqlalchemy import Connection, pool
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 # Importing the models registers them on Base.metadata for autogenerate.
-import app.canonical.tables  # noqa: F401
+# `app.tables` is the one place that stays complete as features add tables.
+import app.tables  # noqa: F401
 from app.config import get_settings
 from app.db import Base
 

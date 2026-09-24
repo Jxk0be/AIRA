@@ -29,9 +29,12 @@ from app.canonical.models import (
     CanonicalInventoryMovement,
     CanonicalLocation,
     CanonicalOrder,
+    CanonicalPayment,
     CanonicalProduct,
     CanonicalRefund,
     CanonicalVariant,
+    CanonicalVariantVendor,
+    CanonicalVendor,
     Capabilities,
 )
 
@@ -40,10 +43,13 @@ from app.canonical.models import (
 ENTITIES: tuple[str, ...] = (
     "locations",
     "categories",
+    "vendors",
     "products",
     "variants",
+    "variant_vendors",
     "customers",
     "orders",
+    "payments",
     "refunds",
     "inventory_levels",
     "inventory_movements",
@@ -125,6 +131,18 @@ class SourceAdapter(ABC):
         return
         yield  # pragma: no cover
 
+    async def iter_vendors(
+        self, since: datetime | None = None, resume_cursor: str | None = None
+    ) -> AsyncIterator[Fetched[CanonicalVendor]]:
+        return
+        yield  # pragma: no cover
+
+    async def iter_variant_vendors(
+        self, since: datetime | None = None, resume_cursor: str | None = None
+    ) -> AsyncIterator[Fetched[CanonicalVariantVendor]]:
+        return
+        yield  # pragma: no cover
+
     async def iter_customers(
         self, since: datetime | None = None, resume_cursor: str | None = None
     ) -> AsyncIterator[Fetched[CanonicalCustomer]]:
@@ -134,6 +152,12 @@ class SourceAdapter(ABC):
     async def iter_orders(
         self, since: datetime | None = None, resume_cursor: str | None = None
     ) -> AsyncIterator[Fetched[CanonicalOrder]]:
+        return
+        yield  # pragma: no cover
+
+    async def iter_payments(
+        self, since: datetime | None = None, resume_cursor: str | None = None
+    ) -> AsyncIterator[Fetched[CanonicalPayment]]:
         return
         yield  # pragma: no cover
 

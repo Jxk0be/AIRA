@@ -15,7 +15,16 @@ from app.agent.routes import router as agent_router
 from app.config import get_settings
 from app.dashboard import dashboard_router, operations_router
 from app.db import dispose_engine, get_sessionmaker
+from app.deadstock.routes import router as deadstock_router
+from app.digest.routes import router as digest_router
+from app.insights.routes import router as insights_router
+from app.jobs.routes import router as jobs_router
+from app.monthend.routes import router as monthend_router
+from app.notify.routes import public_router as unsubscribe_router
+from app.notify.routes import router as notifications_router
 from app.rag.routes import router as rag_router
+from app.reorder.routes import router as reorder_router
+from app.staffing.routes import router as staffing_router
 
 
 @asynccontextmanager
@@ -77,6 +86,20 @@ app.include_router(dashboard_router)
 app.include_router(operations_router)
 app.include_router(rag_router)
 app.include_router(agent_router)
+
+# The proactive half: everything that produces an insight, and everything that
+# acts on one.
+app.include_router(insights_router)
+app.include_router(reorder_router)
+app.include_router(deadstock_router)
+app.include_router(staffing_router)
+app.include_router(monthend_router)
+app.include_router(digest_router)
+app.include_router(notifications_router)
+app.include_router(jobs_router)
+
+# Served without a signed-in owner: the unsubscribe links in our own emails.
+app.include_router(unsubscribe_router)
 
 
 @app.get("/health", response_model=Health)

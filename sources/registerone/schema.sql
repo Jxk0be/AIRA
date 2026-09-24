@@ -26,7 +26,12 @@ create table categories (
 create table vendors (
     id              text primary key,      -- VEND_...
     name            text not null,
-    account_number  text
+    account_number  text,
+    email           text,
+    phone           text,
+    -- Free text, the way a real supplier record carries it. The returns policy
+    -- lives in here rather than in a column because no POS has a column for it.
+    notes           text
 );
 
 create table catalog_items (

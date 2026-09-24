@@ -41,6 +41,26 @@ class Settings(BaseSettings):
     api_host: str = "127.0.0.1"
     api_port: int = 8000
     cors_origins: str = "http://localhost:5173"
+    # Where the shop owner's app lives. Every deep link and unsubscribe link in
+    # an email is built from this, so it has to be the address they can
+    # actually open, not the API's.
+    app_base_url: str = "http://localhost:5173"
+
+    # "console" prints every notification instead of sending it, whatever
+    # channel was asked for. The default, because a dev machine and the test
+    # suite must be able to run the whole pipeline — prefs, quiet hours,
+    # logging — without anything leaving the building. Set "live" to send.
+    notify_transport: str = "console"
+    notify_from_email: str = ""
+    notify_from_name: str = "AIRA"
+    resend_api_key: str = ""
+    twilio_account_sid: str = ""
+    twilio_auth_token: str = ""
+    twilio_from_number: str = ""
+
+    # How stale a sync has to be before we stop sending a digest built on it
+    # and send "we could not reach your system" instead.
+    digest_stale_hours: int = 48
 
     @property
     def cors_origin_list(self) -> list[str]:

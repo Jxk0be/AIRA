@@ -29,7 +29,7 @@ from typing import Any, cast
 
 import httpx
 
-from app.canonical.enums import Channel, MovementKind, OrderStatus
+from app.canonical.enums import Channel, MovementKind, OrderStatus, Tender
 from app.canonical.models import (
     CanonicalCategory,
     CanonicalCustomer,
@@ -38,9 +38,12 @@ from app.canonical.models import (
     CanonicalLocation,
     CanonicalOrder,
     CanonicalOrderLine,
+    CanonicalPayment,
     CanonicalProduct,
     CanonicalRefund,
     CanonicalVariant,
+    CanonicalVariantVendor,
+    CanonicalVendor,
     Capabilities,
 )
 from app.connectors.base import AdapterError, AdapterInfo, Fetched, HealthStatus, SourceAdapter
@@ -63,11 +66,16 @@ CAPABILITIES = Capabilities(
     multi_location=True,
     has_online_channel=True,
     supports_incremental=True,
+    has_vendors=True,
+    has_payments=True,
 )
 
 NOTES = (
     "RegisterOne keeps no cost history, so the cost on a past sale is the item's "
     "cost as it stands today.",
+    "RegisterOne records who supplies an item and what it costs, but not the "
+    "case size, the minimum order or the lead time. Reorder suggestions assume "
+    "a two-week lead time until those are filled in on the Reorder screen.",
     "About 40% of sales are cash walk-ins with no customer attached, so "
     "customer figures describe the shop's regulars rather than everyone.",
 )
@@ -76,6 +84,14 @@ STATUS = {
     "OPEN": OrderStatus.OPEN,
     "COMPLETED": OrderStatus.COMPLETED,
     "CANCELED": OrderStatus.CANCELED,
+}
+
+# RegisterOne's own words for how a payment was taken. `EXTERNAL` covers
+# everything from a gift card to a cheque, which is what `other` is for.
+TENDERS = {
+    "CARD": Tender.CARD,
+    "CASH": Tender.CASH,
+    "EXTERNAL": Tender.OTHER,
 }
 
 MOVEMENTS = {
@@ -339,6 +355,58 @@ class RegisterOneAdapter(SourceAdapter):
 
     # -- people -------------------------------------------------------------
 
+    # -- suppliers ----------------------------------------------------------
+
+    async def iter_vendors(
+        self, since: datetime | None = None, resume_cursor: str | None = None
+    ) -> AsyncIterator[Fetched[CanonicalVendor]]:
+        """The supplier list.
+
+        `since` is ignored because RegisterOne's vendors table has no
+        `updated_at` — a small, rarely edited list that can only be fully
+        re-read. Pretending otherwise would mean an incremental sync quietly
+        stopped seeing new suppliers.
+        """
+        async for raw, cursor in self.client.paginate("/v2/vendors", cursor=resume_cursor):
+            yield Fetched(
+                record=CanonicalVendor(
+                    external_id=raw["id"],
+                    name=raw["name"],
+                    email=raw.get("email_address"),
+                    phone=raw.get("phone_number"),
+                    account_number=raw.get("account_number"),
+                    notes=raw.get("note"),
+                ),
+                raw=raw,
+                cursor=cursor,
+            )
+
+    async def iter_variant_vendors(
+        self, since: datetime | None = None, resume_cursor: str | None = None
+    ) -> AsyncIterator[Fetched[CanonicalVariantVendor]]:
+        """Which supplier sells each variant, and at what unit cost.
+
+        Comes off the same catalogue pass the variants do — RegisterOne hangs
+        `vendor_info` on the variation rather than exposing it separately.
+        Pack size, minimum order and lead time are not in the source at all,
+        so they keep the canonical defaults and the owner edits them.
+        """
+        async for raw, cursor in self._catalog("ITEM_VARIATION", since, resume_cursor):
+            info = (raw.get("item_variation_data") or {}).get("vendor_info")
+            if not info or not info.get("vendor_id"):
+                continue
+            yield Fetched(
+                record=CanonicalVariantVendor(
+                    external_id=f"{raw['id']}:{info['vendor_id']}",
+                    variant_external_id=raw["id"],
+                    vendor_external_id=info["vendor_id"],
+                    unit_cost=cents(info.get("unit_cost_money")),
+                    source_updated_at=when(raw.get("updated_at")),
+                ),
+                raw=raw,
+                cursor=cursor,
+            )
+
     async def iter_customers(
         self, since: datetime | None = None, resume_cursor: str | None = None
     ) -> AsyncIterator[Fetched[CanonicalCustomer]]:
@@ -434,6 +502,37 @@ class RegisterOneAdapter(SourceAdapter):
             unit_cost_snapshot=self._costs.get(variant_id) if variant_id else None,
             note=raw.get("note"),
         )
+
+    async def iter_payments(
+        self, since: datetime | None = None, resume_cursor: str | None = None
+    ) -> AsyncIterator[Fetched[CanonicalPayment]]:
+        """How each sale was actually paid for.
+
+        `amount_money` excludes the tip here, which is what the canonical model
+        expects. Folding the tip in would overstate a month's takings by every
+        tip in it and break the month-end reconciliation.
+        """
+        params: dict[str, Any] = {}
+        if since is not None:
+            params["begin_time"] = since.isoformat()
+        async for raw, cursor in self.client.paginate(
+            "/v2/payments", params=params, cursor=resume_cursor
+        ):
+            occurred = when(raw["created_at"])
+            assert occurred is not None
+            yield Fetched(
+                record=CanonicalPayment(
+                    external_id=raw["id"],
+                    order_external_id=raw["order_id"],
+                    amount=cents(raw["amount_money"]) or Decimal("0"),
+                    tip=cents(raw.get("tip_money")) or Decimal("0"),
+                    tender=TENDERS.get(raw.get("source_type", ""), Tender.OTHER),
+                    occurred_at=occurred,
+                    source_updated_at=occurred,
+                ),
+                raw=raw,
+                cursor=cursor,
+            )
 
     async def iter_refunds(
         self, since: datetime | None = None, resume_cursor: str | None = None

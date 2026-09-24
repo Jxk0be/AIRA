@@ -12,7 +12,6 @@ misses `(865) 555-0134` against `+18655550134`.
 
 from __future__ import annotations
 
-import re
 import uuid
 from collections import defaultdict
 from datetime import UTC, datetime
@@ -22,30 +21,13 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.canonical import tables as t
+from app.canonical.identity import normalise_email, normalise_phone
 from app.db import table_of
 
-_NON_DIGITS = re.compile(r"\D")
-
-
-def normalise_email(email: str | None) -> str | None:
-    if not email:
-        return None
-    cleaned = email.strip().lower()
-    return cleaned or None
-
-
-def normalise_phone(phone: str | None) -> str | None:
-    """Digits only, with a leading US country code dropped.
-
-    Deliberately naive about international numbers: guessing wrong would merge
-    two different people, which is far worse than leaving a duplicate.
-    """
-    if not phone:
-        return None
-    digits = _NON_DIGITS.sub("", phone)
-    if len(digits) == 11 and digits.startswith("1"):
-        digits = digits[1:]
-    return digits if len(digits) >= 7 else None
+# Re-exported: this module is where callers have always imported them from,
+# and they now live in the canonical layer so the AI-facing code can use them
+# without importing an adapter module (CLAUDE.md rule 1).
+__all__ = ["merge_duplicate_customers", "normalise_email", "normalise_phone"]
 
 
 async def merge_duplicate_customers(

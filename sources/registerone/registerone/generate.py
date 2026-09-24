@@ -22,6 +22,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime, time, timedelta
 from zoneinfo import ZoneInfo
 
+from registerone import scenarios
 from registerone.catalog import (
     APPAREL_DESIGNS,
     APPAREL_SIZES,
@@ -450,10 +451,26 @@ def build_catalog(data: Dataset, rng: random.Random) -> list[Variation]:
         )
 
     vendor_ids: list[str] = []
-    for i, (name, account) in enumerate(VENDORS, start=1):
+    for i, (name, account, email, phone) in enumerate(VENDORS, start=1):
         vendor_id = f"VEND_{i:03d}"
         vendor_ids.append(vendor_id)
-        data.vendors.append({"id": vendor_id, "name": name, "account_number": account})
+        data.vendors.append(
+            {
+                "id": vendor_id,
+                "name": name,
+                "account_number": account,
+                "email": email,
+                "phone": phone,
+                # Two of the five take returns on sealed product, which is what
+                # makes "ask them to take it back" a real dead-stock play for
+                # some items and not for others.
+                "notes": (
+                    "Accepts returns on sealed product within 90 days."
+                    if i in (1, 5)
+                    else "No returns; damaged-goods credit only."
+                ),
+            }
+        )
 
     specs = build_item_specs(rng)
     rng.shuffle(specs)
@@ -726,6 +743,10 @@ def simulate_sales(
         lambdas[day] = weight
     scale = TARGET_ORDERS / sum(lambdas.values())
     lambdas = {day: value * scale for day, value in lambdas.items()}
+
+    # The week refunds spike is planted afterwards, in `scenarios`: a refund is
+    # dated when the money goes back, not when the sale happened.
+    data.notes["refund_spike_week"] = str(scenarios.refund_spike_week(data.end_date))
 
     order_counter = 0
     payment_counter = 0
@@ -1225,7 +1246,14 @@ def generate(seed: int = 42, end_date: date | None = None) -> Dataset:
     variations = build_catalog(data, rng)
     customers = build_customers(data, rng)
     simulate_sales(data, rng, variations, customers)
+    # One Saturday loses most of its trade, before any stock history is derived
+    # from those sales.
+    data.notes["quiet_saturday"] = str(scenarios.trim_quiet_saturday(data, rng))
     build_inventory(data, rng, variations)
+    # Shape the finished shelf so each detector has something specific to find.
+    # After the inventory, because every one of these is a statement about what
+    # is on the shelf now relative to what has been selling.
+    scenarios.plant(data, rng, variations)
 
     # Strip the simulation-only keys before anything sees a row.
     for line in data.line_items:

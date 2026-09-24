@@ -17,6 +17,7 @@ import KpiRow from '../components/KpiRow.vue'
 import PanelCard from '../components/PanelCard.vue'
 import RankedList from '../components/RankedList.vue'
 import StockTable from '../components/StockTable.vue'
+import WorthDoing from '../components/WorthDoing.vue'
 import { money, shopDate } from '../lib/format'
 import { useTenantStore } from '../stores/tenant'
 
@@ -129,6 +130,14 @@ async function unpin(chart: PinnedChart) {
     </p>
 
     <template v-else>
+      <!-- Above the numbers on purpose: what to do about the week beats what
+           the week was. -->
+      <WorthDoing
+        class="mb-4"
+        :tenant="slug"
+        :currency="board?.currency ?? shop.currency"
+      />
+
       <KpiRow
         :kpis="board?.kpis ?? []"
         :currency="board?.currency ?? shop.currency"

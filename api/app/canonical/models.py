@@ -24,7 +24,7 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from app.canonical.enums import Channel, MovementKind, OrderStatus
+from app.canonical.enums import Channel, MovementKind, OrderStatus, Tender
 
 
 class Capabilities(BaseModel):
@@ -44,6 +44,13 @@ class Capabilities(BaseModel):
     multi_location: bool = False
     has_online_channel: bool = False
     supports_incremental: bool = False
+    # Does the source know who the shop buys from, and on what terms? Without
+    # it, reorder suggestions still work but cannot be grouped into a purchase
+    # order or priced at cost.
+    has_vendors: bool = False
+    # Does it report payments separately from orders? Needed to split a month's
+    # takings by card and cash, and to reconcile a month-end packet.
+    has_payments: bool = False
 
 
 class CanonicalBase(BaseModel):
@@ -113,6 +120,33 @@ class CanonicalVariant(SourcedRecord):
     cost: Decimal | None = None  # None when the source has no cost for it
     tracks_inventory: bool = True
     is_active: bool = True
+
+
+class CanonicalVendor(SourcedRecord):
+    """A supplier the shop buys from."""
+
+    name: str
+    email: str | None = None
+    phone: str | None = None
+    account_number: str | None = None
+    notes: str | None = None
+
+
+class CanonicalVariantVendor(SourcedRecord):
+    """Buying terms for one variant from one vendor.
+
+    `external_id` is synthesised from the variant and vendor when the source
+    has no id of its own for the pairing, which is usual.
+    """
+
+    external_id: str = ""
+    variant_external_id: str
+    vendor_external_id: str
+    unit_cost: Decimal | None = None
+    pack_size: Decimal = Decimal("1")
+    min_order_qty: Decimal = Decimal("0")
+    lead_time_days: int = 14
+    is_primary: bool = True
 
 
 class CanonicalInventoryLevel(SourcedRecord):
@@ -192,6 +226,20 @@ class CanonicalRefund(SourcedRecord):
     lines: list[CanonicalRefundLine] = Field(default_factory=list)
 
 
+class CanonicalPayment(SourcedRecord):
+    """One tender against one order.
+
+    `amount` is what was taken **without** the tip, because that is what every
+    source we have met reports and what reconciles against net sales plus tax.
+    """
+
+    order_external_id: str
+    amount: Decimal
+    tip: Decimal = Decimal("0")
+    tender: Tender
+    occurred_at: datetime
+
+
 __all__ = [
     "CanonicalCategory",
     "CanonicalCustomer",
@@ -200,9 +248,12 @@ __all__ = [
     "CanonicalLocation",
     "CanonicalOrder",
     "CanonicalOrderLine",
+    "CanonicalPayment",
     "CanonicalProduct",
     "CanonicalRefund",
     "CanonicalRefundLine",
     "CanonicalVariant",
+    "CanonicalVariantVendor",
+    "CanonicalVendor",
     "Capabilities",
 ]

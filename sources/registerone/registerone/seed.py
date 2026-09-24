@@ -41,7 +41,7 @@ TABLES_IN_INSERT_ORDER = (
 COLUMNS: dict[str, tuple[str, ...]] = {
     "locations": ("id", "name", "timezone", "status"),
     "categories": ("id", "name", "parent_id", "updated_at"),
-    "vendors": ("id", "name", "account_number"),
+    "vendors": ("id", "name", "account_number", "email", "phone", "notes"),
     "catalog_items": (
         "id",
         "name",
@@ -436,6 +436,133 @@ def quirk_report(connection: psycopg.Connection) -> None:
         )
 
 
+def scenario_report(connection: psycopg.Connection, data: Dataset) -> None:
+    """The planted scenarios, measured back out of the database.
+
+    Printed from SQL rather than from the generator's own notes on purpose. A
+    scenario that says it planted eight items and a database that holds six is
+    exactly the sort of quiet drift that makes a fixture stop being evidence.
+    """
+    planted = data.notes.get("scenarios") or {}
+    print("\n  Planted scenarios (see SCENARIOS.md)")
+
+    running_out = planted.get("running_out") or []
+    ids = [row["variation_id"] for row in running_out]
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            select count(*) from inventory_counts c
+            where c.state = 'IN_STOCK' and c.location_id = 'LOC_MAIN'
+              and c.variation_id = any(%s) and c.quantity::numeric > 0
+            """,
+            (ids,),
+        )
+        alive = cursor.fetchone()[0]
+    cover = ", ".join(f"{row['days_of_cover']:.0f}d" for row in running_out)
+    print(f"    running out   {alive} of {len(running_out)} items still on the shelf   {cover}")
+
+    dead = planted.get("dead_stock") or {}
+    dead_ids = [row["variation_id"] for row in dead.get("items") or []]
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            select coalesce(sum(c.quantity::numeric * vi.unit_cost_amount), 0)
+            from inventory_counts c
+            join variation_vendor_info vi on vi.variation_id = c.variation_id
+            where c.state = 'IN_STOCK' and c.variation_id = any(%s)
+            """,
+            (dead_ids,),
+        )
+        measured = int(cursor.fetchone()[0] or 0)
+    print(f"    dead stock    {len(dead_ids)} items, {money(measured)} at cost")
+
+    shrink = planted.get("shrink") or {}
+    if shrink:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                select coalesce(sum(a.quantity::numeric), 0)
+                     - coalesce((
+                         select sum(l.quantity::numeric)
+                         from order_line_items l
+                         join orders o on o.id = l.order_id and o.state <> 'CANCELED'
+                         where l.catalog_object_id = %(v)s
+                       ), 0)
+                from inventory_adjustments a
+                where a.variation_id = %(v)s and a.to_state = 'SOLD'
+                """,
+                {"v": shrink["variation_id"]},
+            )
+            unaccounted = int(cursor.fetchone()[0] or 0)
+        print(
+            f"    shrink        {unaccounted} units left as a sale with nothing rung up "
+            f"({shrink['label']})"
+        )
+
+    quiet = data.notes.get("quiet_saturday")
+    if quiet:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                with by_day as (
+                    select (o.created_at at time zone 'America/New_York')::date as day,
+                           sum(l.gross_sales_money - l.total_discount_money) as amount
+                    from orders o join order_line_items l on l.order_id = o.id
+                    where o.state <> 'CANCELED' group by 1
+                )
+                select
+                  (select amount from by_day where day = %(day)s::date),
+                  -- Ordinary Saturdays only. A convention weekend is not
+                  -- evidence about what a normal Saturday looks like, and
+                  -- leaving them in is what made this figure disagree with
+                  -- what the anomaly detector sees.
+                  percentile_cont(0.5) within group (order by amount) filter (
+                      where extract(dow from day) = 6 and day <> %(day)s::date
+                        and day <> all(%(con)s::date[])
+                        and day >= %(day)s::date - interval '56 days'
+                        and day <= %(day)s::date + interval '56 days')
+                from by_day
+                """,
+                {"day": quiet, "con": data.notes["con_weekends"]},
+            )
+            actual, typical = cursor.fetchone()
+        # percentile_cont hands back a float while the sums are Decimals, and
+        # Python will not divide one by the other.
+        actual, typical = float(actual or 0), float(typical or 0)
+        gap = (actual / typical - 1) if typical else 0
+        print(
+            f"    quiet Saturday {quiet}  {money(int(actual or 0))} against "
+            f"{money(int(typical or 0))} on a median ordinary Saturday   {gap:+.0%}"
+        )
+
+    week = data.notes.get("refund_spike_week")
+    if week:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                with r as (
+                    select (created_at at time zone 'America/New_York')::date as day,
+                           amount_money as amount
+                    from refunds
+                )
+                select
+                  coalesce(sum(amount) filter (
+                      where day >= %(day)s::date and day < %(day)s::date + 7), 0),
+                  coalesce(sum(amount) filter (
+                      where day >= %(day)s::date - 56 and day < %(day)s::date), 0) / 8.0
+                from r
+                """,
+                {"day": week},
+            )
+            spike, typical = cursor.fetchone()
+        spike, typical = float(spike or 0), float(typical or 0)
+        times = (spike / typical) if typical else 0
+        print(
+            f"    refund week   {week}  {money(int(spike))} against "
+            f"{money(int(typical or 0))} in a normal week   {times:.1f}x"
+        )
+
+
 def check_invariants(connection: psycopg.Connection) -> bool:
     """Things that must be true, or the fixture is lying to our tests."""
     problems: list[str] = []
@@ -526,6 +653,7 @@ def main() -> int:
         elapsed = (datetime.now() - started).total_seconds()
         summarise(connection, data)
         quirk_report(connection)
+        scenario_report(connection, data)
         ok = check_invariants(connection)
 
     if args.json_notes:

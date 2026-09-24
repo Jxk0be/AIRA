@@ -184,6 +184,26 @@ class DeadStockArgs(StockArgs):
     )
 
 
+class ReorderArgs(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    vendor: str | None = Field(
+        default=None, description="Limit to one supplier, by name as it appears on the order."
+    )
+    category: str | None = Field(default=None, description="Limit to one category, by name.")
+    limit: int = Field(default=15, ge=1, le=MAX_ROWS)
+
+
+class BusiestHoursArgs(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    location: str | None = Field(default=None, description="Limit to one location, by name.")
+    weekday: Literal[
+        "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
+    ] | None = Field(default=None, description="Limit to one day of the week.")
+    limit: int = Field(default=8, ge=1, le=MAX_ROWS)
+
+
 class SplitArgs(SalesArgs):
     by: Literal["channel", "location"] = Field(
         default="channel", description="Which way to split the period's sales."
@@ -482,6 +502,82 @@ async def _dead_stock(ctx: ToolContext, args: DeadStockArgs) -> dict[str, Any]:
     )
 
 
+async def _reorder_suggestions(ctx: ToolContext, args: ReorderArgs) -> dict[str, Any]:
+    from app.reorder import group_by_vendor, suggest
+
+    filters = an.Filters()
+    if args.category:
+        filters = an.Filters(category_ids=await _category_ids(ctx, args.category))
+
+    forecast = await suggest(ctx.session, ctx.analytics, filters)
+    groups = group_by_vendor(forecast)
+    if args.vendor:
+        wanted = args.vendor.strip().lower()
+        matched = [g for g in groups if wanted in g.vendor_name.lower()]
+        if not matched:
+            known = ", ".join(sorted({g.vendor_name for g in groups})) or "none on file"
+            raise ToolError(f"No supplier called {args.vendor!r}. Suppliers here are: {known}.")
+        groups = matched
+
+    return {
+        "as_of": ctx.analytics.today().isoformat(),
+        "total_at_cost": str(forecast.total_at_cost),
+        "cost_coverage": (
+            str(forecast.cost_coverage) if forecast.cost_coverage is not None else None
+        ),
+        "caveats": forecast.caveats,
+        "vendors": [
+            {
+                "vendor": group.vendor_name,
+                "total_at_cost": (
+                    str(group.total_at_cost) if group.total_at_cost is not None else None
+                ),
+                "lines": [
+                    {
+                        "item": line.label,
+                        "sku": line.sku,
+                        "on_hand": str(line.on_hand),
+                        "order": str(line.suggested_qty),
+                        "days_of_cover": (
+                            str(line.days_of_cover) if line.days_of_cover is not None else None
+                        ),
+                        "why": line.explanation,
+                        "urgent": line.stocks_out_before_delivery,
+                    }
+                    for line in group.lines[: args.limit]
+                ],
+            }
+            for group in groups
+        ],
+    }
+
+
+async def _busiest_hours(ctx: ToolContext, args: BusiestHoursArgs) -> dict[str, Any]:
+    from app.staffing import WEEKDAY_NAMES, busiest_hours
+
+    location_id = None
+    if args.location:
+        found = ctx.shop.location_named(args.location)
+        if found is None:
+            known = ", ".join(location.name for location in ctx.shop.locations) or "none"
+            raise ToolError(f"No location called {args.location!r}. Locations are: {known}.")
+        location_id = found.id
+
+    weekday = (
+        [name.lower() for name in WEEKDAY_NAMES].index(args.weekday)
+        if args.weekday
+        else None
+    )
+    rows = await busiest_hours(
+        ctx.session,
+        ctx.analytics,
+        location_id=location_id,
+        weekday=weekday,
+        limit=args.limit,
+    )
+    return {"window": "the last 8 weeks, event days excluded", "hours": rows}
+
+
 async def _make_chart(ctx: ToolContext, args: MakeChartArgs) -> dict[str, Any]:
     spec = ChartSpec(
         type=ChartType(args.type),
@@ -609,6 +705,27 @@ ALL_TOOLS: tuple[Tool, ...] = (
         args=SalesArgs,
         handler=_customer_stats,
         requires=("has_customers",),
+    ),
+    Tool(
+        name="reorder_suggestions",
+        description=(
+            "What to reorder and how many, grouped by supplier, with the reasoning on every "
+            "line. Works from the last four weeks of sales, the vendor's lead time and what "
+            "is already on an open order. Answers \"what should I order from my manga "
+            "distributor?\". Never places an order."
+        ),
+        args=ReorderArgs,
+        handler=_reorder_suggestions,
+    ),
+    Tool(
+        name="busiest_hours",
+        description=(
+            "When the shop is actually busy, by weekday and hour over the last eight weeks in "
+            "the shop's own timezone. Event days such as conventions are left out, because "
+            "one con weekend would otherwise be the busiest hour of the week."
+        ),
+        args=BusiestHoursArgs,
+        handler=_busiest_hours,
     ),
     Tool(
         name="make_chart",

@@ -23,6 +23,10 @@ There is no `make` on Windows, so this stdlib-only script plays its part:
     python tasks.py eval        # golden questions through the agent, graded
     python tasks.py eval-retrieval
     python tasks.py ask tsundoku "How did last December go?"
+    python tasks.py worker      # the background worker: sync, detectors, digest
+    python tasks.py round       # one worker round now, then stop
+    python tasks.py detect      # run the detectors for a tenant and print what they found
+    python tasks.py digest      # print next Monday's digest for a tenant
     python tasks.py api
     python tasks.py web
     python tasks.py build       # production build of the web app
@@ -181,6 +185,34 @@ def task_ask(argv: list[str]) -> int:
     return uv(["run", "python", "-m", "app.agent.ask", "--tenant", tenant, *rest])
 
 
+def task_worker(argv: list[str]) -> int:
+    """The background worker. Sync, detectors, digest, outcomes, month end.
+
+    Schedules are evaluated in each shop's own timezone, so this is one process
+    for every tenant rather than one per tenant.
+    """
+    return uv(["run", "python", "-m", "app.jobs.worker", *argv])
+
+
+def task_round(argv: list[str]) -> int:
+    """One round of the worker, right now, then stop. What cron would call."""
+    return uv(["run", "python", "-m", "app.jobs.worker", "--once", *argv])
+
+
+def task_detect(argv: list[str]) -> int:
+    """Run every detector for a shop and print what they found."""
+    tenant = argv[0] if argv and not argv[0].startswith("-") else "tsundoku"
+    rest = argv[1:] if argv and not argv[0].startswith("-") else argv
+    return uv(["run", "python", "-m", "app.insights.cli", "--tenant", tenant, *rest])
+
+
+def task_digest(argv: list[str]) -> int:
+    """Print the digest this shop would get on Monday, without sending it."""
+    tenant = argv[0] if argv and not argv[0].startswith("-") else "tsundoku"
+    rest = argv[1:] if argv and not argv[0].startswith("-") else argv
+    return uv(["run", "python", "-m", "app.digest.cli", "--tenant", tenant, *rest])
+
+
 def task_eval(argv: list[str]) -> int:
     """The golden questions, end to end, graded. Costs real money."""
     return uv(["run", "python", str(ROOT / "scripts" / "evals" / "run.py"), *argv])
@@ -266,6 +298,10 @@ TASKS = {
     "eval": task_eval,
     "eval-retrieval": task_eval_retrieval,
     "ask": task_ask,
+    "worker": task_worker,
+    "round": task_round,
+    "detect": task_detect,
+    "digest": task_digest,
     "simulate-day": task_simulate_day,
     "db": task_db,
     "db-stop": task_db_stop,

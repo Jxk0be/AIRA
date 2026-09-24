@@ -41,9 +41,12 @@ from app.canonical.models import (
     CanonicalInventoryMovement,
     CanonicalLocation,
     CanonicalOrder,
+    CanonicalPayment,
     CanonicalProduct,
     CanonicalRefund,
     CanonicalVariant,
+    CanonicalVariantVendor,
+    CanonicalVendor,
 )
 from app.connectors.base import ENTITIES, Fetched, SourceAdapter
 from app.connectors.data_quality import build_report
@@ -147,7 +150,15 @@ class SyncEngine:
         self.integration = integration
         self.adapter = adapter
         self.source = integration.source
-        self.refs = Refs(session, tenant.id, integration.source)
+        # Read once, as plain values. A failed entity rolls the session back,
+        # which expires every loaded ORM attribute; touching `tenant.id` after
+        # that triggers a lazy reload from inside async code that has no
+        # greenlet to do it on, and the *next* entity dies with an error that
+        # names neither the rollback nor the entity that actually failed.
+        self.tenant_id = tenant.id
+        self.tenant_slug = tenant.slug
+        self.integration_id = integration.id
+        self.refs = Refs(session, self.tenant_id, integration.source)
 
     # -- public ------------------------------------------------------------
 
@@ -163,7 +174,7 @@ class SyncEngine:
         run_id = await self._open_run(mode, started)
         report = SyncReport(
             run_id=run_id,
-            tenant_slug=self.tenant.slug,
+            tenant_slug=self.tenant_slug,
             mode=mode,
             status=SyncStatus.SUCCEEDED,
             started_at=started,
@@ -185,7 +196,7 @@ class SyncEngine:
 
             if "customers" in wanted and not report.errors:
                 report.customers_merged = await merge_duplicate_customers(
-                    self.session, self.tenant.id, self.source
+                    self.session, self.tenant_id, self.source
                 )
                 await self.session.commit()
 
@@ -270,7 +281,7 @@ class SyncEngine:
         rows = [
             {
                 "id": uuid.uuid4(),
-                "tenant_id": self.tenant.id,
+                "tenant_id": self.tenant_id,
                 "source": self.source,
                 "entity": entity,
                 "external_id": self._external_id(f.record),
@@ -333,7 +344,7 @@ class SyncEngine:
     def _base(self, record: Any) -> dict[str, Any]:
         return {
             "id": uuid.uuid4(),
-            "tenant_id": self.tenant.id,
+            "tenant_id": self.tenant_id,
             "source": self.source,
             "external_id": self._external_id(record),
             "source_updated_at": getattr(record, "source_updated_at", None),
@@ -445,6 +456,93 @@ class SyncEngine:
         if orphans:
             log.warning("%s variants skipped: their product was not in this pull", orphans)
         return await self._upsert(table_of(t.Variant), rows), 0
+
+    async def _upsert_vendors(
+        self, buffer: list[Fetched[CanonicalVendor]], seen: list[str]
+    ) -> tuple[int, int]:
+        rows = []
+        for f in buffer:
+            r = f.record
+            seen.append(r.external_id)
+            rows.append(
+                self._base(r)
+                | {
+                    "name": r.name,
+                    "email": r.email,
+                    "phone": r.phone,
+                    "account_number": r.account_number,
+                    "notes": r.notes,
+                }
+            )
+        return await self._upsert(table_of(t.Vendor), rows), 0
+
+    async def _upsert_variant_vendors(
+        self, buffer: list[Fetched[CanonicalVariantVendor]], seen: list[str]
+    ) -> tuple[int, int]:
+        """Buying terms, only where both ends of the pairing exist.
+
+        A terms row whose variant or vendor was not in this pull is dropped
+        rather than half-written: a purchase order priced against a vendor we
+        cannot name is worse than no suggestion.
+        """
+        rows = []
+        dangling = 0
+        for f in buffer:
+            r = f.record
+            variant_id = self.refs.of("variants", r.variant_external_id)
+            vendor_id = self.refs.of("vendors", r.vendor_external_id)
+            if variant_id is None or vendor_id is None:
+                dangling += 1
+                continue
+            external_id = r.external_id or f"{r.variant_external_id}:{r.vendor_external_id}"
+            seen.append(external_id)
+            rows.append(
+                {
+                    "id": uuid.uuid4(),
+                    "tenant_id": self.tenant_id,
+                    "source": self.source,
+                    "external_id": external_id,
+                    "source_updated_at": r.source_updated_at,
+                    "deleted_at": r.deleted_at,
+                    "variant_id": variant_id,
+                    "vendor_id": vendor_id,
+                    "unit_cost": r.unit_cost,
+                    "pack_size": r.pack_size,
+                    "min_order_qty": r.min_order_qty,
+                    "lead_time_days": r.lead_time_days,
+                    "is_primary": r.is_primary,
+                }
+            )
+        if dangling:
+            log.warning("%s vendor terms skipped: variant or vendor missing", dangling)
+        return await self._upsert(table_of(t.VariantVendor), rows), 0
+
+    async def _upsert_payments(
+        self, buffer: list[Fetched[CanonicalPayment]], seen: list[str]
+    ) -> tuple[int, int]:
+        rows = []
+        for f in buffer:
+            r = f.record
+            order_id = self.refs.of("orders", r.order_external_id)
+            if order_id is None:
+                log.warning(
+                    "payment %s refers to order %s, which we do not have",
+                    r.external_id,
+                    r.order_external_id,
+                )
+                continue
+            seen.append(r.external_id)
+            rows.append(
+                self._base(r)
+                | {
+                    "order_id": order_id,
+                    "amount": r.amount,
+                    "tip": r.tip,
+                    "tender": r.tender,
+                    "occurred_at": r.occurred_at,
+                }
+            )
+        return await self._upsert(table_of(t.Payment), rows), 0
 
     async def _upsert_customers(
         self, buffer: list[Fetched[CanonicalCustomer]], seen: list[str]
@@ -563,7 +661,7 @@ class SyncEngine:
                 line_rows.append(
                     {
                         "id": uuid.uuid4(),
-                        "tenant_id": self.tenant.id,
+                        "tenant_id": self.tenant_id,
                         "source": self.source,
                         "external_id": external_id,
                         "source_updated_at": line.source_updated_at,
@@ -592,7 +690,7 @@ class SyncEngine:
             rows.append(
                 {
                     "id": uuid.uuid4(),
-                    "tenant_id": self.tenant.id,
+                    "tenant_id": self.tenant_id,
                     "source": self.source,
                     "external_id": external_id,
                     "source_updated_at": r.source_updated_at,
@@ -635,7 +733,7 @@ class SyncEngine:
             return {}
         rows = await self.session.execute(
             select(table.c.external_id, table.c.id).where(
-                table.c.tenant_id == self.tenant.id,
+                table.c.tenant_id == self.tenant_id,
                 table.c.source == self.source,
                 table.c.external_id.in_(external_ids),
             )
@@ -646,11 +744,16 @@ class SyncEngine:
         needed = {
             "products": [("categories", table_of(t.Category))],
             "variants": [("products", table_of(t.Product))],
+            "variant_vendors": [
+                ("variants", table_of(t.Variant)),
+                ("vendors", table_of(t.Vendor)),
+            ],
             "orders": [
                 ("locations", table_of(t.Location)),
                 ("customers", table_of(t.Customer)),
                 ("variants", table_of(t.Variant)),
             ],
+            "payments": [("orders", table_of(t.Order))],
             "refunds": [("orders", table_of(t.Order))],
             "inventory_levels": [
                 ("variants", table_of(t.Variant)),
@@ -669,8 +772,11 @@ class SyncEngine:
         "categories": t.Category,
         "products": t.Product,
         "variants": t.Variant,
+        "vendors": t.Vendor,
+        "variant_vendors": t.VariantVendor,
         "customers": t.Customer,
         "orders": t.Order,
+        "payments": t.Payment,
         "refunds": t.Refund,
         "inventory_levels": t.InventoryLevel,
         "inventory_movements": t.InventoryMovement,
@@ -697,7 +803,7 @@ class SyncEngine:
         result = await self.session.execute(
             update(table)
             .where(
-                table.c.tenant_id == self.tenant.id,
+                table.c.tenant_id == self.tenant_id,
                 table.c.source == self.source,
                 table.c.deleted_at.is_(None),
                 table.c.external_id.notin_(seen),
@@ -712,7 +818,7 @@ class SyncEngine:
                 await self.session.execute(
                     update(lines)
                     .where(
-                        lines.c.tenant_id == self.tenant.id,
+                        lines.c.tenant_id == self.tenant_id,
                         lines.c.source == self.source,
                         lines.c.deleted_at.is_(None),
                         lines.c.external_id.notin_(self._seen_order_lines),
@@ -731,8 +837,8 @@ class SyncEngine:
         await self.session.execute(
             insert(table_of(t.SyncRun)).values(
                 id=run_id,
-                tenant_id=self.tenant.id,
-                integration_id=self.integration.id,
+                tenant_id=self.tenant_id,
+                integration_id=self.integration_id,
                 mode=mode,
                 status=SyncStatus.RUNNING,
                 started_at=started,
@@ -768,8 +874,8 @@ class SyncEngine:
         row = (
             await self.session.execute(
                 select(table.c.cursor, table.c.last_synced_at).where(
-                    table.c.tenant_id == self.tenant.id,
-                    table.c.integration_id == self.integration.id,
+                    table.c.tenant_id == self.tenant_id,
+                    table.c.integration_id == self.integration_id,
                     table.c.entity == entity,
                 )
             )
@@ -781,8 +887,8 @@ class SyncEngine:
     async def _save_state(self, entity: str, watermark: datetime) -> None:
         statement = insert(table_of(t.SyncState)).values(
             id=uuid.uuid4(),
-            tenant_id=self.tenant.id,
-            integration_id=self.integration.id,
+            tenant_id=self.tenant_id,
+            integration_id=self.integration_id,
             entity=entity,
             cursor=None,  # a finished entity has nothing to resume
             last_synced_at=watermark,
@@ -803,8 +909,8 @@ class SyncEngine:
             return
         statement = insert(table_of(t.SyncState)).values(
             id=uuid.uuid4(),
-            tenant_id=self.tenant.id,
-            integration_id=self.integration.id,
+            tenant_id=self.tenant_id,
+            integration_id=self.integration_id,
             entity=entity,
             cursor=cursor,
         )

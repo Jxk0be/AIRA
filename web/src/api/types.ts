@@ -338,3 +338,319 @@ export interface SyncStarted {
   started: boolean
   detail: string
 }
+
+// ---------------------------------------------------------------------------
+// The proactive half: findings, and the screens that act on them
+// ---------------------------------------------------------------------------
+
+export type InsightSeverity = 'info' | 'warn' | 'urgent'
+export type InsightStatus = 'new' | 'seen' | 'acted' | 'dismissed' | 'expired' | 'snoozed'
+
+/** What an insight offers to do about itself. `route` is a path inside the app. */
+export interface SuggestedAction {
+  type?: string
+  label?: string
+  route?: string
+  [key: string]: unknown
+}
+
+export interface Insight {
+  id: string
+  kind: string
+  severity: InsightSeverity
+  status: InsightStatus
+  title: string
+  summary: string
+  dollar_impact: Money | null
+  /** The exact numbers behind the claim, shown when a row is expanded. */
+  evidence: Record<string, unknown>
+  suggested_action: SuggestedAction
+  as_of: string
+  created_at: string
+  expires_at: string | null
+  snoozed_until: string | null
+  was_useful: boolean | null
+}
+
+export interface Inbox {
+  tenant: string
+  insights: Insight[]
+  counts: Record<string, number>
+  kinds: string[]
+}
+
+export interface ValueLedger {
+  tenant: string
+  start: string
+  end: string
+  insights_created: number
+  insights_acted: number
+  attributed_revenue: Money
+  cash_recovered: Money
+  /** What the open findings say is still available. Never added to the two above. */
+  flagged_impact: Money
+  outcomes: number
+  has_anything_to_show: boolean
+}
+
+export interface DetectorRun {
+  kind: string
+  drafts: number
+  created: number
+  updated: number
+  skipped_reason: string | null
+  error: string | null
+}
+
+export interface ReorderLine {
+  variant_id: string
+  label: string
+  sku: string | null
+  category: string | null
+  location: string | null
+  on_hand: Quantity
+  velocity_per_day: Quantity
+  seasonal_factor: string
+  days_of_cover: Quantity | null
+  lead_time_days: number
+  suggested_qty: Quantity
+  unit_cost: Money | null
+  line_cost: Money | null
+  /** The sentence that makes the number arguable rather than magic. */
+  why: string
+  caveats: string[]
+  urgent: boolean
+}
+
+export interface VendorGroup {
+  vendor_id: string | null
+  vendor_name: string
+  lines: ReorderLine[]
+  total_at_cost: Money | null
+  unpriced_lines: number
+}
+
+export interface ReorderScreen {
+  tenant: string
+  as_of: string
+  groups: VendorGroup[]
+  total_at_cost: Money
+  cost_coverage: Ratio
+  skipped: Record<string, number>
+  caveats: string[]
+}
+
+export interface PurchaseOrderLine {
+  id: string
+  variant_id: string
+  name: string
+  sku: string | null
+  quantity: Quantity
+  suggested_qty: Quantity
+  unit_cost: Money | null
+  line_cost: Money | null
+  on_hand_at_draft: Quantity
+  why: string
+  caveats: string[]
+  received_qty: Quantity | null
+}
+
+export type PurchaseOrderStatus = 'draft' | 'sent' | 'received' | 'canceled'
+
+export interface PurchaseOrder {
+  id: string
+  reference: string
+  vendor_id: string | null
+  vendor_name: string
+  vendor_email: string | null
+  status: PurchaseOrderStatus
+  note: string | null
+  expected_at: string | null
+  units: Quantity
+  total_at_cost: Money | null
+  unpriced_lines: number
+  lines: PurchaseOrderLine[]
+  /** A pre-filled mailto. The owner presses send, not us. */
+  mailto: string | null
+}
+
+export type RescuePlay = 'markdown' | 'bundle' | 'move' | 'return_to_vendor'
+
+export interface MarkdownRung {
+  discount: string
+  price: Money
+  margin_per_unit: Money | null
+  clears_cost: boolean
+}
+
+export interface StaleItem {
+  variant_id: string
+  label: string
+  sku: string | null
+  category: string | null
+  kind: 'slowing' | 'stale' | 'dead'
+  units_on_hand: Quantity
+  days_since_last_sale: number | null
+  never_sold: boolean
+  cash_tied_up: Money
+  cash_at_cost: Money | null
+  price: Money | null
+  cost: Money | null
+  play: RescuePlay
+  headline: string
+  why: string
+  detail: Record<string, unknown>
+  ladder: MarkdownRung[]
+}
+
+export interface DeadStockScreen {
+  tenant: string
+  as_of: string
+  total_cash: Money
+  planned_cash: Money
+  item_count: number
+  cost_coverage: Ratio
+  counts: Record<string, number>
+  items: StaleItem[]
+}
+
+export interface RescueAction {
+  id: string
+  variant_id: string
+  kind: string
+  detail: Record<string, unknown>
+  price_before: Money | null
+  price_after: Money | null
+  on_hand_before: Quantity
+  taken_at: string
+  measured_at: string | null
+  note: string | null
+}
+
+export interface HeatmapCell {
+  weekday: number
+  hour: number
+  orders_per_week: Quantity
+  net_sales_per_week: Money
+  weeks_observed: number
+}
+
+export interface Heatmap {
+  location_id: string | null
+  location_name: string
+  weeks: number
+  period_start: string
+  period_end: string
+  weekday_names: string[]
+  cells: HeatmapCell[]
+  event_cells: HeatmapCell[]
+  event_days_excluded: number
+}
+
+export interface Shift {
+  id: string | null
+  location_id: string | null
+  weekday: number
+  start_time: string
+  end_time: string
+  staff_count: number
+  note: string | null
+}
+
+/** An observation about the week. Never an instruction. */
+export interface StaffingObservation {
+  kind: string
+  weekday: number
+  weekday_name: string
+  hours: number[]
+  orders_per_hour: Quantity
+  staff_count: number | null
+  sentence: string
+  labour_cost: Money | null
+}
+
+export interface StaffingScreen {
+  tenant: string
+  heatmaps: Heatmap[]
+  shifts: Shift[]
+  observations: StaffingObservation[]
+  hourly_labour_cost: Money | null
+}
+
+export interface MonthEndPacket {
+  id: string
+  label: string
+  period_start: string
+  period_end: string
+  generated_at: string
+  notes: string[]
+  emailed_to: string | null
+  figures: Record<string, unknown> | null
+}
+
+export interface DigestPreview {
+  tenant: string
+  subject: string
+  text: string
+  html: string
+  /** "model" when the cheap model's wording passed the number check. */
+  copy_source: 'model' | 'template'
+  week_start: string
+  week_end: string
+  net_sales: Money
+  net_sales_previous: Money | null
+  actions: number
+  payload: Record<string, unknown>
+}
+
+export interface NotificationRecipient {
+  id: string
+  name: string | null
+  email: string
+  phone: string | null
+  channels: string[]
+  quiet_hours_start: string | null
+  quiet_hours_end: string | null
+  max_per_day: number
+  wants_digest: boolean
+}
+
+export interface OutboundMessage {
+  id: string
+  channel: string
+  kind: string
+  to_address: string
+  subject: string | null
+  status: 'queued' | 'sent' | 'failed' | 'suppressed'
+  /** Why it was held back, or why sending failed. Written for a person. */
+  detail: string | null
+  created_at: string
+  sent_at: string | null
+}
+
+export interface JobSchedule {
+  job: string
+  when: string
+  last_due: string
+  last_succeeded_at: string | null
+  overdue: boolean
+}
+
+export interface JobRun {
+  id: string
+  job: string
+  status: 'running' | 'succeeded' | 'failed' | 'skipped'
+  due_at: string
+  started_at: string
+  finished_at: string | null
+  duration_ms: number | null
+  detail: Record<string, unknown>
+  error: string | null
+}
+
+export interface JobsScreen {
+  tenant: string
+  timezone: string
+  schedules: JobSchedule[]
+  runs: JobRun[]
+}

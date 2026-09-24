@@ -11,8 +11,13 @@ const router = useRouter()
 
 const screens = [
   { name: 'dashboard', label: 'Dashboard', hint: 'How trade is going' },
+  { name: 'insights', label: 'Worth doing', hint: 'What we noticed' },
   { name: 'assistant', label: 'Assistant', hint: 'Ask about the shop' },
+  { name: 'reorder', label: 'Reorder', hint: 'What to buy' },
+  { name: 'dead-stock', label: 'Dead stock', hint: 'Money sitting still' },
   { name: 'inventory', label: 'Inventory', hint: 'What is on the shelf' },
+  { name: 'staffing', label: 'Staffing', hint: 'When you are busy' },
+  { name: 'month-end', label: 'Reports', hint: 'For the bookkeeper' },
   { name: 'data', label: 'Data & sync', hint: 'Where this comes from' },
 ] as const
 

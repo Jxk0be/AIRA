@@ -35,6 +35,36 @@ const routes: RouteRecordRaw[] = [
         meta: { title: 'Assistant' },
       },
       {
+        path: 'insights',
+        name: 'insights',
+        component: () => import('./views/InsightsView.vue'),
+        meta: { title: 'Worth doing' },
+      },
+      {
+        path: 'reorder',
+        name: 'reorder',
+        component: () => import('./views/ReorderView.vue'),
+        meta: { title: 'Reorder' },
+      },
+      {
+        path: 'dead-stock',
+        name: 'dead-stock',
+        component: () => import('./views/DeadStockView.vue'),
+        meta: { title: 'Dead stock' },
+      },
+      {
+        path: 'staffing',
+        name: 'staffing',
+        component: () => import('./views/StaffingView.vue'),
+        meta: { title: 'Staffing' },
+      },
+      {
+        path: 'month-end',
+        name: 'month-end',
+        component: () => import('./views/MonthEndView.vue'),
+        meta: { title: 'Reports' },
+      },
+      {
         path: 'inventory',
         name: 'inventory',
         component: () => import('./views/InventoryView.vue'),

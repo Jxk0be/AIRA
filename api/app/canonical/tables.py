@@ -20,15 +20,15 @@ from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
     CheckConstraint,
     Computed,
-    Enum,
     ForeignKey,
     Index,
     Integer,
     Numeric,
+    SmallInteger,
     String,
     Text,
+    Time,
     UniqueConstraint,
-    func,
 )
 from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP, TSVECTOR
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
@@ -42,77 +42,23 @@ from app.canonical.enums import (
     OrderStatus,
     SyncMode,
     SyncStatus,
+    Tender,
 )
 from app.db import Base
+from app.schema import (
+    MONEY,
+    QUANTITY,
+    SourcedMixin,
+    TenantMixin,
+    TimestampMixin,
+    enum_column,
+    pk,
+    sourced_args,
+)
 
-# Money is Decimal dollars. Four decimal places because unit prices on
-# fractional-quantity items genuinely need them; totals still reconcile
-# to the cent.
-MONEY = Numeric(14, 4)
-QUANTITY = Numeric(14, 4)
+# Money, quantities and the tenant/sourced mixins live in `app.schema` now that
+# the feature tables built on top of this contract share them.
 EMBEDDING_DIM = 1024
-
-
-def _pk() -> Mapped[uuid.UUID]:
-    return mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-
-
-def _enum(python_enum: type, name: str) -> Enum:
-    """VARCHAR + CHECK rather than a native PG enum.
-
-    Adding a value later is then a constraint change rather than a type
-    migration. Two settings matter and neither is the default:
-
-    * `values_callable` stores the enum's *value* (`"in_store"`), not its member
-      name (`"IN_STORE"`). The canonical model documents the lowercase form, and
-      every hand-written query and every eval compares against it.
-    * `create_constraint` actually writes the CHECK. Without it the column is a
-      bare VARCHAR and an unknown channel would simply be stored.
-    """
-    return Enum(
-        python_enum,
-        native_enum=False,
-        create_constraint=True,
-        length=32,
-        name=name,
-        validate_strings=True,
-        values_callable=lambda enum: [member.value for member in enum],
-    )
-
-
-class TimestampMixin:
-    created_at: Mapped[datetime] = mapped_column(
-        TIMESTAMP(timezone=True), server_default=func.now(), nullable=False
-    )
-    updated_at: Mapped[datetime] = mapped_column(
-        TIMESTAMP(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
-    )
-
-
-class TenantMixin(TimestampMixin):
-    tenant_id: Mapped[uuid.UUID] = mapped_column(
-        PGUUID(as_uuid=True), ForeignKey("tenants.id", ondelete="CASCADE"), nullable=False
-    )
-
-
-class SourcedMixin(TenantMixin):
-    """Shop data that came from a customer system."""
-
-    source: Mapped[str] = mapped_column(String(64), nullable=False)
-    external_id: Mapped[str] = mapped_column(String(255), nullable=False)
-    # When the source last changed this row. The incremental watermark is the
-    # highest value seen, not our own clock, so a fixture dated into next week
-    # still syncs correctly.
-    source_updated_at: Mapped[datetime | None] = mapped_column(TIMESTAMP(timezone=True))
-    deleted_at: Mapped[datetime | None] = mapped_column(TIMESTAMP(timezone=True))
-
-
-def _sourced_args(table: str, *extra: Any) -> tuple[Any, ...]:
-    return (
-        UniqueConstraint("tenant_id", "source", "external_id", name=f"uq_{table}_source_external"),
-        Index(f"ix_{table}_tenant", "tenant_id"),
-        *extra,
-    )
 
 
 # --------------------------------------------------------------------------
@@ -125,7 +71,7 @@ class Tenant(TimestampMixin, Base):
 
     __tablename__ = "tenants"
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     slug: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     # IANA name, e.g. America/New_York. Every date bucket in analytics is cut in
@@ -145,7 +91,7 @@ class Integration(TenantMixin, Base):
         Index("ix_integrations_tenant", "tenant_id"),
     )
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     adapter: Mapped[str] = mapped_column(String(64), nullable=False)
     # `source` is the value stamped onto every row this integration syncs.
     source: Mapped[str] = mapped_column(String(64), nullable=False)
@@ -163,9 +109,9 @@ class Integration(TenantMixin, Base):
 
 class Location(SourcedMixin, Base):
     __tablename__ = "locations"
-    __table_args__ = _sourced_args("locations")
+    __table_args__ = sourced_args("locations")
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     timezone: Mapped[str | None] = mapped_column(String(64))
     is_active: Mapped[bool] = mapped_column(nullable=False, default=True)
@@ -174,9 +120,9 @@ class Location(SourcedMixin, Base):
 
 class Category(SourcedMixin, Base):
     __tablename__ = "categories"
-    __table_args__ = _sourced_args("categories")
+    __table_args__ = sourced_args("categories")
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     parent_id: Mapped[uuid.UUID | None] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("categories.id", ondelete="SET NULL")
@@ -185,12 +131,12 @@ class Category(SourcedMixin, Base):
 
 class Product(SourcedMixin, Base):
     __tablename__ = "products"
-    __table_args__ = _sourced_args(
+    __table_args__ = sourced_args(
         "products",
         Index("ix_products_tenant_category", "tenant_id", "category_id"),
     )
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     name: Mapped[str] = mapped_column(String(512), nullable=False)
     description: Mapped[str | None] = mapped_column(Text)
     category_id: Mapped[uuid.UUID | None] = mapped_column(
@@ -206,13 +152,13 @@ class Variant(SourcedMixin, Base):
     """The sellable unit. Single-variant products get exactly one row here."""
 
     __tablename__ = "variants"
-    __table_args__ = _sourced_args(
+    __table_args__ = sourced_args(
         "variants",
         Index("ix_variants_tenant_product", "tenant_id", "product_id"),
         Index("ix_variants_tenant_sku", "tenant_id", "sku"),
     )
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     product_id: Mapped[uuid.UUID] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("products.id", ondelete="CASCADE"), nullable=False
     )
@@ -226,6 +172,64 @@ class Variant(SourcedMixin, Base):
     is_active: Mapped[bool] = mapped_column(nullable=False, default=True)
 
 
+class Vendor(SourcedMixin, Base):
+    """Who the shop buys from.
+
+    Sourced like everything else, because most POS systems hold a supplier
+    list. A vendor the owner types in themselves is stamped with the
+    `manual` source, so the two never collide on a re-sync and a backfill's
+    sweep cannot soft-delete something we were told by hand.
+    """
+
+    __tablename__ = "vendors"
+    __table_args__ = sourced_args("vendors")
+
+    id: Mapped[uuid.UUID] = pk()
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    email: Mapped[str | None] = mapped_column(String(320))
+    phone: Mapped[str | None] = mapped_column(String(64))
+    account_number: Mapped[str | None] = mapped_column(String(128))
+    notes: Mapped[str | None] = mapped_column(Text)
+
+
+class VariantVendor(SourcedMixin, Base):
+    """What it costs to buy one variant from one vendor, and how.
+
+    Reordering is arithmetic on these four numbers, and a shop that has never
+    filled them in still gets suggestions — just with a caveat instead of a
+    dollar figure. `lead_time_days` is the one that changes the answer most,
+    which is why it is editable in the UI whatever the source said.
+    """
+
+    __tablename__ = "variant_vendors"
+    __table_args__ = sourced_args(
+        "variant_vendors",
+        UniqueConstraint(
+            "tenant_id", "variant_id", "vendor_id", name="uq_variant_vendors_variant_vendor"
+        ),
+        CheckConstraint("pack_size > 0", name="pack_size_positive"),
+        CheckConstraint("min_order_qty >= 0", name="min_order_qty_non_negative"),
+        CheckConstraint("lead_time_days >= 0", name="lead_time_non_negative"),
+    )
+
+    id: Mapped[uuid.UUID] = pk()
+    variant_id: Mapped[uuid.UUID] = mapped_column(
+        PGUUID(as_uuid=True), ForeignKey("variants.id", ondelete="CASCADE"), nullable=False
+    )
+    vendor_id: Mapped[uuid.UUID] = mapped_column(
+        PGUUID(as_uuid=True), ForeignKey("vendors.id", ondelete="CASCADE"), nullable=False
+    )
+    unit_cost: Mapped[Decimal | None] = mapped_column(MONEY)
+    # Cases of 6, packs of 12. Suggestions round up to this, because ordering
+    # seven of something that ships in sixes is not an order anyone can place.
+    pack_size: Mapped[Decimal] = mapped_column(QUANTITY, nullable=False, default=Decimal("1"))
+    min_order_qty: Mapped[Decimal] = mapped_column(QUANTITY, nullable=False, default=Decimal("0"))
+    lead_time_days: Mapped[int] = mapped_column(Integer, nullable=False, default=14)
+    # The vendor a reorder defaults to when a variant can be bought from more
+    # than one. Exactly one per variant should carry it; the UI enforces that.
+    is_primary: Mapped[bool] = mapped_column(nullable=False, default=True)
+
+
 # --------------------------------------------------------------------------
 # Inventory
 # --------------------------------------------------------------------------
@@ -235,14 +239,14 @@ class InventoryLevel(SourcedMixin, Base):
     """Stock on hand right now, per variant per location."""
 
     __tablename__ = "inventory_levels"
-    __table_args__ = _sourced_args(
+    __table_args__ = sourced_args(
         "inventory_levels",
         UniqueConstraint(
             "tenant_id", "variant_id", "location_id", name="uq_inventory_levels_variant_location"
         ),
     )
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     variant_id: Mapped[uuid.UUID] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("variants.id", ondelete="CASCADE"), nullable=False
     )
@@ -257,19 +261,19 @@ class InventoryMovement(SourcedMixin, Base):
     """Optional history. Only sources with `has_inventory_history` fill this."""
 
     __tablename__ = "inventory_movements"
-    __table_args__ = _sourced_args(
+    __table_args__ = sourced_args(
         "inventory_movements",
         Index("ix_inventory_movements_tenant_occurred", "tenant_id", "occurred_at"),
     )
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     variant_id: Mapped[uuid.UUID] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("variants.id", ondelete="CASCADE"), nullable=False
     )
     location_id: Mapped[uuid.UUID | None] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("locations.id", ondelete="SET NULL")
     )
-    kind: Mapped[MovementKind] = mapped_column(_enum(MovementKind, "movement_kind"), nullable=False)
+    kind: Mapped[MovementKind] = mapped_column(enum_column(MovementKind, "movement_kind"), nullable=False)
     quantity: Mapped[Decimal] = mapped_column(QUANTITY, nullable=False)
     occurred_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=False)
     reason: Mapped[str | None] = mapped_column(String(255))
@@ -282,13 +286,13 @@ class InventoryMovement(SourcedMixin, Base):
 
 class Customer(SourcedMixin, Base):
     __tablename__ = "customers"
-    __table_args__ = _sourced_args(
+    __table_args__ = sourced_args(
         "customers",
         Index("ix_customers_tenant_email", "tenant_id", "email_normalized"),
         Index("ix_customers_tenant_phone", "tenant_id", "phone_normalized"),
     )
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     first_name: Mapped[str | None] = mapped_column(String(255))
     last_name: Mapped[str | None] = mapped_column(String(255))
     email: Mapped[str | None] = mapped_column(String(320))
@@ -307,21 +311,21 @@ class Customer(SourcedMixin, Base):
 
 class Order(SourcedMixin, Base):
     __tablename__ = "orders"
-    __table_args__ = _sourced_args(
+    __table_args__ = sourced_args(
         "orders",
         Index("ix_orders_tenant_placed", "tenant_id", "placed_at"),
         Index("ix_orders_tenant_customer", "tenant_id", "customer_id"),
     )
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     location_id: Mapped[uuid.UUID | None] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("locations.id", ondelete="SET NULL")
     )
     customer_id: Mapped[uuid.UUID | None] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("customers.id", ondelete="SET NULL")
     )
-    status: Mapped[OrderStatus] = mapped_column(_enum(OrderStatus, "order_status"), nullable=False)
-    channel: Mapped[Channel] = mapped_column(_enum(Channel, "channel"), nullable=False)
+    status: Mapped[OrderStatus] = mapped_column(enum_column(OrderStatus, "order_status"), nullable=False)
+    channel: Mapped[Channel] = mapped_column(enum_column(Channel, "channel"), nullable=False)
     subtotal: Mapped[Decimal] = mapped_column(MONEY, nullable=False)
     discount_total: Mapped[Decimal] = mapped_column(MONEY, nullable=False, default=Decimal("0"))
     tax_total: Mapped[Decimal] = mapped_column(MONEY, nullable=False, default=Decimal("0"))
@@ -333,13 +337,13 @@ class Order(SourcedMixin, Base):
 
 class OrderLine(SourcedMixin, Base):
     __tablename__ = "order_lines"
-    __table_args__ = _sourced_args(
+    __table_args__ = sourced_args(
         "order_lines",
         Index("ix_order_lines_tenant_order", "tenant_id", "order_id"),
         Index("ix_order_lines_tenant_variant", "tenant_id", "variant_id"),
     )
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     order_id: Mapped[uuid.UUID] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("orders.id", ondelete="CASCADE"), nullable=False
     )
@@ -361,12 +365,12 @@ class OrderLine(SourcedMixin, Base):
 
 class Refund(SourcedMixin, Base):
     __tablename__ = "refunds"
-    __table_args__ = _sourced_args(
+    __table_args__ = sourced_args(
         "refunds",
         Index("ix_refunds_tenant_occurred", "tenant_id", "occurred_at"),
     )
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     order_id: Mapped[uuid.UUID] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("orders.id", ondelete="CASCADE"), nullable=False
     )
@@ -379,12 +383,12 @@ class RefundLine(SourcedMixin, Base):
     """Line-level refund detail, when the source provides it."""
 
     __tablename__ = "refund_lines"
-    __table_args__ = _sourced_args(
+    __table_args__ = sourced_args(
         "refund_lines",
         Index("ix_refund_lines_tenant_refund", "tenant_id", "refund_id"),
     )
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     refund_id: Mapped[uuid.UUID] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("refunds.id", ondelete="CASCADE"), nullable=False
     )
@@ -393,6 +397,71 @@ class RefundLine(SourcedMixin, Base):
     )
     quantity: Mapped[Decimal | None] = mapped_column(QUANTITY)
     amount: Mapped[Decimal] = mapped_column(MONEY, nullable=False)
+
+
+class Payment(SourcedMixin, Base):
+    """How an order was actually paid for.
+
+    Kept apart from the order because one sale can be split across a card and
+    a twenty-dollar note, and because a month-end packet has to report takings
+    by tender. The amount here **excludes** the tip, matching how every POS
+    we have met reports it; adding the tip twice is the easiest way to
+    overstate a month.
+    """
+
+    __tablename__ = "payments"
+    __table_args__ = sourced_args(
+        "payments",
+        Index("ix_payments_tenant_occurred", "tenant_id", "occurred_at"),
+        Index("ix_payments_tenant_order", "tenant_id", "order_id"),
+    )
+
+    id: Mapped[uuid.UUID] = pk()
+    order_id: Mapped[uuid.UUID] = mapped_column(
+        PGUUID(as_uuid=True), ForeignKey("orders.id", ondelete="CASCADE"), nullable=False
+    )
+    amount: Mapped[Decimal] = mapped_column(MONEY, nullable=False)
+    tip: Mapped[Decimal] = mapped_column(MONEY, nullable=False, default=Decimal("0"))
+    tender: Mapped[Tender] = mapped_column(enum_column(Tender, "tender"), nullable=False)
+    occurred_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=False)
+
+
+# --------------------------------------------------------------------------
+# What the owner tells us themselves
+# --------------------------------------------------------------------------
+
+
+class StaffHours(TenantMixin, Base):
+    """When someone is on the floor, and how many of them.
+
+    Typed in by the owner rather than synced: no POS we have met knows the
+    rota. Without it the staffing heatmap is still useful; with it we can say
+    "Tuesday 11-1 has two people and 1.2 orders an hour".
+    """
+
+    __tablename__ = "staff_hours"
+    __table_args__ = (
+        UniqueConstraint(
+            "tenant_id", "location_id", "weekday", "start_time", name="uq_staff_hours_slot"
+        ),
+        Index("ix_staff_hours_tenant", "tenant_id"),
+        CheckConstraint("weekday between 0 and 6", name="weekday_in_week"),
+        CheckConstraint("staff_count > 0", name="staff_count_positive"),
+        CheckConstraint("end_time > start_time", name="shift_ends_after_it_starts"),
+    )
+
+    id: Mapped[uuid.UUID] = pk()
+    location_id: Mapped[uuid.UUID | None] = mapped_column(
+        PGUUID(as_uuid=True), ForeignKey("locations.id", ondelete="CASCADE")
+    )
+    # 0 = Monday, matching Python's `date.weekday()` and the heatmap's columns.
+    weekday: Mapped[int] = mapped_column(SmallInteger, nullable=False)
+    # Shop-local wall-clock times. A shift is a slot in the week, not an
+    # instant, so there is no timezone on them beyond the tenant's own.
+    start_time: Mapped[Any] = mapped_column(Time, nullable=False)
+    end_time: Mapped[Any] = mapped_column(Time, nullable=False)
+    staff_count: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=1)
+    note: Mapped[str | None] = mapped_column(String(255))
 
 
 # --------------------------------------------------------------------------
@@ -416,7 +485,7 @@ class RawRecord(TenantMixin, Base):
         Index("ix_raw_records_tenant_entity", "tenant_id", "entity"),
     )
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     source: Mapped[str] = mapped_column(String(64), nullable=False)
     entity: Mapped[str] = mapped_column(String(64), nullable=False)
     external_id: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -432,7 +501,7 @@ class SyncState(TenantMixin, Base):
         UniqueConstraint("tenant_id", "integration_id", "entity", name="uq_sync_state_identity"),
     )
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     integration_id: Mapped[uuid.UUID] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("integrations.id", ondelete="CASCADE"), nullable=False
     )
@@ -445,12 +514,12 @@ class SyncRun(TenantMixin, Base):
     __tablename__ = "sync_runs"
     __table_args__ = (Index("ix_sync_runs_tenant_started", "tenant_id", "started_at"),)
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     integration_id: Mapped[uuid.UUID] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("integrations.id", ondelete="CASCADE"), nullable=False
     )
-    mode: Mapped[SyncMode] = mapped_column(_enum(SyncMode, "sync_mode"), nullable=False)
-    status: Mapped[SyncStatus] = mapped_column(_enum(SyncStatus, "sync_status"), nullable=False)
+    mode: Mapped[SyncMode] = mapped_column(enum_column(SyncMode, "sync_mode"), nullable=False)
+    status: Mapped[SyncStatus] = mapped_column(enum_column(SyncStatus, "sync_status"), nullable=False)
     started_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=False)
     finished_at: Mapped[datetime | None] = mapped_column(TIMESTAMP(timezone=True))
     duration_ms: Mapped[int | None] = mapped_column(Integer)
@@ -470,7 +539,7 @@ class DataQualityReport(TenantMixin, Base):
         Index("ix_data_quality_reports_tenant_generated", "tenant_id", "generated_at"),
     )
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     sync_run_id: Mapped[uuid.UUID | None] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("sync_runs.id", ondelete="SET NULL")
     )
@@ -490,7 +559,7 @@ class Document(TenantMixin, Base):
     __tablename__ = "documents"
     __table_args__ = (Index("ix_documents_tenant", "tenant_id"),)
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     title: Mapped[str] = mapped_column(String(512), nullable=False)
     filename: Mapped[str | None] = mapped_column(String(512))
     content_type: Mapped[str | None] = mapped_column(String(128))
@@ -525,8 +594,8 @@ class Chunk(TenantMixin, Base):
         Index("ix_chunks_fts", "fts", postgresql_using="gin"),
     )
 
-    id: Mapped[uuid.UUID] = _pk()
-    source: Mapped[ChunkSource] = mapped_column(_enum(ChunkSource, "chunk_source"), nullable=False)
+    id: Mapped[uuid.UUID] = pk()
+    source: Mapped[ChunkSource] = mapped_column(enum_column(ChunkSource, "chunk_source"), nullable=False)
     source_id: Mapped[uuid.UUID] = mapped_column(PGUUID(as_uuid=True), nullable=False)
     chunk_index: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     content: Mapped[str] = mapped_column(Text, nullable=False)
@@ -554,7 +623,7 @@ class Conversation(TenantMixin, Base):
     __tablename__ = "conversations"
     __table_args__ = (Index("ix_conversations_tenant_updated", "tenant_id", "updated_at"),)
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     title: Mapped[str | None] = mapped_column(String(512))
     deleted_at: Mapped[datetime | None] = mapped_column(TIMESTAMP(timezone=True))
 
@@ -563,11 +632,11 @@ class Message(TenantMixin, Base):
     __tablename__ = "messages"
     __table_args__ = (Index("ix_messages_conversation_created", "conversation_id", "created_at"),)
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     conversation_id: Mapped[uuid.UUID] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("conversations.id", ondelete="CASCADE"), nullable=False
     )
-    role: Mapped[MessageRole] = mapped_column(_enum(MessageRole, "message_role"), nullable=False)
+    role: Mapped[MessageRole] = mapped_column(enum_column(MessageRole, "message_role"), nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False, default="")
     tool_calls: Mapped[list[Any]] = mapped_column(JSONB, nullable=False, default=list)
     charts: Mapped[list[Any]] = mapped_column(JSONB, nullable=False, default=list)
@@ -582,7 +651,7 @@ class SavedChart(TenantMixin, Base):
         CheckConstraint("position >= 0", name="position_non_negative"),
     )
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     title: Mapped[str] = mapped_column(String(512), nullable=False)
     spec: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False)
     source_message_id: Mapped[uuid.UUID | None] = mapped_column(
@@ -607,7 +676,7 @@ class AgentRun(TenantMixin, Base):
         Index("ix_agent_runs_conversation", "conversation_id"),
     )
 
-    id: Mapped[uuid.UUID] = _pk()
+    id: Mapped[uuid.UUID] = pk()
     conversation_id: Mapped[uuid.UUID | None] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("conversations.id", ondelete="SET NULL")
     )

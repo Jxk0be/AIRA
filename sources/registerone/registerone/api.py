@@ -584,6 +584,40 @@ def search_orders(
     )
 
 
+@app.get("/v2/vendors")
+def list_vendors(
+    cursor: str | None = None,
+    limit: int = MAX_PAGE_SIZE,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """The suppliers the shop buys from.
+
+    No `begin_time`: the table has no `updated_at`, which is exactly how a lot
+    of real supplier lists are — small, rarely edited, and only ever fully
+    re-read. An adapter has to cope with that rather than assume every entity
+    supports an incremental pull.
+    """
+    sql = (
+        "select id, name, account_number, email, phone, notes, "
+        "id as _sort, id as _id from vendors where true"
+    )
+    rows, next_cursor = page(sql, [], sort_expr="id", id_expr="id", cursor=cursor, limit=limit)
+    return envelope(
+        [
+            {
+                "id": r["id"],
+                "name": r["name"],
+                "account_number": r["account_number"],
+                "email_address": r["email"],
+                "phone_number": r["phone"],
+                "note": r["notes"],
+            }
+            for r in rows
+        ],
+        next_cursor,
+    )
+
+
 @app.get("/v2/payments")
 def list_payments(
     begin_time: datetime | None = None,
