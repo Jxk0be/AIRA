@@ -59,9 +59,7 @@ class Schedule:
                 candidate -= timedelta(hours=1)
             return candidate.astimezone(UTC)
 
-        candidate = local.replace(
-            hour=self.hour, minute=self.minute, second=0, microsecond=0
-        )
+        candidate = local.replace(hour=self.hour, minute=self.minute, second=0, microsecond=0)
 
         if self.kind == "daily":
             if candidate > local:

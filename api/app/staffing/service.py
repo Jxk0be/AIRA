@@ -89,9 +89,7 @@ class Heatmap:
     event_cells: list[Cell] = field(default_factory=list)
 
     def cell(self, weekday: int, hour: int) -> Cell | None:
-        return next(
-            (c for c in self.cells if c.weekday == weekday and c.hour == hour), None
-        )
+        return next((c for c in self.cells if c.weekday == weekday and c.hour == hour), None)
 
     @property
     def busiest(self) -> Cell | None:
@@ -328,8 +326,9 @@ def observe(
             span = f"{shift.start_time:%H}–{shift.end_time:%H}"
             if per_staff <= QUIET_ORDERS_PER_STAFF:
                 cost = (
-                    (hourly_labour_cost * Decimal(shift.staff_count) * Decimal(len(hours)))
-                    .quantize(Decimal("0.01"))
+                    (
+                        hourly_labour_cost * Decimal(shift.staff_count) * Decimal(len(hours))
+                    ).quantize(Decimal("0.01"))
                     if hourly_labour_cost
                     else None
                 )

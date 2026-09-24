@@ -65,8 +65,7 @@ async def suggest(
     on_order = await outstanding_quantities(session, ctx)
     skip = tuple(
         str(word).lower()
-        for word in ctx.setting("reorder_skip_categories", None)
-        or list(_default_skip())
+        for word in ctx.setting("reorder_skip_categories", None) or list(_default_skip())
     )
     return build(inputs, skip_categories=skip, on_order=on_order)
 
@@ -88,9 +87,7 @@ def group_by_vendor(forecast: Forecast) -> list[VendorGroup]:
     for line in forecast.suggestions:
         key = line.vendor_id
         if key not in groups:
-            groups[key] = VendorGroup(
-                vendor_id=key, vendor_name=line.vendor_name or UNASSIGNED
-            )
+            groups[key] = VendorGroup(vendor_id=key, vendor_name=line.vendor_name or UNASSIGNED)
         groups[key].lines.append(line)
     ordered = sorted(
         groups.values(),
@@ -127,9 +124,7 @@ async def outstanding_quantities(
 
 async def _next_reference(session: AsyncSession, ctx: AnalyticsContext, when: date) -> str:
     count = (
-        await session.execute(
-            select(func.count()).where(PurchaseOrder.tenant_id == ctx.tenant_id)
-        )
+        await session.execute(select(func.count()).where(PurchaseOrder.tenant_id == ctx.tenant_id))
     ).scalar_one()
     return f"PO-{when:%Y-%m}-{int(count) + 1:04d}"
 

@@ -13,7 +13,6 @@ import pytest
 
 from app.llm import InventedNumber, check_numbers, facts_from, numbers_in
 
-
 # ---------------------------------------------------------------------------
 # Finding figures in prose
 # ---------------------------------------------------------------------------
@@ -76,7 +75,7 @@ def test_an_invented_figure_is_rejected() -> None:
 
 
 def test_small_counting_words_are_allowed() -> None:
-    """"Top 3 actions" and "the last 7 days" are how a sentence is written, not
+    """ "Top 3 actions" and "the last 7 days" are how a sentence is written, not
     claims about the shop's money. A validator that rejected them would reject
     every readable email and the feature would never ship."""
     check_numbers("The top 3 actions from the last 7 days.", facts_from({}))

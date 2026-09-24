@@ -190,26 +190,14 @@ async def orders(shop: ShopDep, status: str | None = None) -> list[OrderOut]:
     ]
 
 
-@router.get("/tenants/{tenant}/purchase-orders/{order_id}", response_model=OrderOut)
-async def one_order(shop: ShopDep, order_id: uuid.UUID) -> OrderOut:
-    order = await get_order(shop.session, shop.ctx, order_id)
-    if order is None:
-        raise not_found("purchase order")
-    return _order_out(shop, order, with_mailto=True)
-
-
 @router.patch("/tenants/{tenant}/purchase-orders/lines/{line_id}", status_code=204)
 async def edit_line(shop: ShopDep, line_id: uuid.UUID, body: LineUpdate) -> None:
-    await update_line(
-        shop.session, shop.ctx, line_id, quantity=body.quantity, remove=body.remove
-    )
+    await update_line(shop.session, shop.ctx, line_id, quantity=body.quantity, remove=body.remove)
 
 
 @router.post("/tenants/{tenant}/purchase-orders/{order_id}/status", response_model=OrderOut)
 async def change_status(shop: ShopDep, order_id: uuid.UUID, body: StatusUpdate) -> OrderOut:
-    await set_order_status(
-        shop.session, shop.ctx, order_id, PurchaseOrderStatus(body.status)
-    )
+    await set_order_status(shop.session, shop.ctx, order_id, PurchaseOrderStatus(body.status))
     order = await get_order(shop.session, shop.ctx, order_id)
     if order is None:
         raise not_found("purchase order")
@@ -224,9 +212,7 @@ async def order_pdf(shop: ShopDep, order_id: uuid.UUID) -> Response:
     return Response(
         content=purchase_order_pdf(shop.ctx, order),
         media_type="application/pdf",
-        headers={
-            "Content-Disposition": f'attachment; filename="{order.reference}.pdf"'
-        },
+        headers={"Content-Disposition": f'attachment; filename="{order.reference}.pdf"'},
     )
 
 
@@ -238,10 +224,20 @@ async def order_csv(shop: ShopDep, order_id: uuid.UUID) -> Response:
     return Response(
         content=purchase_order_csv(order),
         media_type="text/csv",
-        headers={
-            "Content-Disposition": f'attachment; filename="{order.reference}.csv"'
-        },
+        headers={"Content-Disposition": f'attachment; filename="{order.reference}.csv"'},
     )
+
+
+# Declared *after* the `.pdf` and `.csv` routes on purpose. FastAPI matches
+# in declaration order and a path parameter happily swallows a dotted suffix,
+# so with this one first every download request arrived here instead, as
+# `order_id="<uuid>.pdf"`, and came back 422 instead of a file.
+@router.get("/tenants/{tenant}/purchase-orders/{order_id}", response_model=OrderOut)
+async def one_order(shop: ShopDep, order_id: uuid.UUID) -> OrderOut:
+    order = await get_order(shop.session, shop.ctx, order_id)
+    if order is None:
+        raise not_found("purchase order")
+    return _order_out(shop, order, with_mailto=True)
 
 
 def _order_out(shop: ShopDep, order: object, *, with_mailto: bool = False) -> OrderOut:

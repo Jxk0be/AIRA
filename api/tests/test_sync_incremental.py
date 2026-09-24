@@ -73,11 +73,20 @@ async def _context(db: AsyncSession) -> tuple[t.Tenant, t.Integration]:
 
 
 async def _counts(db: AsyncSession, tenant_id: uuid.UUID) -> dict[str, int]:
+    """What the shop currently has, not everything we have ever seen.
+
+    Soft-deleted rows are excluded on purpose. An upsert revives one whose
+    external id comes back, so after the fixture is reseeded a genuinely new
+    order can land on an old soft-deleted row and leave the total unmoved --
+    which would read as "the sync missed it" when the opposite happened.
+    """
     out: dict[str, int] = {}
     for model in (t.Product, t.Variant, t.Customer, t.Order, t.OrderLine, t.Location):
         out[model.__tablename__] = (
             await db.execute(
-                select(func.count()).select_from(model).where(model.tenant_id == tenant_id)
+                select(func.count())
+                .select_from(model)
+                .where(model.tenant_id == tenant_id, model.deleted_at.is_(None))
             )
         ).scalar_one()
     return out
@@ -98,7 +107,11 @@ async def test_incremental_picks_up_a_simulated_day_and_nothing_else(
     if before["orders"] == 0:
         pytest.skip("tsundoku has not been backfilled yet")
     latest_before = (
-        await db.execute(select(func.max(t.Order.placed_at)).where(t.Order.tenant_id == tenant_id))
+        await db.execute(
+            select(func.max(t.Order.placed_at)).where(
+                t.Order.tenant_id == tenant_id, t.Order.deleted_at.is_(None)
+            )
+        )
     ).scalar_one()
 
     async with httpx.AsyncClient(base_url=API_BASE, timeout=60) as client:
@@ -169,7 +182,11 @@ async def test_incremental_picks_up_a_simulated_day_and_nothing_else(
     assert after["locations"] == before["locations"]
 
     latest_after = (
-        await db.execute(select(func.max(t.Order.placed_at)).where(t.Order.tenant_id == tenant_id))
+        await db.execute(
+            select(func.max(t.Order.placed_at)).where(
+                t.Order.tenant_id == tenant_id, t.Order.deleted_at.is_(None)
+            )
+        )
     ).scalar_one()
     assert latest_after > latest_before
 
@@ -222,14 +239,21 @@ async def test_the_watermark_follows_the_source_clock_not_ours(db: AsyncSession)
     if state is None:
         pytest.skip("orders have not been synced yet")
 
+    # Live rows only. A soft-deleted order is one the source has *stopped*
+    # giving us, and it keeps the stamp it had when it last did. After the
+    # fixture is reseeded those leftovers can be dated past everything the
+    # source now returns, and counting them here would read as a watermark
+    # that had fallen behind when it has not.
     newest_source_stamp = (
         await db.execute(
-            select(func.max(t.Order.source_updated_at)).where(t.Order.tenant_id == tenant_id)
+            select(func.max(t.Order.source_updated_at)).where(
+                t.Order.tenant_id == tenant_id, t.Order.deleted_at.is_(None)
+            )
         )
     ).scalar_one()
     assert newest_source_stamp is not None
     assert state.last_synced_at == newest_source_stamp, (
-        f"watermark is {state.last_synced_at}, but the newest record the source gave us "
-        f"is {newest_source_stamp}"
+        f"watermark is {state.last_synced_at}, but the newest record the source still "
+        f"gives us is {newest_source_stamp}"
     )
     assert isinstance(state.last_synced_at, datetime)

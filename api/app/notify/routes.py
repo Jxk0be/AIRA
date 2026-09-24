@@ -42,13 +42,18 @@ class RecipientOut(BaseModel):
     wants_digest: bool
 
 
+def _email_only() -> list[Literal["email", "sms"]]:
+    """The default channel list. A lambda here types as `list[str]`."""
+    return ["email"]
+
+
 class RecipientIn(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     email: str = Field(max_length=320, pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
     name: str | None = Field(default=None, max_length=120)
     phone: str | None = Field(default=None, max_length=32)
-    channels: list[Literal["email", "sms"]] = Field(default_factory=lambda: ["email"])
+    channels: list[Literal["email", "sms"]] = Field(default_factory=_email_only)
     quiet_hours_start: time | None = None
     quiet_hours_end: time | None = None
     # 0 means no ceiling. Urgent alerts ignore it either way.
@@ -108,9 +113,7 @@ async def save_person(shop: ShopDep, body: RecipientIn) -> uuid.UUID:
         email=body.email,
         name=body.name,
         phone=body.phone,
-        channels=[
-            channel for channel in body.channels if channel in set(NotifyChannel)
-        ],
+        channels=[channel for channel in body.channels if channel in set(NotifyChannel)],
         max_per_day=body.max_per_day,
         wants_digest=body.wants_digest,
         quiet_hours=quiet,

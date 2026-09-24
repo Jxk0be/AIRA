@@ -159,6 +159,11 @@ async def upsert_recipient(
             },
         ).returning(table.c.id)
     )
+    # Like every other write in this package. `get_session` hands a route a
+    # session and never commits for it, so without this the row is rolled back
+    # when the request ends: the API answers 200 with the new id, the screen
+    # says the contact was saved, and nothing was.
+    await session.commit()
     return uuid.UUID(str(result.scalar_one()))
 
 

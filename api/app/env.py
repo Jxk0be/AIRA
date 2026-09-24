@@ -69,6 +69,26 @@ SPEC: tuple[EnvVar, ...] = (
     EnvVar("API_PORT", "API server"),
     EnvVar("CORS_ORIGINS", "API server"),
     EnvVar(
+        "APP_BASE_URL",
+        "Email",
+        hint="every link in an email is built from this; localhost helps nobody",
+    ),
+    EnvVar("NOTIFY_TRANSPORT", "Email", hint="console prints instead of sending; live sends"),
+    EnvVar(
+        "RESEND_API_KEY",
+        "Email",
+        secret=True,
+        hint="resend.com/api-keys - only needed once NOTIFY_TRANSPORT=live",
+        expected_prefix="re_",
+    ),
+    EnvVar(
+        "NOTIFY_FROM_EMAIL",
+        "Email",
+        hint="must be on a domain verified in Resend, or every send is a 403",
+    ),
+    EnvVar("NOTIFY_FROM_NAME", "Email"),
+    EnvVar("DIGEST_STALE_HOURS", "Email"),
+    EnvVar(
         "REGISTERONE_TOKEN",
         "Fake source systems (dev)",
         needed_from_phase=4,
@@ -179,6 +199,24 @@ def main(argv: list[str] | None = None) -> int:
         print(f"    {var.name:26} {status:8} {shown}")
         if status in {"MISSING", "later"} and var.hint:
             print(f"    {'':26} {'':8} {var.hint}")
+
+    # Email is the one group whose requirements depend on another setting
+    # rather than on how far the build has got: nothing here has to be set
+    # while the transport is the console, and all of it does the moment it
+    # is not.
+    if os.environ.get("NOTIFY_TRANSPORT", "").strip().lower() == "live":
+        for name in ("RESEND_API_KEY", "NOTIFY_FROM_EMAIL"):
+            if not os.environ.get(name, "").strip():
+                missing_now.append(EnvVar(name, "Email"))
+        base = os.environ.get("APP_BASE_URL", "").strip()
+        if not base or "localhost" in base or "127.0.0.1" in base:
+            warnings.append(
+                (
+                    "APP_BASE_URL",
+                    "is local while NOTIFY_TRANSPORT=live, so every link you send "
+                    "will be one only you can open",
+                )
+            )
 
     if warnings:
         print("\n  Worth a look")

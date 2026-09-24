@@ -123,13 +123,14 @@ async def _measure_order(
     sales_after = await variant_sales(session, ctx, variant_ids, after)
     sales_before = await variant_sales(session, ctx, variant_ids, before)
 
-    prices = dict(
-        (
+    prices: dict[uuid.UUID, Decimal | None] = {
+        row.id: row.price
+        for row in (
             await session.execute(
                 select(t.Variant.id, t.Variant.price).where(t.Variant.id.in_(variant_ids))
             )
         ).all()
-    )
+    }
 
     attributed_units = Decimal("0")
     attributed_revenue = Decimal("0")

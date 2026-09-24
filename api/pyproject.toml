@@ -49,6 +49,17 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "ASYNC", "RUF"]
+# Typography we write on purpose: en dashes in ranges an owner reads ("11-1",
+# "04 Mar - 10 Mar") and the curly quotes the PDF writer maps back to ASCII.
+# The homoglyphs worth catching - Cyrillic lookalikes in identifiers - are not
+# on this list.
+allowed-confusables = ["–", "‘", "’"]
+
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI's parameter markers are declarations, not mutable defaults. Ruff lets
+# them past only when the parameter's annotation is on its own immutable list,
+# which leaves `uuid.UUID` query params looking like the real B008 bug.
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Path", "fastapi.Query"]
 
 [tool.mypy]
 python_version = "3.12"

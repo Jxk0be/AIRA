@@ -27,6 +27,7 @@ from sqlalchemy.pool import NullPool
 from app import analytics as an
 from app.analytics import AnalyticsContext, DateRange, Filters
 from app.canonical import tables as t
+from app.monthend import build
 
 TENANT_SLUG = "tsundoku"
 SOURCE_DSN = os.environ.get(
@@ -226,15 +227,20 @@ async def test_every_month_matches_the_source(
     that window. A simulated day sitting in RegisterOne that nobody has synced
     yet is a freshness question for the sync suite, not a wrong definition here.
     """
+    # Live rows only. A soft-deleted order is one the source has stopped
+    # returning, so letting one set the window asks the source about months it
+    # no longer has any sales in.
     first_at, last_at = (
         await one(
             db,
-            "select min(o.placed_at) from orders o where o.tenant_id = :tenant",
+            "select min(o.placed_at) from orders o "
+            "where o.tenant_id = :tenant and o.deleted_at is null",
             tenant=ctx.tenant_id,
         ),
         await one(
             db,
-            "select max(o.placed_at) from orders o where o.tenant_id = :tenant",
+            "select max(o.placed_at) from orders o "
+            "where o.tenant_id = :tenant and o.deleted_at is null",
             tenant=ctx.tenant_id,
         ),
     )
@@ -671,3 +677,38 @@ async def test_repeat_rate_counts_merged_duplicates_once(
     # Most sales are cash walk-ins, and a repeat rate is meaningless without
     # saying so.
     assert "anonymous_sales" in ours.caveat_codes
+
+
+# ---------------------------------------------------------------------------
+# The month-end packet's own arithmetic
+# ---------------------------------------------------------------------------
+
+
+async def test_the_month_end_packet_reconciles(db: AsyncSession, ctx: AnalyticsContext) -> None:
+    """Both of the packet's checks, on a real month.
+
+    These two lines are what a bookkeeper decides whether to trust the packet
+    on, so a check that quietly always fails is worse than no check: it teaches
+    the reader to ignore the data notes, which is where the honest caveats are.
+
+    The takings one is the easy one to get wrong. A payment's `amount` is the
+    sale without its tip, so takings that forget to add the tips back are short
+    by exactly the month's tips, every month, on a shop that takes any.
+    """
+    packet = await build(db, ctx, ctx.month(*BUSY_MONTH))
+
+    by_name = {check.name: check for check in packet.checks.checks}
+    assert "Net sales adds up" in by_name
+
+    for name, check in by_name.items():
+        assert check.ok, f"{name}: {check.left} against {check.right}, a gap of {check.gap}"
+
+    if ctx.has("has_payments"):
+        assert "Takings match sales" in by_name, (
+            "this shop reports payments separately, so takings must be reconciled"
+        )
+        tips = packet.finance.tips_taken
+        assert tips is not None and tips > 0, (
+            "the fixture's busy month has no tips in it, so this test could not "
+            "have caught tips being dropped from takings"
+        )

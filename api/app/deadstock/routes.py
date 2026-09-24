@@ -142,7 +142,7 @@ async def dead_stock(shop: ShopDep, as_of: date | None = None) -> DeadStockOut:
 
 @router.post("/tenants/{tenant}/dead-stock/actions", response_model=ActionOut, status_code=201)
 async def log(shop: ShopDep, body: ActionIn) -> ActionOut:
-    """"I did this." The one click that makes the outcome measurable."""
+    """ "I did this." The one click that makes the outcome measurable."""
     action_id = await log_action(
         shop.session,
         shop.ctx,

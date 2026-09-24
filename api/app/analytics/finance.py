@@ -55,6 +55,18 @@ class FinancialSummary:
     def tenders_available(self) -> bool:
         return self.tenders is not None
 
+    @property
+    def tips_taken(self) -> Decimal | None:
+        """Tips as they came in on payments.
+
+        `payments_total` deliberately excludes them, because a payment's
+        `amount` is what the sale was worth and the tip rides alongside it.
+        Anything adding up what the till actually took has to put them back.
+        """
+        if self.tenders is None:
+            return None
+        return sum((line.tips for line in self.tenders), Decimal("0"))
+
 
 async def financial_summary(
     session: AsyncSession,
@@ -112,9 +124,7 @@ async def financial_summary(
         )
         for row in tenders
     ]
-    summary.payments_total = sum(
-        (line.amount for line in summary.tenders), Decimal("0")
-    )
+    summary.payments_total = sum((line.amount for line in summary.tenders), Decimal("0"))
     return summary
 
 
@@ -157,9 +167,7 @@ async def inventory_snapshot(
     )
     counted = int(row.rows_counted or 0)
     coverage = (
-        (Decimal(int(row.priced)) / Decimal(counted)).quantize(Decimal("0.01"))
-        if counted
-        else None
+        (Decimal(int(row.priced)) / Decimal(counted)).quantize(Decimal("0.01")) if counted else None
     )
     return InventorySnapshot(
         at=day,
@@ -228,9 +236,7 @@ async def inventory_at(
 
     counted = int(row.rows_counted or 0)
     coverage = (
-        (Decimal(int(row.priced)) / Decimal(counted)).quantize(Decimal("0.01"))
-        if counted
-        else None
+        (Decimal(int(row.priced)) / Decimal(counted)).quantize(Decimal("0.01")) if counted else None
     )
     note = (
         "Rebuilt from stock movements. Some movements in the period have no reliable "
@@ -295,7 +301,8 @@ async def last_sale_at(session: AsyncSession, ctx: AnalyticsContext) -> datetime
         """,
         {"tenant": ctx.tenant_id},
     )
-    return row.last_at
+    last_at: datetime | None = row.last_at
+    return last_at
 
 
 def tender_label(tender: str) -> str:

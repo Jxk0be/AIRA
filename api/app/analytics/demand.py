@@ -274,9 +274,7 @@ async def demand_inputs(
                 price=Decimal(row.price) if row.price is not None else None,
                 cost=Decimal(row.cost) if row.cost is not None else None,
                 is_active=bool(row.is_active),
-                weekly_units=tuple(
-                    Decimal(buckets.get(index, 0)) for index in range(WEEKS)
-                ),
+                weekly_units=tuple(Decimal(buckets.get(index, 0)) for index in range(WEEKS)),
                 last_sold_at=row.last_at,
                 first_sold_at=row.first_at,
                 last_year_units=(
@@ -319,7 +317,7 @@ left join locations loc on loc.id = i.location_id
 """
 
 
-def _year_span(trailing_year_units: object) -> Decimal | None:
+def _year_span(trailing_year_units: Decimal | int | None) -> Decimal | None:
     """The trailing year's units rescaled to a window-length span.
 
     The seasonal factor compares like with like: four weeks last year against

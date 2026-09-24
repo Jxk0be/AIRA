@@ -97,9 +97,7 @@ async def send(
         results = await _send_stale_notice(session, ctx, age, notifier=notifier)
         told = sum(1 for result in results if result.sent)
         how_old = "nothing has ever synced" if age is None else f"{age.days} days old"
-        raise DigestSkipped(
-            f"the last sale we hold is {how_old}; {told} people were told instead"
-        )
+        raise DigestSkipped(f"the last sale we hold is {how_old}; {told} people were told instead")
 
     prepared = await prepare(session, ctx, as_of=as_of, phraser=phraser)
     results = await broadcast(

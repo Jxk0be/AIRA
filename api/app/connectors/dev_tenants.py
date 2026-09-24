@@ -19,6 +19,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.canonical import tables as t
 from app.connectors import registry
+from app.notify import upsert_recipient
 
 
 @dataclass(frozen=True)
@@ -32,6 +33,12 @@ class DevTenant:
     config: dict[str, Any] = field(default_factory=dict)
     secret_ref: str | None = None
     settings: dict[str, Any] = field(default_factory=dict)
+    # Who the worker addresses the Monday digest to. Without one the digest job
+    # runs and then skips with "nobody at this shop has asked for the digest",
+    # which looks exactly like a broken worker. `.example` is reserved by RFC
+    # 2606 and cannot be delivered to, so a dev tenant switched to a live
+    # transport by accident still cannot reach a real person.
+    digest_to: str | None = None
 
 
 DEV_TENANTS: dict[str, DevTenant] = {
@@ -48,6 +55,7 @@ DEV_TENANTS: dict[str, DevTenant] = {
         },
         secret_ref="env:REGISTERONE_TOKEN",
         settings={"low_stock_threshold": 3, "dead_stock_days": 90},
+        digest_to="owner@tsundoku.example",
     ),
     "panel_and_pawn": DevTenant(
         slug="panel_and_pawn",
@@ -61,6 +69,7 @@ DEV_TENANTS: dict[str, DevTenant] = {
         config={"mapping_file": "mappings/panel_and_pawn.yaml"},
         secret_ref=None,
         settings={"low_stock_threshold": 2, "dead_stock_days": 120},
+        digest_to="owner@panelandpawn.example",
     ),
 }
 
@@ -119,6 +128,14 @@ async def ensure_dev_tenant(session: AsyncSession, slug: str) -> tuple[t.Tenant,
         integration.capabilities = capabilities.model_dump()
         integration.config = spec.config
         integration.secret_ref = spec.secret_ref
+
+    if spec.digest_to:
+        await upsert_recipient(
+            session,
+            tenant.id,
+            email=spec.digest_to,
+            name=f"{spec.name} (owner)",
+        )
 
     await session.commit()
     await session.refresh(tenant)

@@ -53,6 +53,8 @@ CALLS: dict[str, dict[str, object]] = {
     "inventory_value": {},
     "margin_report": {},
     "customer_stats": {},
+    "reorder_suggestions": {"limit": 5},
+    "busiest_hours": {"limit": 5},
 }
 
 
@@ -204,6 +206,19 @@ async def test_no_tool_can_be_made_to_return_another_shops_data(
                 continue
             leaked = sorted(only_theirs & strings_in(result))
             assert not leaked, f"{tool.name} returned {other.slug}'s products: {leaked[:3]}"
+
+
+def test_every_tool_has_arguments_to_call_it_with() -> None:
+    """The guard on the two tests below.
+
+    Both of them walk every registered tool and look it up in CALLS. A tool
+    added without an entry used to surface as a KeyError inside an assertion
+    about something else entirely, which is a poor way to learn that the new
+    tool is untested.
+    """
+    registered = {tool.name for tool in ALL_TOOLS} - {"make_chart"}
+    missing = sorted(registered - set(CALLS))
+    assert not missing, f"no CALLS entry for: {missing}. Add one so these tests cover it."
 
 
 async def test_a_tool_result_is_small_enough_to_put_in_a_prompt(

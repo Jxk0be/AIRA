@@ -231,9 +231,7 @@ def downgrade() -> None:
         sa.Column("sent_at", postgresql.TIMESTAMP(timezone=True), nullable=True),
         sa.Column("recipients", sa.Integer(), nullable=False),
         sa.Column("message_text", sa.Text(), nullable=True),
-        sa.Column(
-            "notified_contact_keys", postgresql.JSONB(astext_type=sa.Text()), nullable=False
-        ),
+        sa.Column("notified_contact_keys", postgresql.JSONB(astext_type=sa.Text()), nullable=False),
         sa.Column("tenant_id", sa.UUID(), nullable=False),
         sa.Column(
             "created_at",

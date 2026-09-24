@@ -13,8 +13,8 @@ from __future__ import annotations
 from urllib.parse import quote
 
 from app.analytics import AnalyticsContext
-from app.reporting import Column, Document, Sheet, csv_bytes, money, quantity
 from app.reorder.service import PurchaseOrderView
+from app.reporting import Column, Document, Sheet, csv_bytes, money, quantity
 
 
 def purchase_order_pdf(ctx: AnalyticsContext, order: PurchaseOrderView) -> bytes:

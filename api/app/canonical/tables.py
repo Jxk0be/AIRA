@@ -273,7 +273,9 @@ class InventoryMovement(SourcedMixin, Base):
     location_id: Mapped[uuid.UUID | None] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("locations.id", ondelete="SET NULL")
     )
-    kind: Mapped[MovementKind] = mapped_column(enum_column(MovementKind, "movement_kind"), nullable=False)
+    kind: Mapped[MovementKind] = mapped_column(
+        enum_column(MovementKind, "movement_kind"), nullable=False
+    )
     quantity: Mapped[Decimal] = mapped_column(QUANTITY, nullable=False)
     occurred_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=False)
     reason: Mapped[str | None] = mapped_column(String(255))
@@ -324,7 +326,9 @@ class Order(SourcedMixin, Base):
     customer_id: Mapped[uuid.UUID | None] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("customers.id", ondelete="SET NULL")
     )
-    status: Mapped[OrderStatus] = mapped_column(enum_column(OrderStatus, "order_status"), nullable=False)
+    status: Mapped[OrderStatus] = mapped_column(
+        enum_column(OrderStatus, "order_status"), nullable=False
+    )
     channel: Mapped[Channel] = mapped_column(enum_column(Channel, "channel"), nullable=False)
     subtotal: Mapped[Decimal] = mapped_column(MONEY, nullable=False)
     discount_total: Mapped[Decimal] = mapped_column(MONEY, nullable=False, default=Decimal("0"))
@@ -519,7 +523,9 @@ class SyncRun(TenantMixin, Base):
         PGUUID(as_uuid=True), ForeignKey("integrations.id", ondelete="CASCADE"), nullable=False
     )
     mode: Mapped[SyncMode] = mapped_column(enum_column(SyncMode, "sync_mode"), nullable=False)
-    status: Mapped[SyncStatus] = mapped_column(enum_column(SyncStatus, "sync_status"), nullable=False)
+    status: Mapped[SyncStatus] = mapped_column(
+        enum_column(SyncStatus, "sync_status"), nullable=False
+    )
     started_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=False)
     finished_at: Mapped[datetime | None] = mapped_column(TIMESTAMP(timezone=True))
     duration_ms: Mapped[int | None] = mapped_column(Integer)
@@ -595,7 +601,9 @@ class Chunk(TenantMixin, Base):
     )
 
     id: Mapped[uuid.UUID] = pk()
-    source: Mapped[ChunkSource] = mapped_column(enum_column(ChunkSource, "chunk_source"), nullable=False)
+    source: Mapped[ChunkSource] = mapped_column(
+        enum_column(ChunkSource, "chunk_source"), nullable=False
+    )
     source_id: Mapped[uuid.UUID] = mapped_column(PGUUID(as_uuid=True), nullable=False)
     chunk_index: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     content: Mapped[str] = mapped_column(Text, nullable=False)
@@ -636,7 +644,9 @@ class Message(TenantMixin, Base):
     conversation_id: Mapped[uuid.UUID] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("conversations.id", ondelete="CASCADE"), nullable=False
     )
-    role: Mapped[MessageRole] = mapped_column(enum_column(MessageRole, "message_role"), nullable=False)
+    role: Mapped[MessageRole] = mapped_column(
+        enum_column(MessageRole, "message_role"), nullable=False
+    )
     content: Mapped[str] = mapped_column(Text, nullable=False, default="")
     tool_calls: Mapped[list[Any]] = mapped_column(JSONB, nullable=False, default=list)
     charts: Mapped[list[Any]] = mapped_column(JSONB, nullable=False, default=list)

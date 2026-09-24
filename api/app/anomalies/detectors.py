@@ -26,8 +26,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.analytics import AnalyticsContext, DateRange
 from app.analytics.queries import fetch_all, fetch_one
-from app.anomalies.baselines import PERIODS, BaselineSet, build
-from app.canonical import tables as t
+from app.anomalies.baselines import PERIODS, build
 from app.canonical.enums import InsightSeverity, MovementKind
 from app.insights import register
 from app.insights.models import InsightDraft
@@ -174,9 +173,7 @@ class SalesAnomalyDetector:
         # The week being judged is excluded from the baseline, and the window
         # is widened to make up for it, so a weekday still has eight ordinary
         # observations behind it.
-        baselines = await build(
-            session, ctx, as_of=as_of, weeks=PERIODS + 1, judged_from=scan_from
-        )
+        baselines = await build(session, ctx, as_of=as_of, weeks=PERIODS + 1, judged_from=scan_from)
 
         drafts: list[InsightDraft] = []
         for observation in baselines.observations:
@@ -194,9 +191,7 @@ class SalesAnomalyDetector:
             down = difference < 0
             direction = "below" if down else "above"
             weekday = observation.day.strftime("%A")
-            where = (
-                f" at {observation.location_name}" if ctx.has("multi_location") else ""
-            )
+            where = f" at {observation.location_name}" if ctx.has("multi_location") else ""
             drafts.append(
                 InsightDraft(
                     kind=self.kind,
@@ -228,9 +223,7 @@ class SalesAnomalyDetector:
                         "orders": observation.orders,
                         "expected_orders": str(baseline.median_orders),
                         "baseline_weeks": baseline.observations,
-                        "event_days_excluded": sorted(
-                            d.isoformat() for d in baselines.event_days
-                        ),
+                        "event_days_excluded": sorted(d.isoformat() for d in baselines.event_days),
                     },
                     suggested_action={
                         "type": "review_day",
@@ -401,6 +394,29 @@ class ShrinkDetector:
 # --------------------------------------------------------------------------
 
 
+@dataclass(frozen=True, slots=True)
+class RefundShare:
+    """One location's giving-back for one period.
+
+    A dict would do, but a week's refunds and the name of the shop they
+    happened at are not the same kind of thing, and a `dict[str, Decimal | str]`
+    says they are.
+    """
+
+    location_name: str
+    net_sales: Decimal
+    refunds: Decimal
+    discounts: Decimal
+    refund_share: Decimal
+    discount_share: Decimal
+
+    def amount(self, what: str) -> Decimal:
+        return self.refunds if what == "refund" else self.discounts
+
+    def share(self, what: str) -> Decimal:
+        return self.refund_share if what == "refund" else self.discount_share
+
+
 class RefundSpikeDetector:
     kind = "refund_spike"
     schedule = "weekly"
@@ -431,18 +447,18 @@ class RefundSpikeDetector:
         session: AsyncSession,
         ctx: AnalyticsContext,
         week: DateRange,
-        normal: dict[uuid.UUID | None, dict[str, Decimal | str]],
+        normal: dict[uuid.UUID | None, RefundShare],
     ) -> list[InsightDraft]:
         recent = await _refund_shares(session, ctx, week)
 
         drafts: list[InsightDraft] = []
         for location_id, current in recent.items():
             usual = normal.get(location_id)
-            if usual is None or current["net_sales"] <= 0:
+            if usual is None or current.net_sales <= 0:
                 continue
             for what in ("refund", "discount"):
-                share = current[f"{what}_share"]
-                baseline_share = usual[f"{what}_share"]
+                share = current.share(what)
+                baseline_share = usual.share(what)
                 if share < REFUND_SHARE_FLOOR:
                     continue
                 if baseline_share > 0 and share < baseline_share * REFUND_MULTIPLE:
@@ -450,9 +466,9 @@ class RefundSpikeDetector:
                 if baseline_share == 0 and share < REFUND_SHARE_FLOOR * 2:
                     continue
 
-                amount = current[f"{what}s"]
-                expected = (baseline_share * current["net_sales"]).quantize(Decimal("0.01"))
-                where = f" at {current['location_name']}" if ctx.has("multi_location") else ""
+                amount = current.amount(what)
+                expected = (baseline_share * current.net_sales).quantize(Decimal("0.01"))
+                where = f" at {current.location_name}" if ctx.has("multi_location") else ""
                 drafts.append(
                     InsightDraft(
                         kind=self.kind,
@@ -462,7 +478,7 @@ class RefundSpikeDetector:
                             f"{week.start.isoformat()}{where}"
                         ),
                         summary=(
-                            f"${amount:,.2f} of {what}s against ${current['net_sales']:,.2f} of "
+                            f"${amount:,.2f} of {what}s against ${current.net_sales:,.2f} of "
                             f"sales{where} in the week of {week.start.isoformat()} — "
                             f"{share:.1%}, where the last three months ran at "
                             f"{baseline_share:.1%}. At the usual rate that would have been "
@@ -472,11 +488,11 @@ class RefundSpikeDetector:
                         dollar_impact=max(amount - expected, Decimal("0")),
                         evidence={
                             "kind": what,
-                            "location": current["location_name"],
+                            "location": current.location_name,
                             "week_start": week.start.isoformat(),
                             "week_end": week.end.isoformat(),
                             "amount": str(amount),
-                            "net_sales": str(current["net_sales"]),
+                            "net_sales": str(current.net_sales),
                             "share": str(share),
                             "baseline_share": str(baseline_share),
                             "expected_amount": str(expected),
@@ -494,7 +510,7 @@ class RefundSpikeDetector:
 
 async def _refund_shares(
     session: AsyncSession, ctx: AnalyticsContext, period: DateRange
-) -> dict[uuid.UUID | None, dict[str, Decimal | str]]:
+) -> dict[uuid.UUID | None, RefundShare]:
     start, end = period.bounds(ctx.tz)
     rows = await fetch_all(
         session,
@@ -529,21 +545,19 @@ async def _refund_shares(
         """,
         {"tenant": ctx.tenant_id, "start": start, "end": end},
     )
-    out: dict[uuid.UUID | None, dict[str, Decimal | str]] = {}
+    out: dict[uuid.UUID | None, RefundShare] = {}
     for row in rows:
         net = Decimal(row.net_sales or 0)
         refunds = Decimal(row.refunds or 0)
         discounts = Decimal(row.discounts or 0)
-        out[row.location_id] = {
-            "location_name": row.location_name,
-            "net_sales": net,
-            "refunds": refunds,
-            "discounts": discounts,
-            "refund_share": (refunds / net).quantize(Decimal("0.0001")) if net else Decimal("0"),
-            "discount_share": (
-                (discounts / net).quantize(Decimal("0.0001")) if net else Decimal("0")
-            ),
-        }
+        out[row.location_id] = RefundShare(
+            location_name=row.location_name,
+            net_sales=net,
+            refunds=refunds,
+            discounts=discounts,
+            refund_share=(refunds / net).quantize(Decimal("0.0001")) if net else Decimal("0"),
+            discount_share=(discounts / net).quantize(Decimal("0.0001")) if net else Decimal("0"),
+        )
     return out
 
 

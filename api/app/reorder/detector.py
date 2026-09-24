@@ -69,9 +69,7 @@ def _shortfall(line: Suggestion) -> _Shortfall | None:
         )
     lost_sales = (units * price).quantize(CENTS)
     lost_margin = (
-        (units * (price - line.unit_cost)).quantize(CENTS)
-        if line.unit_cost is not None
-        else None
+        (units * (price - line.unit_cost)).quantize(CENTS) if line.unit_cost is not None else None
     )
     return _Shortfall(
         line=line,
@@ -137,9 +135,7 @@ class ReorderDetector:
                     "as_of": as_of.isoformat(),
                     "item_count": len(shortfalls),
                     "cost_coverage": (
-                        str(forecast.cost_coverage)
-                        if forecast.cost_coverage is not None
-                        else None
+                        str(forecast.cost_coverage) if forecast.cost_coverage is not None else None
                     ),
                     "total_at_cost": str(forecast.total_at_cost),
                     "forecast_caveats": forecast.caveats,

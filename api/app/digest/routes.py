@@ -46,6 +46,13 @@ class TestIn(BaseModel):
     email: str | None = Field(default=None, max_length=320)
 
 
+# The real link is per-recipient and only exists once a message is addressed to
+# somebody, so a preview has nothing to put there. Saying so beats showing the
+# owner a template variable and beats dropping the line, which would read as if
+# we send email with no way out of it.
+PREVIEW_UNSUBSCRIBE = "(a link unique to each recipient)"
+
+
 @router.get("/tenants/{tenant}/digest/preview", response_model=PreviewOut)
 async def preview(shop: ShopDep, as_of: date | None = None) -> PreviewOut:
     prepared = await prepare(shop.session, shop.ctx, as_of=as_of)
@@ -53,8 +60,8 @@ async def preview(shop: ShopDep, as_of: date | None = None) -> PreviewOut:
     return PreviewOut(
         tenant=shop.slug,
         subject=prepared.subject,
-        text=prepared.rendered.text,
-        html=prepared.rendered.html,
+        text=prepared.rendered.text.replace("{{unsubscribe_url}}", PREVIEW_UNSUBSCRIBE),
+        html=prepared.rendered.html.replace("{{unsubscribe_url}}", "#"),
         copy_source=prepared.rendered.copy_source,
         week_start=digest.week.start,
         week_end=digest.week.end,

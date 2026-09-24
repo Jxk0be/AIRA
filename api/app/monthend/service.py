@@ -55,9 +55,7 @@ async def generate(
     return await store(session, ctx, packet)
 
 
-async def store(
-    session: AsyncSession, ctx: AnalyticsContext, packet: Packet
-) -> StoredPacket:
+async def store(session: AsyncSession, ctx: AnalyticsContext, packet: Packet) -> StoredPacket:
     now = datetime.now(tz=UTC)
     figures = packet.figures()
     table = table_of(MonthEndPacket)
@@ -140,13 +138,13 @@ def _view(row: MonthEndPacket) -> StoredPacket:
 
 def pdf_of(packet: StoredPacket) -> bytes:
     return packet_pdf(
-        dict(packet.figures),  # type: ignore[arg-type]
+        dict(packet.figures),
         generated=packet.generated_at.strftime("%d %b %Y"),
     )
 
 
 def workbook_of(packet: StoredPacket) -> bytes:
-    return packet_workbook(dict(packet.figures))  # type: ignore[arg-type]
+    return packet_workbook(dict(packet.figures))
 
 
 async def email_packet(
@@ -165,11 +163,7 @@ async def email_packet(
     """
     link = app_link(ctx.slug, f"month-end/{packet.id}")
     failures = [note for note in packet.notes if "gap of" in note]
-    caveat = (
-        "\n\nWorth reading first: " + failures[0]
-        if failures
-        else ""
-    )
+    caveat = "\n\nWorth reading first: " + failures[0] if failures else ""
     text = (
         f"{packet.label} is ready for {ctx.name}.\n\n"
         f"Download the PDF and the spreadsheet here: {link}"
@@ -192,8 +186,8 @@ async def email_packet(
     sent = sum(1 for result in results if result.sent)
 
     if bookkeeper:
-        from app.notify.service import Recipient, deliver
         from app.canonical.enums import NotifyChannel
+        from app.notify.service import Recipient, deliver
 
         result = await deliver(
             session,

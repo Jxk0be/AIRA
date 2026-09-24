@@ -12,7 +12,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { api } from '../api/client'
-import type { DataScreen, SyncRun } from '../api/types'
+import type { DataScreen, JobRun, JobsScreen, SyncRun } from '../api/types'
 import PanelCard from '../components/PanelCard.vue'
 import { count, duration, percent, shopDateTime, sinceNow } from '../lib/format'
 
@@ -20,6 +20,7 @@ const route = useRoute()
 
 const slug = computed(() => String(route.params.tenant ?? ''))
 const screen = ref<DataScreen | null>(null)
+const jobs = ref<JobsScreen | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 const notice = ref<string | null>(null)
@@ -30,7 +31,15 @@ let poll: ReturnType<typeof setInterval> | undefined
 
 async function load() {
   try {
-    screen.value = await api.data(slug.value)
+    // The worker is a separate process, and this screen has to be readable
+    // when it is not running at all. A jobs call that fails leaves the rest of
+    // the page intact and shows its own empty state.
+    const [data, rounds] = await Promise.all([
+      api.data(slug.value),
+      api.jobs(slug.value).catch(() => null),
+    ])
+    screen.value = data
+    jobs.value = rounds
     error.value = null
   } catch (cause) {
     error.value = cause instanceof Error ? cause.message : String(cause)
@@ -94,6 +103,26 @@ function broughtIn(run: SyncRun): string {
     .slice(0, 4)
     .map(([entity, upserted]) => `${count(upserted)} ${entity.replace(/_/g, ' ')}`)
   return parts.length ? parts.join(', ') : 'nothing changed'
+}
+
+/** What a job round actually did, in the worker's own terms. */
+function jobDetail(run: JobRun): string {
+  if (run.error) return run.error
+  const parts = Object.entries(run.detail)
+    // Scalars only. The detectors job also reports a per-detector breakdown,
+    // which is a whole paragraph and belongs on Worth doing, not in a
+    // one-line history row.
+    .filter(([, value]) => value !== null && value !== 0 && value !== '')
+    .filter(([, value]) => typeof value !== 'object')
+    .map(([key, value]) => `${key.replace(/_/g, ' ')} ${String(value)}`)
+  return parts.length ? parts.join(' · ') : 'nothing to do'
+}
+
+const jobStatusClass: Record<string, string> = {
+  succeeded: 'text-ink-faint',
+  skipped: 'text-ink-faint',
+  running: 'text-brand',
+  failed: 'text-down',
 }
 
 const severityClass: Record<string, string> = {
@@ -248,6 +277,72 @@ const severityClass: Record<string, string> = {
               class="tabular shrink-0"
               :class="run.status === 'succeeded' ? 'text-ink-faint' : 'text-down'"
             >
+              {{ run.status === 'succeeded' ? duration(run.duration_ms) : run.status }}
+            </span>
+          </li>
+        </ol>
+      </PanelCard>
+
+      <PanelCard
+        class="lg:col-span-2"
+        title="The worker"
+        subtitle="Syncing, watching and writing on a schedule"
+        :loading="loading"
+        :empty="!jobs?.schedules.length"
+        empty-text="No schedules. Start the worker with `python tasks.py worker`."
+      >
+        <ul class="space-y-1.5">
+          <li
+            v-for="plan in jobs?.schedules ?? []"
+            :key="plan.job"
+            class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 text-sm"
+          >
+            <span class="font-medium text-ink">{{ plan.job.replace(/_/g, ' ') }}</span>
+            <span class="min-w-0 flex-1 truncate text-xs text-ink-faint">{{ plan.when }}</span>
+            <span
+              class="tabular shrink-0 text-xs"
+              :class="plan.overdue ? 'text-down' : 'text-ink-faint'"
+            >
+              {{
+                plan.last_succeeded_at
+                  ? `ran ${sinceNow(plan.last_succeeded_at)}`
+                  : 'has never run'
+              }}
+            </span>
+          </li>
+        </ul>
+        <p v-if="jobs?.schedules.some((plan) => plan.overdue)" class="mt-3 text-xs text-ink-faint">
+          A job shown in red has not run for the last instant it was due. The worker picks one up
+          late where that is still worth doing — an hourly sync missed by a few hours, a month-end
+          packet by a few days — and lets it go where it is not, rather than sending you last
+          Monday's email on a Thursday.
+        </p>
+      </PanelCard>
+
+      <PanelCard
+        class="lg:col-span-2"
+        title="Job history"
+        :loading="loading"
+        :empty="!jobs?.runs.length"
+        empty-text="The worker has not run for this shop yet."
+      >
+        <ol class="space-y-1.5">
+          <li
+            v-for="run in jobs?.runs ?? []"
+            :key="run.id"
+            class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 text-xs"
+          >
+            <span class="tabular shrink-0 text-ink-faint">
+              {{ shopDateTime(run.started_at, jobs?.timezone ?? 'UTC') }}
+            </span>
+            <span class="shrink-0 font-medium text-ink">{{ run.job.replace(/_/g, ' ') }}</span>
+            <span
+              class="min-w-0 flex-1 truncate"
+              :class="run.error ? 'text-down' : 'text-ink-muted'"
+            >
+              {{ jobDetail(run) }}
+            </span>
+            <span class="tabular shrink-0" :class="jobStatusClass[run.status] ?? 'text-ink-faint'">
               {{ run.status === 'succeeded' ? duration(run.duration_ms) : run.status }}
             </span>
           </li>

@@ -171,6 +171,7 @@ class SyncEngine:
             raise ValueError(f"unknown entities: {sorted(unknown)}")
 
         started = datetime.now(tz=UTC)
+        await self._refresh_capabilities()
         run_id = await self._open_run(mode, started)
         report = SyncReport(
             run_id=run_id,
@@ -828,6 +829,43 @@ class SyncEngine:
         return swept
 
     # -- run and state bookkeeping -----------------------------------------
+
+    async def _refresh_capabilities(self) -> None:
+        """Take the adapter's word for what it can do, every run.
+
+        `integrations.capabilities` is written when the tenant is set up, and
+        then the adapter grows: costs arrive, payments arrive. Nothing
+        downstream reads the adapter - the analytics layer reads this row - so
+        a row left at its first value is how a shop keeps getting "this system
+        has no cost data" about a system that now does.
+        """
+        declared = self.adapter.describe().capabilities.model_dump()
+        table = table_of(t.Integration)
+        stored = (
+            await self.session.execute(
+                select(table.c.capabilities).where(table.c.id == self.integration_id)
+            )
+        ).scalar_one()
+        if stored == declared:
+            return
+
+        gained = sorted(k for k, v in declared.items() if v and not (stored or {}).get(k))
+        lost = sorted(k for k, v in declared.items() if not v and (stored or {}).get(k))
+        log.info(
+            "%s: capabilities changed (gained: %s, lost: %s)",
+            self.tenant_slug,
+            ", ".join(gained) or "none",
+            ", ".join(lost) or "none",
+        )
+        await self.session.execute(
+            update(table)
+            .where(table.c.id == self.integration_id)
+            .values(capabilities=declared, updated_at=datetime.now(tz=UTC))
+        )
+        await self.session.commit()
+        # The in-memory row is what the data quality report reads at the end of
+        # this same run.
+        self.integration.capabilities = declared
 
     async def _open_run(self, mode: SyncMode, started: datetime) -> uuid.UUID:
         self._pending_parents = {}

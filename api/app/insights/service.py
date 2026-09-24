@@ -476,7 +476,7 @@ async def value_ledger(
         insights_acted=int(acted),
         attributed_revenue=Decimal(revenue),
         cash_recovered=Decimal(recovered),
-        flagged_impact=Decimal(flagged),
+        flagged_impact=Decimal(flagged or 0),
         outcomes=int(outcomes),
     )
 

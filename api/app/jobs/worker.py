@@ -24,6 +24,7 @@ import signal
 import sys
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
+from functools import partial
 from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -83,9 +84,10 @@ async def tick(
                 # not send Monday's digest.
                 continue
 
-            outcome = await run_once(
-                session, ctx, name, due_at, lambda body=body, ctx=ctx: body(session, ctx)
-            )
+            # partial, not a lambda: it binds this round's `body` and `ctx`
+            # the same way, and mypy can see through it to `run_once`'s
+            # Callable[[], Awaitable[...]].
+            outcome = await run_once(session, ctx, name, due_at, partial(body, session, ctx))
             outcomes.append(outcome)
 
             if outcome.status is JobStatus.FAILED and name == "sync":

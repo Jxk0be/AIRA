@@ -198,9 +198,9 @@ class BusiestHoursArgs(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     location: str | None = Field(default=None, description="Limit to one location, by name.")
-    weekday: Literal[
-        "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
-    ] | None = Field(default=None, description="Limit to one day of the week.")
+    weekday: (
+        Literal["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"] | None
+    ) = Field(default=None, description="Limit to one day of the week.")
     limit: int = Field(default=8, ge=1, le=MAX_ROWS)
 
 
@@ -563,11 +563,7 @@ async def _busiest_hours(ctx: ToolContext, args: BusiestHoursArgs) -> dict[str, 
             raise ToolError(f"No location called {args.location!r}. Locations are: {known}.")
         location_id = found.id
 
-    weekday = (
-        [name.lower() for name in WEEKDAY_NAMES].index(args.weekday)
-        if args.weekday
-        else None
-    )
+    weekday = [name.lower() for name in WEEKDAY_NAMES].index(args.weekday) if args.weekday else None
     rows = await busiest_hours(
         ctx.session,
         ctx.analytics,
@@ -711,8 +707,8 @@ ALL_TOOLS: tuple[Tool, ...] = (
         description=(
             "What to reorder and how many, grouped by supplier, with the reasoning on every "
             "line. Works from the last four weeks of sales, the vendor's lead time and what "
-            "is already on an open order. Answers \"what should I order from my manga "
-            "distributor?\". Never places an order."
+            'is already on an open order. Answers "what should I order from my manga '
+            'distributor?". Never places an order.'
         ),
         args=ReorderArgs,
         handler=_reorder_suggestions,

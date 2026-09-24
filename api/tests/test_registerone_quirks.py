@@ -195,9 +195,14 @@ async def test_cash_walk_ins_arrive_with_no_customer(
     db: AsyncSession, tenant: t.Tenant, source: AsyncSession
 ) -> None:
     anonymous = await canonical(
-        db, tenant, "select count(*) from orders where tenant_id = :tenant and customer_id is null"
+        db,
+        tenant,
+        "select count(*) from orders "
+        "where tenant_id = :tenant and deleted_at is null and customer_id is null",
     )
-    total = await canonical(db, tenant, "select count(*) from orders where tenant_id = :tenant")
+    total = await canonical(
+        db, tenant, "select count(*) from orders where tenant_id = :tenant and deleted_at is null"
+    )
     theirs = await in_source(source, "select count(*) from orders where customer_id is null")
 
     assert anonymous == theirs, "the adapter invented or dropped a customer somewhere"
@@ -635,7 +640,9 @@ async def test_inventory_history_came_across_with_its_reasons(
     db: AsyncSession, tenant: t.Tenant, source: AsyncSession
 ) -> None:
     ours = await canonical(
-        db, tenant, "select count(*) from inventory_movements where tenant_id = :tenant"
+        db,
+        tenant,
+        "select count(*) from inventory_movements where tenant_id = :tenant and deleted_at is null",
     )
     theirs = await in_source(source, "select count(*) from inventory_adjustments")
     assert ours == theirs

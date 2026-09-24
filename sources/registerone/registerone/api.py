@@ -756,6 +756,15 @@ def simulate_day(
               on c.variation_id = v.id and c.location_id = 'LOC_MAIN' and c.state = 'IN_STOCK'
             where not v.is_deleted and not i.is_deleted
               and v.price_amount is not null and c.quantity::numeric > 1
+              -- Only things this shop has ever actually sold. A variation with
+              -- no sales behind it is either the never-sold quirk or the
+              -- planted dead stock, and selling one of those on a simulated
+              -- day quietly dismantles the scenario a test is about to look
+              -- for. Since every call to this endpoint moves the fixture a day
+              -- further from its seed, that erosion is permanent.
+              and exists (
+                select 1 from order_line_items l where l.catalog_object_id = v.id
+              )
             order by v.id
             """
         )

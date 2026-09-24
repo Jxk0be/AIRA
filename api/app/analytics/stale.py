@@ -182,12 +182,12 @@ async def stale_inventory(
         days_since = (
             (day - last_sold.astimezone(ctx.tz).date()).days if last_sold is not None else None
         )
-        recent_daily = (
-            Decimal(row.recent_units) / Decimal(SLOWING_WINDOW_DAYS)
-        ).quantize(Decimal("0.0001"))
-        trailing_daily = (
-            Decimal(row.trailing_units) / Decimal(TRAILING_WINDOW_DAYS)
-        ).quantize(Decimal("0.0001"))
+        recent_daily = (Decimal(row.recent_units) / Decimal(SLOWING_WINDOW_DAYS)).quantize(
+            Decimal("0.0001")
+        )
+        trailing_daily = (Decimal(row.trailing_units) / Decimal(TRAILING_WINDOW_DAYS)).quantize(
+            Decimal("0.0001")
+        )
 
         kind = _grade(days_since, recent_daily, trailing_daily)
         if kind is None:
@@ -218,9 +218,7 @@ async def stale_inventory(
         )
 
     priced = sum(1 for item in items if item.cost is not None)
-    coverage = (
-        (Decimal(priced) / Decimal(len(items))).quantize(Decimal("0.01")) if items else None
-    )
+    coverage = (Decimal(priced) / Decimal(len(items))).quantize(Decimal("0.01")) if items else None
     return StaleReport(as_of=day, items=items, cost_coverage=coverage)
 
 

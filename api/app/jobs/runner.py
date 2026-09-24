@@ -242,9 +242,7 @@ async def recent_runs(
     return list(rows)
 
 
-async def last_successful(
-    session: AsyncSession, tenant_id: uuid.UUID, job: str
-) -> datetime | None:
+async def last_successful(session: AsyncSession, tenant_id: uuid.UUID, job: str) -> datetime | None:
     return (
         await session.execute(
             select(JobRun.finished_at)

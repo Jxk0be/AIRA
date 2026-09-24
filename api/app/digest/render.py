@@ -162,15 +162,9 @@ def _text(digest: Digest, copy: Copy) -> str:
         lines.append("WORTH DOING THIS WEEK")
         for index, insight in enumerate(digest.actions):
             blurb = (
-                copy.action_blurbs[index]
-                if index < len(copy.action_blurbs)
-                else insight.summary
+                copy.action_blurbs[index] if index < len(copy.action_blurbs) else insight.summary
             )
-            money = (
-                f" (${insight.dollar_impact:,.0f})"
-                if insight.dollar_impact is not None
-                else ""
-            )
+            money = f" (${insight.dollar_impact:,.0f})" if insight.dollar_impact is not None else ""
             lines += [f"  {index + 1}. {insight.title}{money}", f"     {blurb}", ""]
 
     if digest.top_products:
@@ -215,9 +209,7 @@ def _html(digest: Digest, copy: Copy) -> str:
     """
     actions = ""
     for index, insight in enumerate(digest.actions):
-        blurb = (
-            copy.action_blurbs[index] if index < len(copy.action_blurbs) else insight.summary
-        )
+        blurb = copy.action_blurbs[index] if index < len(copy.action_blurbs) else insight.summary
         money = (
             f'<span style="color:#7a7f99;font-weight:400"> · ${insight.dollar_impact:,.0f}</span>'
             if insight.dollar_impact is not None
@@ -310,18 +302,24 @@ def _html(digest: Digest, copy: Copy) -> str:
         {_escape(copy.intro)}
       </div>
     </td></tr>
-    {f'<tr><td style="padding:16px 0 10px;border-top:1px solid #e3e5ef">'
-     f'<div style="font-size:11px;letter-spacing:.09em;text-transform:uppercase;'
-     f'color:#7a7f99">Worth doing this week</div></td></tr>{actions}'
-     if digest.actions else ""}
-    {f'<tr><td style="padding:16px 0 6px;border-top:1px solid #e3e5ef">'
-     f'<div style="font-size:11px;letter-spacing:.09em;text-transform:uppercase;'
-     f'color:#7a7f99">What sold</div></td></tr>'
-     f'<tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0">'
-     f'{products}</table>'
-     f'<div style="font-size:14px;color:#474c66;margin-top:10px">'
-     f'{_escape(copy.sold_blurb)}</div></td></tr>'
-     if digest.top_products else ""}
+    {
+        f'<tr><td style="padding:16px 0 10px;border-top:1px solid #e3e5ef">'
+        f'<div style="font-size:11px;letter-spacing:.09em;text-transform:uppercase;'
+        f'color:#7a7f99">Worth doing this week</div></td></tr>{actions}'
+        if digest.actions
+        else ""
+    }
+    {
+        f'<tr><td style="padding:16px 0 6px;border-top:1px solid #e3e5ef">'
+        f'<div style="font-size:11px;letter-spacing:.09em;text-transform:uppercase;'
+        f'color:#7a7f99">What sold</div></td></tr>'
+        f'<tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0">'
+        f"{products}</table>"
+        f'<div style="font-size:14px;color:#474c66;margin-top:10px">'
+        f"{_escape(copy.sold_blurb)}</div></td></tr>"
+        if digest.top_products
+        else ""
+    }
     {value}
     {caveats}
     <tr><td style="padding:24px 0 0;border-top:1px solid #e3e5ef;margin-top:20px">
@@ -351,4 +349,3 @@ def _escape(text: str) -> str:
         .replace(">", "&gt;")
         .replace('"', "&quot;")
     )
-

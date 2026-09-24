@@ -102,9 +102,7 @@ class Baseline:
     def z(self, value: Decimal) -> Decimal:
         """How unusual a figure is, in robust deviations on its own side."""
         side = self.spread_below if value < self.median_net_sales else self.spread_above
-        return ((value - self.median_net_sales) / max(side, MIN_SPREAD)).quantize(
-            Decimal("0.01")
-        )
+        return ((value - self.median_net_sales) / max(side, MIN_SPREAD)).quantize(Decimal("0.01"))
 
     def difference(self, value: Decimal) -> Decimal:
         return (value - self.median_net_sales).quantize(Decimal("0.01"))
@@ -124,11 +122,7 @@ class BaselineSet:
 
     def observation(self, day: date, location_id: uuid.UUID | None) -> DayObservation | None:
         return next(
-            (
-                o
-                for o in self.observations
-                if o.day == day and o.location_id == location_id
-            ),
+            (o for o in self.observations if o.day == day and o.location_id == location_id),
             None,
         )
 

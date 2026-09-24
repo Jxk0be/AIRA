@@ -17,7 +17,7 @@ dictionary ordering. That is what lets a test assert on the bytes.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from decimal import Decimal
 from typing import Literal
 
@@ -45,7 +45,7 @@ SWAPS = {
     "“": '"',
     "”": '"',
     "…": "...",
-    " ": " ",
+    " ": " ",  # noqa: RUF001 - a no-break space is the thing being swapped out
 }
 _WIDE = set("MW@%")
 _NARROW = set("iljtfIr.,:;'`|!()[]{} ")
@@ -227,9 +227,7 @@ class Document:
         )
 
 
-def _page_stream(
-    page: list[tuple[float, float, _Op]], footer: str, number: int, total: int
-) -> str:
+def _page_stream(page: list[tuple[float, float, _Op]], footer: str, number: int, total: int) -> str:
     parts: list[str] = []
     grey = 0.0
     for x, y, op in page:
@@ -351,8 +349,7 @@ def _serialise(streams: list[str]) -> bytes:
     for offset in offsets[1:]:
         out += f"{offset:010d} 00000 n \n".encode("latin-1")
     out += (
-        f"trailer\n<< /Size {len(objects) + 1} /Root 1 0 R >>\n"
-        f"startxref\n{xref_at}\n%%EOF\n"
+        f"trailer\n<< /Size {len(objects) + 1} /Root 1 0 R >>\nstartxref\n{xref_at}\n%%EOF\n"
     ).encode("latin-1")
     return bytes(out)
 

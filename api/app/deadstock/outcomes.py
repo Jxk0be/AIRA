@@ -24,9 +24,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.analytics import AnalyticsContext, DateRange
 from app.analytics.demand import variant_sales
-from app.insights import METRIC_CASH_RECOVERED, add_outcome
 from app.deadstock.service import mark_measured
 from app.deadstock.tables import RescueAction
+from app.insights import METRIC_CASH_RECOVERED, add_outcome
 
 log = logging.getLogger(__name__)
 

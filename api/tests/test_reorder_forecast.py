@@ -75,8 +75,12 @@ def test_velocity_weights_recent_weeks_more() -> None:
     A new volume taking off has to show up before the month is out, or the
     suggestion arrives after the customers have.
     """
-    rising = velocity_of(row(weekly_units=(Decimal("8"), Decimal("4"), Decimal("2"), Decimal("0"))), 28)
-    falling = velocity_of(row(weekly_units=(Decimal("0"), Decimal("2"), Decimal("4"), Decimal("8"))), 28)
+    rising = velocity_of(
+        row(weekly_units=(Decimal("8"), Decimal("4"), Decimal("2"), Decimal("0"))), 28
+    )
+    falling = velocity_of(
+        row(weekly_units=(Decimal("0"), Decimal("2"), Decimal("4"), Decimal("8"))), 28
+    )
     assert rising > falling
 
 

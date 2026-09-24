@@ -27,7 +27,8 @@ from app.digest import DigestSkipped
 from app.digest import send as send_digest
 from app.insights import expire_stale, run_detectors
 from app.jobs.runner import JobSkipped
-from app.monthend import email_packet, generate as generate_packet
+from app.monthend import email_packet
+from app.monthend import generate as generate_packet
 from app.notify import Notifier
 from app.reorder import measure as measure_reorders
 
@@ -36,8 +37,8 @@ log = logging.getLogger(__name__)
 
 async def sync(session: AsyncSession, ctx: AnalyticsContext) -> dict[str, Any]:
     """Pull whatever changed since last time, then re-index for search."""
-    from app.sync import build_adapter, load_tenant, reindex
     from app.connectors.sync import SyncEngine
+    from app.sync import build_adapter, load_tenant, reindex
 
     tenant, integration = await load_tenant(session, ctx.slug)
     adapter = build_adapter(integration)
@@ -93,9 +94,7 @@ async def detectors(
         },
     }
     if failures and len(failures) == len(runs):
-        raise RuntimeError(
-            "; ".join(f"{run.kind}: {run.error}" for run in failures)
-        )
+        raise RuntimeError("; ".join(f"{run.kind}: {run.error}" for run in failures))
     return detail
 
 
@@ -176,9 +175,7 @@ async def active_tenants(session: AsyncSession) -> list[str]:
     rows = (
         (
             await session.execute(
-                select(t.Tenant.slug)
-                .where(t.Tenant.deleted_at.is_(None))
-                .order_by(t.Tenant.slug)
+                select(t.Tenant.slug).where(t.Tenant.deleted_at.is_(None)).order_by(t.Tenant.slug)
             )
         )
         .scalars()

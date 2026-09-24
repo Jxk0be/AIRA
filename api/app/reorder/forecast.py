@@ -120,9 +120,7 @@ class Forecast:
 
     @property
     def total_at_cost(self) -> Decimal:
-        return sum(
-            (s.line_cost for s in self.suggestions if s.line_cost is not None), Decimal("0")
-        )
+        return sum((s.line_cost for s in self.suggestions if s.line_cost is not None), Decimal("0"))
 
     @property
     def cost_coverage(self) -> Decimal | None:

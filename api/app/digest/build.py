@@ -47,12 +47,8 @@ class Comparison:
         if previous is None:
             return cls(label=label, value=value, previous=None)
         change = value - previous
-        share = (
-            (change / previous).quantize(Decimal("0.001")) if previous else None
-        )
-        return cls(
-            label=label, value=value, previous=previous, change=change, change_share=share
-        )
+        share = (change / previous).quantize(Decimal("0.001")) if previous else None
+        return cls(label=label, value=value, previous=previous, change=change, change_share=share)
 
     @property
     def direction(self) -> str:
@@ -122,9 +118,7 @@ class Digest:
                     "title": insight.title,
                     "summary": insight.summary,
                     "dollar_impact": (
-                        str(insight.dollar_impact)
-                        if insight.dollar_impact is not None
-                        else None
+                        str(insight.dollar_impact) if insight.dollar_impact is not None else None
                     ),
                     "kind": insight.kind,
                 }
@@ -171,9 +165,7 @@ async def build(
         week=week,
         currency=ctx.currency,
         net_sales=Comparison.of("Net sales", summary.net_sales, before.net_sales),
-        orders=Comparison.of(
-            "Orders", Decimal(summary.order_count), Decimal(before.order_count)
-        ),
+        orders=Comparison.of("Orders", Decimal(summary.order_count), Decimal(before.order_count)),
         average_order_value=Comparison.of(
             "Average order", summary.average_order_value, before.average_order_value
         ),

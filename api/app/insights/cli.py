@@ -91,7 +91,7 @@ async def main(argv: list[str] | None = None) -> int:
                     if insight.dollar_impact is not None
                     else "  —   "
                 )
-                print(f"    [{str(insight.severity):6}] {money:>10}  {insight.title}")
+                print(f"    [{insight.severity!s:6}] {money:>10}  {insight.title}")
                 print(f"                            {insight.summary[:150]}")
                 if args.evidence:
                     print(

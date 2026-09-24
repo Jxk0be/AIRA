@@ -83,24 +83,7 @@ async def make_packet(shop: ShopDep, body: GenerateIn) -> PacketOut:
         generated_at=packet.generated_at,
         notes=packet.notes,
         emailed_to=packet.emailed_to,
-        figures=packet.figures,  # type: ignore[arg-type]
-    )
-
-
-@router.get("/tenants/{tenant}/month-end/{packet_id}", response_model=PacketOut)
-async def one_packet(shop: ShopDep, packet_id: uuid.UUID) -> PacketOut:
-    packet = await get_packet(shop.session, shop.ctx, packet_id)
-    if packet is None:
-        raise not_found("packet")
-    return PacketOut(
-        id=packet.id,
-        label=packet.label,
-        period_start=packet.period_start,
-        period_end=packet.period_end,
-        generated_at=packet.generated_at,
-        notes=packet.notes,
-        emailed_to=packet.emailed_to,
-        figures=packet.figures,  # type: ignore[arg-type]
+        figures=packet.figures,
     )
 
 
@@ -125,6 +108,27 @@ async def packet_workbook_download(shop: ShopDep, packet_id: uuid.UUID) -> Respo
         content=workbook_of(packet),
         media_type=XLSX,
         headers={"Content-Disposition": f'attachment; filename="{packet.filename}.xlsx"'},
+    )
+
+
+# After the `.pdf` and `.xlsx` routes on purpose: FastAPI matches in
+# declaration order and a path parameter will swallow a dotted suffix, so with
+# this one first both downloads arrived here as `packet_id="<uuid>.pdf"` and
+# came back 422. The bookkeeper's two files are the whole point of the packet.
+@router.get("/tenants/{tenant}/month-end/{packet_id}", response_model=PacketOut)
+async def one_packet(shop: ShopDep, packet_id: uuid.UUID) -> PacketOut:
+    packet = await get_packet(shop.session, shop.ctx, packet_id)
+    if packet is None:
+        raise not_found("packet")
+    return PacketOut(
+        id=packet.id,
+        label=packet.label,
+        period_start=packet.period_start,
+        period_end=packet.period_end,
+        generated_at=packet.generated_at,
+        notes=packet.notes,
+        emailed_to=packet.emailed_to,
+        figures=packet.figures,
     )
 
 

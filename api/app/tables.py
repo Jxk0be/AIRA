@@ -11,12 +11,12 @@ its own tables are defined and documented.
 
 from __future__ import annotations
 
-import app.canonical.tables  # noqa: F401
-import app.deadstock.tables  # noqa: F401
-import app.insights.tables  # noqa: F401
-import app.jobs.tables  # noqa: F401
-import app.monthend.tables  # noqa: F401
-import app.notify.tables  # noqa: F401
+import app.canonical.tables
+import app.deadstock.tables
+import app.insights.tables
+import app.jobs.tables
+import app.monthend.tables
+import app.notify.tables
 import app.reorder.tables  # noqa: F401
 from app.db import Base
 

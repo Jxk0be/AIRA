@@ -22,6 +22,7 @@ from app.analytics import AnalyticsContext, TenantNotFound, load_context
 from app.analytics.demand import demand_inputs
 from app.analytics.stale import stale_inventory
 from app.anomalies.detectors import (
+    SHRINK_WINDOW_DAYS,
     RefundSpikeDetector,
     SalesAnomalyDetector,
     ShrinkDetector,
@@ -32,7 +33,6 @@ from app.canonical import tables as t
 from app.deadstock.detector import DeadStockDetector
 from app.insights.models import InsightDraft
 from app.reorder import group_by_vendor, suggest
-from app.reorder.detector import ReorderDetector
 
 SETUP = "python tasks.py sources && python tasks.py seed && python tasks.py backfill"
 
@@ -75,7 +75,15 @@ async def test_items_with_days_of_cover_left_are_found(
     db: AsyncSession, shop: AnalyticsContext
 ) -> None:
     """The planted eight sit between three and nine days of cover. The forecast
-    has to find items in that band rather than only the ones already at zero."""
+    has to find items in that band rather than only the ones already at zero.
+
+    This is the shortest-lived of the planted scenarios, and the one that dates
+    the fixture. The other four are events that happened on a particular day
+    and stay in the history; these eight are a *state* of the shelf, and the
+    simulated days that `test_sync_incremental` asks for keep selling them.
+    After a couple of weeks of drift they have genuinely run out, and no
+    amount of looking harder will find them.
+    """
     as_of = await last_sale_day(db, shop)
     forecast = await suggest(db, shop, as_of=as_of)
 
@@ -84,13 +92,15 @@ async def test_items_with_days_of_cover_left_are_found(
         for line in forecast.suggestions
         if line.days_of_cover is not None and line.days_of_cover < 10
     ]
-    assert short, "nothing is close to running out, which the fixture plants eight of"
+    assert short, (
+        f"nothing is within ten days of running out as of {as_of}, and the fixture plants "
+        f"eight such items. They sell down as the fixture drifts from its seed, so this is "
+        f"most likely an old fixture rather than a broken forecast: re-run {SETUP}"
+    )
     assert all(line.suggested_qty > 0 for line in short)
 
 
-async def test_every_suggestion_explains_itself(
-    db: AsyncSession, shop: AnalyticsContext
-) -> None:
+async def test_every_suggestion_explains_itself(db: AsyncSession, shop: AnalyticsContext) -> None:
     """The claim the reorder screen makes about every row it shows."""
     forecast = await suggest(db, shop, as_of=await last_sale_day(db, shop))
     assert forecast.suggestions
@@ -98,9 +108,7 @@ async def test_every_suggestion_explains_itself(
         assert "sells" in line.explanation and "on hand" in line.explanation
 
 
-async def test_a_variant_is_not_suggested_twice(
-    db: AsyncSession, shop: AnalyticsContext
-) -> None:
+async def test_a_variant_is_not_suggested_twice(db: AsyncSession, shop: AnalyticsContext) -> None:
     """A two-location shop used to get every line twice, each carrying the
     whole variant's velocity, which doubled the order."""
     groups = group_by_vendor(await suggest(db, shop, as_of=await last_sale_day(db, shop)))
@@ -157,16 +165,36 @@ async def test_every_stale_item_gets_a_specific_plan(
 # ---------------------------------------------------------------------------
 
 
-async def test_the_planted_shrink_is_found(
-    db: AsyncSession, shop: AnalyticsContext
-) -> None:
+# The shrink detector reconciles the last fortnight, and the seeder plants the
+# event a few days before the date it seeded to. Once the fixture has drifted
+# more than that fortnight the event is simply behind the detector, so the test
+# walks back through consecutive fortnights rather than assuming the first one
+# still contains it. Stepping by the full window keeps them from overlapping,
+# so the planted event lands in exactly one.
+SHRINK_SEARCH_WINDOWS = 6
+
+
+async def planted_shrink(db: AsyncSession, ctx: AnalyticsContext) -> InsightDraft:
+    end = await last_sale_day(db, ctx)
+    found: list[InsightDraft] = []
+    for window in range(SHRINK_SEARCH_WINDOWS):
+        as_of = end - timedelta(days=window * SHRINK_WINDOW_DAYS)
+        found.extend(await ShrinkDetector().run(db, ctx, as_of))
+
+    assert len(found) == 1, (
+        f"expected exactly one shrink alert in the {SHRINK_SEARCH_WINDOWS * 2} weeks before "
+        f"{end}, found {len(found)}. If the fixture has drifted far from its seed, "
+        f"re-run: {SETUP}"
+    )
+    return found[0]
+
+
+async def test_the_planted_shrink_is_found(db: AsyncSession, shop: AnalyticsContext) -> None:
     """Six units left the shelf as a sale with no order line behind them."""
     if not shop.has("has_inventory_history"):
         pytest.skip("this source keeps no stock history, so there is nothing to reconcile")
 
-    drafts = await ShrinkDetector().run(db, shop, await last_sale_day(db, shop))
-    assert len(drafts) == 1, "the planted six units of shrink were not found"
-
+    drafts = [await planted_shrink(db, shop)]
     items = drafts[0].evidence["items"]
     assert any(Decimal(item["units_unaccounted"]) >= 5 for item in items)
     assert drafts[0].severity.value == "urgent"
@@ -192,42 +220,76 @@ def dedupe_days(drafts: list[InsightDraft]) -> set[str]:
     return {str(draft.evidence["day"]) for draft in drafts}
 
 
+# How far back to look for the planted Saturday. The seeder puts it three weeks
+# before the date it seeded to, but the fixture's last day moves on its own:
+# `test_sync_incremental` asks the source to simulate a day, so every run of
+# this suite leaves the fixture one day further from its seed. Computing the
+# Saturday from an offset therefore only works on a freshly seeded fixture,
+# which is not a property a test should depend on.
+QUIET_SEARCH_WEEKS = range(2, 7)
+
+
+async def planted_quiet_saturday(
+    db: AsyncSession, ctx: AnalyticsContext
+) -> tuple[date, InsightDraft]:
+    """Find the Saturday the fixture emptied out, and the finding about it.
+
+    The detector only judges the seven days before the `as_of` it is given, so
+    each candidate Saturday has to be judged from its own week. The planted one
+    is around two thirds down; an ordinary one is not flagged at all, which is
+    what `test_an_ordinary_stretch_is_quiet` holds the detector to.
+    """
+    end = await last_sale_day(db, ctx)
+    found: list[tuple[Decimal, date, InsightDraft]] = []
+
+    for weeks in QUIET_SEARCH_WEEKS:
+        saturday = end - timedelta(days=weeks * 7)
+        while saturday.weekday() != 5:
+            saturday -= timedelta(days=1)
+
+        drafts = await SalesAnomalyDetector().run(db, ctx, saturday + timedelta(days=2))
+        for draft in drafts:
+            if draft.evidence["day"] != saturday.isoformat() or "below" not in draft.title:
+                continue
+            expected = Decimal(str(draft.evidence["expected"]))
+            actual = Decimal(str(draft.evidence["net_sales"]))
+            found.append(
+                ((expected - actual) / expected if expected else Decimal("0"), saturday, draft)
+            )
+
+    assert found, (
+        f"no Saturday in the {QUIET_SEARCH_WEEKS.start}-{QUIET_SEARCH_WEEKS.stop - 1} weeks "
+        f"before {end} was reported as below a normal Saturday. If the fixture has drifted "
+        f"far from its seed, re-run: {SETUP}"
+    )
+    depth, saturday, draft = max(found, key=lambda row: row[0])
+    assert depth > Decimal("0.5"), (
+        f"the deepest Saturday found was only {depth:.0%} down; the planted one is around "
+        "two thirds, so this is probably an ordinary day and the planted one was missed"
+    )
+    return saturday, draft
+
+
 async def test_the_planted_quiet_saturday_is_found(
     db: AsyncSession, shop: AnalyticsContext
 ) -> None:
-    """Three weeks before the fixture's last day, one Saturday keeps a third of
-    its takings. Judged two days later, it has to show up as a drop."""
-    end = await last_sale_day(db, shop)
-    saturday = end - timedelta(days=21)
-    while saturday.weekday() != 5:
-        saturday -= timedelta(days=1)
-
-    drafts = await SalesAnomalyDetector().run(db, shop, saturday + timedelta(days=2))
-    drops = [draft for draft in drafts if "below" in draft.title]
-    assert saturday.isoformat() in dedupe_days(drops), (
-        f"{saturday} was not reported as below a normal Saturday"
-    )
+    """One Saturday in the fixture keeps about a third of its takings. Judged
+    two days later, it has to show up as a drop."""
+    saturday, draft = await planted_quiet_saturday(db, shop)
+    assert draft.evidence["day"] == saturday.isoformat()
 
 
 async def test_the_quiet_saturday_carries_its_working(
     db: AsyncSession, shop: AnalyticsContext
 ) -> None:
-    end = await last_sale_day(db, shop)
-    saturday = end - timedelta(days=21)
-    while saturday.weekday() != 5:
-        saturday -= timedelta(days=1)
-
-    drafts = await SalesAnomalyDetector().run(db, shop, saturday + timedelta(days=2))
-    found = next(draft for draft in drafts if draft.evidence["day"] == saturday.isoformat())
+    _, found = await planted_quiet_saturday(db, shop)
     assert found.evidence["weekday"] == "Saturday"
     assert Decimal(found.evidence["expected"]) > Decimal(found.evidence["net_sales"])
     assert int(found.evidence["baseline_weeks"]) >= 4
     assert found.dollar_impact is not None
 
 
-async def test_an_ordinary_stretch_is_quiet(
-    db: AsyncSession, shop: AnalyticsContext
-) -> None:
+async def test_an_ordinary_stretch_is_quiet(db: AsyncSession, shop: AnalyticsContext) -> None:
     """The other half of the claim. A detector that flags the planted Saturday
     by flagging everything has not found anything."""
     end = await last_sale_day(db, shop)
@@ -247,9 +309,7 @@ async def test_an_ordinary_stretch_is_quiet(
 # ---------------------------------------------------------------------------
 
 
-async def test_the_planted_refund_week_is_found(
-    db: AsyncSession, shop: AnalyticsContext
-) -> None:
+async def test_the_planted_refund_week_is_found(db: AsyncSession, shop: AnalyticsContext) -> None:
     end = await last_sale_day(db, shop)
     drafts = await RefundSpikeDetector().run(db, shop, end)
     refunds = [draft for draft in drafts if draft.evidence["kind"] == "refund"]

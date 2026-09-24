@@ -149,9 +149,7 @@ async def change_status(shop: ShopDep, insight_id: uuid.UUID, body: StatusIn) ->
 
 @router.post("/tenants/{tenant}/insights/{insight_id}/feedback", status_code=204)
 async def feedback(shop: ShopDep, insight_id: uuid.UUID, body: FeedbackIn) -> None:
-    await record_feedback(
-        shop.session, shop.ctx.tenant_id, insight_id, body.useful, body.note
-    )
+    await record_feedback(shop.session, shop.ctx.tenant_id, insight_id, body.useful, body.note)
 
 
 @router.get("/tenants/{tenant}/value", response_model=ValueOut)
@@ -162,9 +160,7 @@ async def value(
 ) -> ValueOut:
     """The "value this month" card. Defaults to the current month to date."""
     today = shop.ctx.today()
-    ledger = await value_ledger(
-        shop.session, shop.ctx, start or today.replace(day=1), end or today
-    )
+    ledger = await value_ledger(shop.session, shop.ctx, start or today.replace(day=1), end or today)
     return ValueOut(
         tenant=shop.slug,
         start=ledger.start,

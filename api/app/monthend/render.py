@@ -138,8 +138,8 @@ def packet_pdf(figures: dict[str, Any], *, generated: str) -> bytes:
         ("By channel", "by_channel"),
         ("By location", "by_location"),
     ):
-        rows = figures.get(key) or []
-        if not rows:
+        breakdown: list[dict[str, Any]] = figures.get(key) or []
+        if not breakdown:
             continue
         doc.heading(title)
         doc.table(
@@ -156,7 +156,7 @@ def packet_pdf(figures: dict[str, Any], *, generated: str) -> bytes:
                     str(row["units"]),
                     _percent(row["share"]),
                 ]
-                for row in rows[:25]
+                for row in breakdown[:25]
             ],
         )
 
@@ -274,16 +274,14 @@ def packet_workbook(figures: dict[str, Any]) -> bytes:
         ("Top products", "best_sellers"),
         ("Bottom products", "worst_sellers"),
     ):
-        rows = figures.get(key) or []
+        rows: list[dict[str, Any]] = figures.get(key) or []
         if not rows:
             continue
         sheets.append(
             Sheet(
                 name=name,
                 columns=["label", "net_sales", "units"],
-                rows=[
-                    [str(row["label"]), _d(row["net_sales"]), _d(row["units"])] for row in rows
-                ],
+                rows=[[str(row["label"]), _d(row["net_sales"]), _d(row["units"])] for row in rows],
             )
         )
 

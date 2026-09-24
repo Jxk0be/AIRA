@@ -131,6 +131,7 @@ async def _phrase(rescues: list[Rescue], phraser: Phraser | None) -> None:
             out[str(key)] = value.strip()
         return out
 
+    unphrased: dict[str, str] = {}
     phrased = await phraser.json(
         system=PHRASING_SYSTEM,
         payload=payload,
@@ -139,7 +140,7 @@ async def _phrase(rescues: list[Rescue], phraser: Phraser | None) -> None:
             'Reply as {"<id>": "<sentence>"} using the ids given.'
         ),
         parse=parse,
-        fallback={},
+        fallback=unphrased,
         max_tokens=1500,
     )
     apply_phrasing(rescues, phrased)

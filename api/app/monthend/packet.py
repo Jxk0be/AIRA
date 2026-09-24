@@ -181,9 +181,7 @@ def _snapshot(snapshot: InventorySnapshot | None) -> dict[str, Any] | None:
     }
 
 
-async def build(
-    session: AsyncSession, ctx: AnalyticsContext, period: DateRange
-) -> Packet:
+async def build(session: AsyncSession, ctx: AnalyticsContext, period: DateRange) -> Packet:
     """Assemble one month."""
     summary = await an.sales_summary(session, ctx, period)
     finance = await financial_summary(session, ctx, period)
@@ -273,24 +271,28 @@ def _reconcile(packet: Packet) -> MonthEndChecks:
         expected = (
             packet.summary.net_sales + packet.finance.tax_collected + packet.finance.tips
         ).quantize(Decimal("0.01"))
-        taken = (packet.finance.payments_total - packet.summary.refunds).quantize(
-            Decimal("0.01")
-        )
+        # Tips are added back: a payment's `amount` is the sale without its
+        # tip, so takings that leave them out fall short by exactly the
+        # month's tips and the packet reports a shop's books as not balancing
+        # when they do.
+        taken = (
+            packet.finance.payments_total
+            + (packet.finance.tips_taken or Decimal("0"))
+            - packet.summary.refunds
+        ).quantize(Decimal("0.01"))
         checks.checks.append(
             Reconciliation(
                 name="Takings match sales",
                 left=taken,
                 right=expected,
                 tolerance=RECONCILE_TOLERANCE,
-                note="payments less refunds, against net sales plus tax plus tips",
+                note="payments and tips less refunds, against net sales plus tax plus tips",
             )
         )
     return checks
 
 
-async def _notes(
-    session: AsyncSession, ctx: AnalyticsContext, packet: Packet
-) -> list[str]:
+async def _notes(session: AsyncSession, ctx: AnalyticsContext, packet: Packet) -> list[str]:
     """Everything a reader has to know for these figures to mean what they say."""
     notes: list[str] = [caveat.message for caveat in packet.summary.caveats]
 
