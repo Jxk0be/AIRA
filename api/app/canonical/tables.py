@@ -590,3 +590,45 @@ class SavedChart(TenantMixin, Base):
     )
     position: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     deleted_at: Mapped[datetime | None] = mapped_column(TIMESTAMP(timezone=True))
+
+
+class AgentRun(TenantMixin, Base):
+    """One question, and everything it cost to answer.
+
+    Written for every run, successful or not. Two audiences again: us, for "why
+    did that take nine seconds" and "what does a question cost"; and the shop,
+    because a per-question cost is what makes a per-shop monthly price
+    defensible rather than a guess.
+    """
+
+    __tablename__ = "agent_runs"
+    __table_args__ = (
+        Index("ix_agent_runs_tenant_started", "tenant_id", "started_at"),
+        Index("ix_agent_runs_conversation", "conversation_id"),
+    )
+
+    id: Mapped[uuid.UUID] = _pk()
+    conversation_id: Mapped[uuid.UUID | None] = mapped_column(
+        PGUUID(as_uuid=True), ForeignKey("conversations.id", ondelete="SET NULL")
+    )
+    message_id: Mapped[uuid.UUID | None] = mapped_column(
+        PGUUID(as_uuid=True), ForeignKey("messages.id", ondelete="SET NULL")
+    )
+    question: Mapped[str] = mapped_column(Text, nullable=False)
+    model: Mapped[str] = mapped_column(String(128), nullable=False)
+    # One entry per call: name, arguments, duration, and the error if it failed.
+    # Arguments are kept because a wrong answer is usually a wrong argument.
+    tool_calls: Mapped[list[Any]] = mapped_column(JSONB, nullable=False, default=list)
+    input_tokens: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    output_tokens: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    # Cached tokens are billed differently, so they are counted separately
+    # rather than folded into the input total.
+    cache_read_tokens: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    cache_write_tokens: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    cost_usd: Mapped[Decimal] = mapped_column(Numeric(12, 6), nullable=False, default=Decimal("0"))
+    latency_ms: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    # "ok" or "error". A refusal or a failed tool is still a run that happened.
+    status: Mapped[str] = mapped_column(String(32), nullable=False, default="ok")
+    error: Mapped[str | None] = mapped_column(Text)
+    started_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=False)
+    finished_at: Mapped[datetime | None] = mapped_column(TIMESTAMP(timezone=True))

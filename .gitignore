@@ -252,3 +252,9 @@ mappings/*.draft.yaml
 # run. The generator is the source of truth, the same way RegisterOne's seeded
 # database is.
 sources/spreadsheet_shop/export/
+
+# --- eval output ---
+# A run's per-question CSV is a measurement, not a fixture: it changes with the
+# model, the prompt and the day. The golden questions are what gets committed.
+eval-results.csv
+*.eval.csv

@@ -31,10 +31,16 @@ def money(value: Decimal | int | float | None) -> Decimal:
 
 
 def units(value: Decimal | int | float | None) -> Decimal:
-    """Quantities stay fractional: shops really do sell 0.5 kg of something."""
+    """Quantities stay fractional: shops really do sell 0.5 kg of something.
+
+    `normalize()` is what strips the trailing zeros off "12.000", and it is
+    also what turns ten into `1E+1`. Re-reading it in plain notation costs one
+    more parse and means nothing downstream — a JSON payload, a chart, a
+    tooltip, a tool result handed to the model — ever has to know that.
+    """
     if value is None:
         return Decimal("0")
-    return Decimal(value).normalize()
+    return Decimal(format(Decimal(value).normalize(), "f"))
 
 
 def share(

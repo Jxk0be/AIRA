@@ -102,7 +102,7 @@ def _custom_amount_caveat(custom: Decimal, net: Decimal) -> Caveat | None:
     return Caveat(
         code="custom_amount_sales",
         message=(
-            f"{portion:.1%} of these sales ({money(custom)}) were rung up as a custom amount "
+            f"{portion:.1%} of these sales (${money(custom):,}) were rung up as a custom amount "
             "with no product attached, so they count toward the total but not toward any one "
             "product."
         ),

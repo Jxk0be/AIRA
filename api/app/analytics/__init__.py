@@ -13,6 +13,13 @@ capabilities on the tenant's context, which is canonical data.
     summary = await sales_summary(session, ctx, ctx.last_days(30))
 """
 
+from app.analytics.catalog import (
+    CatalogPage,
+    CatalogRow,
+    CatalogSort,
+    StockAtLocation,
+    catalog_page,
+)
 from app.analytics.context import (
     AnalyticsContext,
     AnalyticsError,
@@ -65,6 +72,9 @@ __all__ = [
     "Breakdown",
     "BreakdownRow",
     "CapabilityUnavailable",
+    "CatalogPage",
+    "CatalogRow",
+    "CatalogSort",
     "Caveat",
     "CustomerStats",
     "DateRange",
@@ -79,10 +89,12 @@ __all__ = [
     "SalesSummary",
     "SellThrough",
     "SeriesPoint",
+    "StockAtLocation",
     "StockList",
     "StockRow",
     "TenantNotFound",
     "breakdown",
+    "catalog_page",
     "category_breakdown",
     "channel_breakdown",
     "customer_stats",

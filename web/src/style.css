@@ -1,23 +1,74 @@
 @import "tailwindcss";
 
-/* Tailwind v4 ships no opinion about page background. Set one here, in both
-   themes, so the app never borrows whatever is behind it. */
-@theme {
-  --color-surface: #ffffff;
-  --color-surface-muted: #f8fafc;
-  --color-ink: #0f172a;
-  --color-ink-muted: #64748b;
-  --color-hairline: #e2e8f0;
+/* ---------------------------------------------------------------------------
+   AIRA reads like a ledger, not a SaaS template: warm paper, hairline rules,
+   figures set in a mono face so a column of money lines up. Colour is spent on
+   three things only — the shop's mark, whether a number moved up or down, and
+   a caveat that has to be read.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --paper: #faf7f2;
+  --panel: #ffffff;
+  --sunk: #f3eee5;
+  --ink: #17150f;
+  --ink-muted: #6f675a;
+  --ink-faint: #9a9284;
+  --rule: #e4ddd0;
+  --rule-strong: #cdc4b3;
+  --brand: #1b4d3e;
+  --brand-soft: #e6efe9;
+  --up: #1b7a4b;
+  --down: #b23a28;
+  --note: #fbf1d6;
+  --note-ink: #6b4e00;
+  --note-rule: #e0c266;
+  --grain: rgba(23, 21, 15, 0.022);
+  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
-  @theme {
-    --color-surface: #0b1020;
-    --color-surface-muted: #131a2e;
-    --color-ink: #e6e9f5;
-    --color-ink-muted: #94a3b8;
-    --color-hairline: #26304a;
+  :root {
+    --paper: #14120f;
+    --panel: #1c1a16;
+    --sunk: #221f1a;
+    --ink: #f2ede4;
+    --ink-muted: #a79d8e;
+    --ink-faint: #7c7365;
+    --rule: #302c25;
+    --rule-strong: #453f35;
+    --brand: #79c4a1;
+    --brand-soft: #1e2e27;
+    --up: #5bc98a;
+    --down: #e4785f;
+    --note: #332a12;
+    --note-ink: #f0dfa8;
+    --note-rule: #7a6426;
+    --grain: rgba(242, 237, 228, 0.028);
+    color-scheme: dark;
   }
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-panel: var(--panel);
+  --color-sunk: var(--sunk);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-brand: var(--brand);
+  --color-brand-soft: var(--brand-soft);
+  --color-up: var(--up);
+  --color-down: var(--down);
+  --color-note: var(--note);
+  --color-note-ink: var(--note-ink);
+  --color-note-rule: var(--note-rule);
+
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
 }
 
 html,
@@ -27,6 +78,169 @@ body,
 }
 
 body {
-  background: var(--color-surface);
-  color: var(--color-ink);
+  margin: 0;
+  background-color: var(--paper);
+  /* A little tooth in the paper. Two hairline grids at an angle read as grain
+     rather than as a pattern, and cost nothing to paint. */
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 3px,
+      var(--grain) 3px 4px
+    ),
+    repeating-linear-gradient(90deg, transparent 0 3px, var(--grain) 3px 4px);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Figures line up in a column or they are not a table. */
+.tabular {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  letter-spacing: -0.01em;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 0, "WONK" 1;
+  letter-spacing: -0.015em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--brand-soft);
+  color: var(--ink);
+}
+
+/* The first paint settles in rather than appearing. Staggered by index in the
+   markup, and off entirely for anyone who asked for less movement. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise 0.42s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
+}
+
+@keyframes pulse-rule {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.working {
+  animation: pulse-rule 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise,
+  .working {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Scrollbars, kept in the palette so a long table does not sprout a blue bar. */
+* {
+  scrollbar-color: var(--rule-strong) transparent;
+  scrollbar-width: thin;
+}
+
+/* Prose, for the assistant's answers. Deliberately narrow in scope: the model
+   writes paragraphs, lists, the odd table and inline code, and nothing else
+   needs a rule here. */
+.answer > :first-child {
+  margin-top: 0;
+}
+
+.answer > :last-child {
+  margin-bottom: 0;
+}
+
+.answer p,
+.answer ul,
+.answer ol,
+.answer table {
+  margin: 0 0 0.75rem;
+}
+
+.answer ul,
+.answer ol {
+  padding-left: 1.15rem;
+}
+
+.answer ul {
+  list-style: disc;
+}
+
+.answer ol {
+  list-style: decimal;
+}
+
+.answer li {
+  margin: 0.15rem 0;
+}
+
+.answer h1,
+.answer h2,
+.answer h3 {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 600;
+  margin: 1rem 0 0.4rem;
+}
+
+.answer strong {
+  font-weight: 600;
+}
+
+.answer code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--sunk);
+  padding: 0.05em 0.3em;
+  border-radius: 2px;
+}
+
+.answer table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92em;
+}
+
+.answer th,
+.answer td {
+  text-align: left;
+  padding: 0.3rem 0.6rem 0.3rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.answer a {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }

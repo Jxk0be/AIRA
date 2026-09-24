@@ -2,13 +2,17 @@ from __future__ import annotations
 
 from collections.abc import AsyncIterator
 
+import httpx
 import pytest
+from httpx import ASGITransport
 from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError, InterfaceError, OperationalError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.pool import NullPool
 
 from app.config import get_settings
+from app.db import dispose_engine
+from app.main import app
 
 # Errors that mean "the stack isn't running", as opposed to "the query is wrong".
 CONNECTION_ERRORS = (OSError, ConnectionError, OperationalError, InterfaceError, DBAPIError)
@@ -39,3 +43,18 @@ async def db() -> AsyncIterator[AsyncSession]:
         await session.rollback()
         await session.close()
         await engine.dispose()
+
+
+@pytest.fixture
+async def client() -> AsyncIterator[httpx.AsyncClient]:
+    """An HTTP client wired straight into the app, with no server in between.
+
+    The app's own engine is disposed afterwards. It pools connections on
+    whichever event loop first opened them, pytest-asyncio hands every test a
+    new loop, and a pooled asyncpg connection borrowed across that boundary
+    fails inside SQLAlchemy's teardown with an error that names neither cause.
+    """
+    transport = ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test", timeout=60) as c:
+        yield c
+    await dispose_engine()

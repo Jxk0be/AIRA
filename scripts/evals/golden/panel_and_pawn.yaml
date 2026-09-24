@@ -1,0 +1,187 @@
+# Golden questions — Panel & Pawn (spreadsheet export)
+#
+# Expected answers are computed straight off the .xlsx by `sources.py`, which
+# parses the dollar signs, the "3/7/25" dates and the three spellings of every
+# item name for itself. Nothing here reads our canonical tables, and nothing
+# here reuses the mapping adapter's parsing: two independent readings that
+# agree are evidence, one reading checked against itself is not.
+#
+# This is the harder shop and the more useful eval. No customers, one location,
+# no descriptions, and costs for barely a third of the catalogue — so half of
+# these questions are about refusing well.
+
+- id: net_sales_january_2026
+  question: What were my net sales in January 2026?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [sales_summary]
+  expect: { measure: net_sales, from: 2026-01-01, to: 2026-01-31 }
+
+- id: net_sales_first_half_2026
+  question: What were my net sales from January to June 2026?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [sales_summary]
+  expect: { measure: net_sales, from: 2026-01-01, to: 2026-06-30 }
+
+- id: net_sales_late_2025
+  question: How much did I take between October and December 2025?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [sales_summary]
+  expect: { measure: net_sales, from: 2025-10-01, to: 2025-12-31 }
+
+- id: orders_january_2026
+  question: How many sales did I ring up in January 2026?
+  kind: number
+  unit: count
+  tolerance: 0.0
+  must_use: [sales_summary]
+  notes: |
+    About 2% of rows have no receipt number. Both sides treat those as sales of
+    their own rather than merging them into one enormous unnumbered order.
+  expect: { measure: orders, from: 2026-01-01, to: 2026-01-31 }
+
+- id: units_january_2026
+  question: How many items did I sell in January 2026?
+  kind: number
+  unit: units
+  tolerance: 0.0
+  must_use: [sales_summary]
+  expect: { measure: units, from: 2026-01-01, to: 2026-01-31 }
+
+- id: aov_first_half_2026
+  question: What's my average sale worth so far in 2026, January through June?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [sales_summary]
+  expect: { measure: average_order_value, from: 2026-01-01, to: 2026-06-30 }
+
+- id: comics_first_half_2026
+  question: How much did comics bring in from January to June 2026?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [category_breakdown, sales_summary]
+  expect: { measure: net_sales, from: 2026-01-01, to: 2026-06-30, category: Comics }
+
+- id: board_games_first_half_2026
+  question: How much did board games bring in from January to June 2026?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [category_breakdown, sales_summary]
+  expect: { measure: net_sales, from: 2026-01-01, to: 2026-06-30, category: Board Games }
+
+- id: top_product_first_half_2026
+  question: What was my best seller from January to June 2026, by money taken?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [top_products]
+  expect: { measure: top_product_net, from: 2026-01-01, to: 2026-06-30 }
+
+- id: dice_sales_first_half_2026
+  question: How much did I make on the 7-piece dice sets between January and June 2026?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [top_products, sales_summary, search_catalog]
+  expect:
+    measure: net_sales
+    from: 2026-01-01
+    to: 2026-06-30
+    item: "Dice Set, 7pc"
+
+- id: stock_on_hand
+  question: How many units am I holding in total?
+  kind: number
+  unit: units
+  tolerance: 0.01
+  must_use: [inventory_value]
+  expect: { measure: on_hand }
+
+- id: stock_retail_value
+  question: What's my stock worth at retail?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [inventory_value]
+  expect: { measure: retail_value }
+
+# ---------------------------------------------------------------------------
+# Judgement
+# ---------------------------------------------------------------------------
+
+- id: reorder_this_week
+  question: What should I reorder this week?
+  kind: judgement
+  must_use: [low_stock]
+  notes: |
+    The comics are mid-run and several are at zero. A good answer names items
+    the tool returned and nothing else — an invented issue number would send
+    the owner to a distributor for something that does not exist.
+
+- id: shelf_longest
+  question: What's been sitting on the shelf longest?
+  kind: judgement
+  must_use: [dead_stock, low_stock]
+  notes: |
+    This shop's export has no receiving history at all, so "longest" can only
+    mean "no sale since". Either answer that honestly or say what is missing.
+
+- id: overall_margin
+  question: What's my margin across the shop this year?
+  kind: judgement
+  must_use: [margin_report]
+  must_mention: ["cover"]
+  notes: |
+    Costs exist for about a third of what sells. A bare percentage here is the
+    failure: it is arithmetic over a third of the shop presented as the whole of
+    it.
+
+# ---------------------------------------------------------------------------
+# Things it should refuse
+# ---------------------------------------------------------------------------
+
+- id: board_game_margin
+  question: What's my margin on board games?
+  kind: refusal
+  notes: |
+    Not one board game in the export has a cost against it. The honest answer
+    names that, and says what would fix it. A margin of 0%, or a margin
+    borrowed from the rest of the shop, are both worse than no answer.
+
+- id: repeat_customers
+  question: How many of my customers come back?
+  kind: refusal
+  notes: |
+    There is no customer column anywhere in this file, so the tool does not
+    exist for this shop. The refusal should be about the data, not about the
+    shop — "nobody comes back" is a claim about the business and would be a lie.
+
+- id: per_location_split
+  question: How did each of my shops do last month?
+  kind: refusal
+  notes: One location. Saying so is a sentence, not an error.
+
+- id: online_versus_in_store
+  question: How much of my business is online versus in the shop?
+  kind: refusal
+  notes: |
+    Everything in this export was rung up at the counter; there is no online
+    channel to compare against. Reporting 100% in-store is acceptable only if
+    it also says the file records nothing else.
+
+- id: busiest_hour
+  question: What time of day am I busiest?
+  kind: refusal
+  notes: |
+    The export records a date and no clock. This is the quirk most likely to
+    produce a confident wrong answer, because every sale in our copy sits at
+    midday — an assistant that reports "noon" has been fooled by our own
+    placeholder.

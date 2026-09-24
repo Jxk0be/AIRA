@@ -20,12 +20,15 @@ There is no `make` on Windows, so this stdlib-only script plays its part:
     python tasks.py ingest      # embed a tenant's catalogue and documents
     python tasks.py documents   # upload the fake shops' policies and FAQs
     python tasks.py reembed
+    python tasks.py eval        # golden questions through the agent, graded
     python tasks.py eval-retrieval
+    python tasks.py ask tsundoku "How did last December go?"
     python tasks.py api
     python tasks.py web
+    python tasks.py build       # production build of the web app
     python tasks.py test
-    python tasks.py lint
-    python tasks.py typecheck
+    python tasks.py lint        # ruff + eslint
+    python tasks.py typecheck   # mypy + vue-tsc
     python tasks.py setup     # install api + web dependencies
 """
 
@@ -168,6 +171,21 @@ def task_reembed(argv: list[str]) -> int:
     return uv(["run", "python", "-m", "app.rag.reembed", "--tenant", tenant, *rest])
 
 
+def task_ask(argv: list[str]) -> int:
+    """Ask a shop's assistant a question, printed to the terminal.
+
+        python tasks.py ask tsundoku "How did last December go?"
+    """
+    tenant = argv[0] if argv and not argv[0].startswith("-") else "tsundoku"
+    rest = argv[1:] if argv and not argv[0].startswith("-") else argv
+    return uv(["run", "python", "-m", "app.agent.ask", "--tenant", tenant, *rest])
+
+
+def task_eval(argv: list[str]) -> int:
+    """The golden questions, end to end, graded. Costs real money."""
+    return uv(["run", "python", str(ROOT / "scripts" / "evals" / "run.py"), *argv])
+
+
 def task_eval_retrieval(argv: list[str]) -> int:
     """hit@5 for vector-only, text-only and hybrid, on every fake shop."""
     return uv(["run", "python", str(ROOT / "scripts" / "eval_retrieval.py"), *argv])
@@ -210,13 +228,24 @@ def task_test(argv: list[str]) -> int:
     return uv(["run", "pytest", *argv])
 
 
+def task_build(argv: list[str]) -> int:
+    return npm(["run", "build", *argv])
+
+
 def task_lint(argv: list[str]) -> int:
+    """Both sides, and report the worst of them.
+
+    Every linter runs even when an earlier one fails: one command should tell
+    you everything that is wrong, not the first thing.
+    """
     code = uv(["run", "ruff", "check", "."])
-    return uv(["run", "ruff", "format", "--check", "."]) or code
+    code = uv(["run", "ruff", "format", "--check", "."]) or code
+    return npm(["run", "lint"]) or code
 
 
 def task_typecheck(argv: list[str]) -> int:
-    return uv(["run", "mypy", "app"])
+    code = uv(["run", "mypy", "app"])
+    return npm(["run", "typecheck"]) or code
 
 
 TASKS = {
@@ -234,7 +263,9 @@ TASKS = {
     "ingest": task_ingest,
     "documents": task_documents,
     "reembed": task_reembed,
+    "eval": task_eval,
     "eval-retrieval": task_eval_retrieval,
+    "ask": task_ask,
     "simulate-day": task_simulate_day,
     "db": task_db,
     "db-stop": task_db_stop,
@@ -243,6 +274,7 @@ TASKS = {
     "revision": task_revision,
     "api": task_api,
     "web": task_web,
+    "build": task_build,
     "test": task_test,
     "lint": task_lint,
     "typecheck": task_typecheck,

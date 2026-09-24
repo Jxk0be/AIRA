@@ -1,0 +1,516 @@
+# Golden questions — Tsundoku & Tabletop (RegisterOne)
+#
+# Every expected answer is computed by SQL against registerone_db, the fake
+# POS's own database — never against our canonical copy. That is the whole
+# point: a question here fails if the adapter dropped something, if the
+# semantic layer defines a metric differently from the shop's own system, or if
+# the assistant reads the number wrong. One check, three layers.
+#
+# Money in this source is integer cents, timestamps are UTC, and the shop is in
+# America/New_York, so every query converts before it buckets. Canceled orders
+# never count.
+#
+# kinds:
+#   number     — the answer has to state a figure within `tolerance` of the SQL
+#   judgement  — no single right number; graded on tool use and on not
+#                inventing anything
+#   refusal    — the honest answer is "I can't tell you that, because —"
+
+- id: net_sales_december
+  question: What were my net sales last December?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [sales_summary]
+  sql: |
+    select (
+      (select sum(l.gross_sales_money) - sum(l.total_discount_money)
+       from orders o join order_line_items l on l.order_id = o.id
+       where o.state <> 'CANCELED'
+         and (o.created_at at time zone 'America/New_York')::date
+             between date '2025-12-01' and date '2025-12-31')
+      - coalesce((select sum(r.amount_money) from refunds r
+                  where (r.created_at at time zone 'America/New_York')::date
+                        between date '2025-12-01' and date '2025-12-31'), 0)
+    ) / 100.0
+
+- id: gross_sales_december
+  question: What were my gross sales in December 2025, before discounts?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [sales_summary]
+  sql: |
+    select sum(l.gross_sales_money) / 100.0
+    from orders o join order_line_items l on l.order_id = o.id
+    where o.state <> 'CANCELED'
+      and (o.created_at at time zone 'America/New_York')::date
+          between date '2025-12-01' and date '2025-12-31'
+
+- id: discounts_december
+  question: How much did I give away in discounts in December 2025?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [sales_summary]
+  sql: |
+    select sum(l.total_discount_money) / 100.0
+    from orders o join order_line_items l on l.order_id = o.id
+    where o.state <> 'CANCELED'
+      and (o.created_at at time zone 'America/New_York')::date
+          between date '2025-12-01' and date '2025-12-31'
+
+- id: refunds_december
+  question: How much did I refund in December 2025?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [sales_summary]
+  sql: |
+    select coalesce(sum(r.amount_money), 0) / 100.0
+    from refunds r
+    where (r.created_at at time zone 'America/New_York')::date
+          between date '2025-12-01' and date '2025-12-31'
+
+- id: orders_december
+  question: How many orders did I take in December 2025?
+  kind: number
+  unit: count
+  tolerance: 0.0
+  must_use: [sales_summary]
+  sql: |
+    select count(*)
+    from orders o
+    where o.state <> 'CANCELED'
+      and (o.created_at at time zone 'America/New_York')::date
+          between date '2025-12-01' and date '2025-12-31'
+
+- id: units_december
+  question: How many individual items did I sell in December 2025?
+  kind: number
+  unit: units
+  tolerance: 0.0
+  must_use: [sales_summary]
+  sql: |
+    select sum(l.quantity::numeric)
+    from orders o join order_line_items l on l.order_id = o.id
+    where o.state <> 'CANCELED'
+      and (o.created_at at time zone 'America/New_York')::date
+          between date '2025-12-01' and date '2025-12-31'
+
+- id: aov_december
+  question: What was my average order value in December 2025?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [sales_summary]
+  sql: |
+    select (sum(l.gross_sales_money) - sum(l.total_discount_money))
+           / count(distinct o.id) / 100.0
+    from orders o join order_line_items l on l.order_id = o.id
+    where o.state <> 'CANCELED'
+      and (o.created_at at time zone 'America/New_York')::date
+          between date '2025-12-01' and date '2025-12-31'
+
+- id: net_sales_march_2026
+  question: What were my net sales in March 2026?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [sales_summary]
+  sql: |
+    select (
+      (select sum(l.gross_sales_money) - sum(l.total_discount_money)
+       from orders o join order_line_items l on l.order_id = o.id
+       where o.state <> 'CANCELED'
+         and (o.created_at at time zone 'America/New_York')::date
+             between date '2026-03-01' and date '2026-03-31')
+      - coalesce((select sum(r.amount_money) from refunds r
+                  where (r.created_at at time zone 'America/New_York')::date
+                        between date '2026-03-01' and date '2026-03-31'), 0)
+    ) / 100.0
+
+- id: net_sales_first_half_2026
+  question: What were my net sales for the first half of 2026, January through June?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [sales_summary]
+  sql: |
+    select (
+      (select sum(l.gross_sales_money) - sum(l.total_discount_money)
+       from orders o join order_line_items l on l.order_id = o.id
+       where o.state <> 'CANCELED'
+         and (o.created_at at time zone 'America/New_York')::date
+             between date '2026-01-01' and date '2026-06-30')
+      - coalesce((select sum(r.amount_money) from refunds r
+                  where (r.created_at at time zone 'America/New_York')::date
+                        between date '2026-01-01' and date '2026-06-30'), 0)
+    ) / 100.0
+
+- id: best_month
+  question: Which month has been my best so far, and what did it do?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [sales_over_time]
+  must_mention: ["December"]
+  notes: The Christmas spike. Both the month and the figure have to be right.
+  sql: |
+    with sold as (
+      select date_trunc('month', o.created_at at time zone 'America/New_York') as month,
+             sum(l.gross_sales_money) - sum(l.total_discount_money) as net
+      from orders o join order_line_items l on l.order_id = o.id
+      where o.state <> 'CANCELED'
+      group by 1
+    ),
+    back as (
+      select date_trunc('month', r.created_at at time zone 'America/New_York') as month,
+             sum(r.amount_money) as refunds
+      from refunds r group by 1
+    )
+    select max((s.net - coalesce(b.refunds, 0)) / 100.0)
+    from sold s left join back b on b.month = s.month
+
+# ---------------------------------------------------------------------------
+# Splits
+# ---------------------------------------------------------------------------
+
+- id: con_booth_december
+  question: How much did the Con Booth take in December 2025?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  # A location-filtered summary answers this as well as a split does.
+  must_use: [location_channel_breakdown, sales_summary]
+  sql: |
+    select (
+      (select sum(l.gross_sales_money) - sum(l.total_discount_money)
+       from orders o join order_line_items l on l.order_id = o.id
+       where o.state <> 'CANCELED' and o.location_id = 'LOC_CON'
+         and (o.created_at at time zone 'America/New_York')::date
+             between date '2025-12-01' and date '2025-12-31')
+      - coalesce((select sum(r.amount_money) from refunds r
+                  join orders o on o.id = r.order_id
+                  where o.location_id = 'LOC_CON'
+                    and (r.created_at at time zone 'America/New_York')::date
+                        between date '2025-12-01' and date '2025-12-31'), 0)
+    ) / 100.0
+
+- id: online_first_half_2026
+  question: How much did I sell online in the first half of 2026?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [location_channel_breakdown, sales_summary]
+  sql: |
+    select (
+      (select sum(l.gross_sales_money) - sum(l.total_discount_money)
+       from orders o join order_line_items l on l.order_id = o.id
+       where o.state <> 'CANCELED' and o.source = 'ONLINE' and o.location_id <> 'LOC_CON'
+         and (o.created_at at time zone 'America/New_York')::date
+             between date '2026-01-01' and date '2026-06-30')
+      - coalesce((select sum(r.amount_money) from refunds r
+                  join orders o on o.id = r.order_id
+                  where o.source = 'ONLINE' and o.location_id <> 'LOC_CON'
+                    and (r.created_at at time zone 'America/New_York')::date
+                        between date '2026-01-01' and date '2026-06-30'), 0)
+    ) / 100.0
+
+- id: manga_december
+  question: How much manga did I sell in December 2025?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [category_breakdown, sales_summary]
+  sql: |
+    select (sum(l.gross_sales_money) - sum(l.total_discount_money)) / 100.0
+    from order_line_items l
+    join orders o on o.id = l.order_id
+    join item_variations v on v.id = l.catalog_object_id
+    join catalog_items i on i.id = v.item_id
+    where o.state <> 'CANCELED' and i.category_id = 'CAT_MANGA'
+      and (o.created_at at time zone 'America/New_York')::date
+          between date '2025-12-01' and date '2025-12-31'
+
+- id: biggest_category_first_half_2026
+  question: Which category made me the most money in the first half of 2026, and how much?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [category_breakdown]
+  must_mention: ["Singles"]
+  sql: |
+    select max(net) / 100.0 from (
+      select sum(l.gross_sales_money) - sum(l.total_discount_money) as net
+      from order_line_items l
+      join orders o on o.id = l.order_id
+      join item_variations v on v.id = l.catalog_object_id
+      join catalog_items i on i.id = v.item_id
+      where o.state <> 'CANCELED'
+        and (o.created_at at time zone 'America/New_York')::date
+            between date '2026-01-01' and date '2026-06-30'
+      group by i.category_id
+    ) x
+
+- id: top_product_december
+  question: What was my single best-selling product in December 2025, by money?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [top_products]
+  sql: |
+    select max(net) / 100.0 from (
+      select sum(l.gross_sales_money) - sum(l.total_discount_money) as net
+      from order_line_items l
+      join orders o on o.id = l.order_id
+      join item_variations v on v.id = l.catalog_object_id
+      join catalog_items i on i.id = v.item_id
+      where o.state <> 'CANCELED'
+        and (o.created_at at time zone 'America/New_York')::date
+            between date '2025-12-01' and date '2025-12-31'
+      group by i.id
+    ) x
+
+- id: event_share_first_half_2026
+  question: What share of my sales in the first half of 2026 came from events?
+  kind: number
+  unit: percent
+  tolerance: 0.02
+  must_use: [location_channel_breakdown]
+  sql: |
+    select
+      sum(case when o.location_id = 'LOC_CON'
+               then l.gross_sales_money - l.total_discount_money else 0 end)::numeric
+      / nullif(sum(l.gross_sales_money - l.total_discount_money), 0)
+    from orders o join order_line_items l on l.order_id = o.id
+    where o.state <> 'CANCELED'
+      and (o.created_at at time zone 'America/New_York')::date
+          between date '2026-01-01' and date '2026-06-30'
+
+- id: con_booth_versus_normal
+  question: How did the con booth do compared with a normal weekend?
+  kind: judgement
+  # Either route is legitimate. The con booth trades six weekends a year, so
+  # the honest way to answer is often to find the last one in a daily series
+  # first — the default month shows no event activity at all.
+  must_use: [location_channel_breakdown, sales_over_time]
+  notes: |
+    No single right number. What matters is that the assistant splits by
+    location or channel rather than guessing, and that it does not invent a
+    comparison the tools never gave it.
+
+# ---------------------------------------------------------------------------
+# Margin
+# ---------------------------------------------------------------------------
+
+- id: cogs_december
+  question: What did the goods I sold in December 2025 cost me?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [margin_report]
+  sql: |
+    select coalesce(sum(l.quantity::numeric * vi.unit_cost_amount), 0) / 100.0
+    from order_line_items l
+    join orders o on o.id = l.order_id
+    join item_variations v on v.id = l.catalog_object_id
+    join variation_vendor_info vi on vi.variation_id = v.id
+    where o.state <> 'CANCELED' and vi.unit_cost_amount is not null
+      and (o.created_at at time zone 'America/New_York')::date
+          between date '2025-12-01' and date '2025-12-31'
+
+- id: margin_december
+  question: What was my gross margin in December 2025?
+  kind: number
+  unit: percent
+  tolerance: 0.02
+  must_use: [margin_report]
+  must_mention: ["cover"]
+  notes: The coverage caveat has to come with it — about a tenth of items have no cost.
+  sql: |
+    select
+      (sum(l.gross_sales_money - l.total_discount_money)
+       - sum(l.quantity::numeric * vi.unit_cost_amount))::numeric
+      / nullif(sum(l.gross_sales_money - l.total_discount_money), 0)
+    from order_line_items l
+    join orders o on o.id = l.order_id
+    join item_variations v on v.id = l.catalog_object_id
+    join variation_vendor_info vi on vi.variation_id = v.id
+    where o.state <> 'CANCELED' and vi.unit_cost_amount is not null
+      and (o.created_at at time zone 'America/New_York')::date
+          between date '2025-12-01' and date '2025-12-31'
+
+- id: margin_on_manga
+  question: What's my margin on manga this year?
+  kind: judgement
+  must_use: [margin_report]
+  must_mention: ["cover"]
+  notes: |
+    A number is fine, but it has to arrive with its coverage. Manga is one of
+    the better-covered categories, so the failure to catch here is a confident
+    margin with no mention of what it covers.
+
+# ---------------------------------------------------------------------------
+# Stock
+# ---------------------------------------------------------------------------
+
+- id: inventory_units
+  question: How many units do I have on the shelves right now?
+  kind: number
+  unit: units
+  tolerance: 0.01
+  must_use: [inventory_value]
+  sql: |
+    select coalesce(sum(ic.quantity::numeric), 0)
+    from inventory_counts ic
+    join item_variations v on v.id = ic.variation_id and v.is_deleted = false
+    join catalog_items ci on ci.id = v.item_id and ci.is_deleted = false
+    where ic.state = 'IN_STOCK'
+
+- id: inventory_retail_value
+  question: What is my stock worth at retail?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [inventory_value]
+  sql: |
+    select coalesce(sum(ic.quantity::numeric * v.price_amount), 0) / 100.0
+    from inventory_counts ic
+    join item_variations v on v.id = ic.variation_id and v.is_deleted = false
+    join catalog_items ci on ci.id = v.item_id and ci.is_deleted = false
+    where ic.state = 'IN_STOCK'
+
+- id: inventory_cost_value
+  question: What did the stock I am holding cost me?
+  kind: number
+  unit: money
+  tolerance: 0.01
+  must_use: [inventory_value]
+  sql: |
+    select coalesce(sum(ic.quantity::numeric * vi.unit_cost_amount), 0) / 100.0
+    from inventory_counts ic
+    join item_variations v on v.id = ic.variation_id and v.is_deleted = false
+    join catalog_items ci on ci.id = v.item_id and ci.is_deleted = false
+    left join variation_vendor_info vi on vi.variation_id = v.id
+    where ic.state = 'IN_STOCK'
+
+- id: out_of_stock_count
+  question: Is anything I sell completely out of stock right now?
+  kind: judgement
+  must_use: [low_stock]
+  notes: |
+    Left as a judgement rather than a counted number on purpose. "Out of stock
+    and still selling" depends on a rate-of-sale window, and a golden number
+    would be measuring the window rather than the answer.
+
+- id: reorder_this_week
+  question: What should I reorder this week?
+  kind: judgement
+  must_use: [low_stock]
+  notes: |
+    Graded on whether it called the reorder tool and named only items the tool
+    returned. An invented product name here is the worst possible failure: the
+    owner rings a distributor for something that does not exist.
+
+- id: shelf_longest
+  question: What's been sitting on my shelf longest?
+  kind: judgement
+  must_use: [dead_stock]
+  notes: Dead stock, not low stock. Naming an item that has sold recently is a fail.
+
+# ---------------------------------------------------------------------------
+# Customers
+# ---------------------------------------------------------------------------
+
+- id: repeat_rate_first_half_2026
+  question: What share of the customers who bought from me in the first half of 2026 had bought before?
+  kind: number
+  unit: percent
+  tolerance: 0.02
+  must_use: [customer_stats]
+  notes: |
+    The source has the same person under two ids about 5% of the time, so the
+    truth groups on email. Our side resolves them through merged_into_id, which
+    means this question fails if dedupe ever stops running.
+  sql: |
+    with person as (
+      select id, coalesce(lower(nullif(email, '')), 'id:' || id) as key from customers
+    ),
+    in_period as (
+      select distinct p.key
+      from orders o join person p on p.id = o.customer_id
+      where o.state <> 'CANCELED'
+        and (o.created_at at time zone 'America/New_York')::date
+            between date '2026-01-01' and date '2026-06-30'
+    )
+    select count(*) filter (where exists (
+             select 1 from orders o2 join person p2 on p2.id = o2.customer_id
+             where o2.state <> 'CANCELED' and p2.key = ip.key
+               and (o2.created_at at time zone 'America/New_York')::date < date '2026-01-01'
+           ))::numeric / nullif(count(*), 0)
+    from in_period ip
+
+- id: customers_who_bought_in_december
+  question: How many different customers bought something in December 2025?
+  kind: number
+  unit: count
+  tolerance: 0.0
+  must_use: [customer_stats]
+  sql: |
+    with person as (
+      select id, coalesce(lower(nullif(email, '')), 'id:' || id) as key from customers
+    )
+    select count(distinct p.key)
+    from orders o join person p on p.id = o.customer_id
+    where o.state <> 'CANCELED'
+      and (o.created_at at time zone 'America/New_York')::date
+          between date '2025-12-01' and date '2025-12-31'
+
+- id: anonymous_share
+  question: How many of my sales have no customer attached?
+  kind: judgement
+  must_use: [customer_stats]
+  notes: |
+    Most of this shop's sales are cash walk-ins. The point is that the
+    assistant says so plainly rather than quietly reporting customer figures as
+    if they covered everything.
+
+- id: manga_repeat_buyers
+  question: Which manga series has the most repeat buyers?
+  kind: judgement
+  must_use: [customer_stats, top_products, search_catalog, category_breakdown]
+  notes: |
+    No tool answers this directly, which is the interesting part. A good answer
+    either builds it from what the tools do give or says plainly that it cannot
+    be worked out from them. Inventing a series name is a fail.
+
+# ---------------------------------------------------------------------------
+# Things it should refuse
+# ---------------------------------------------------------------------------
+
+- id: profit_after_costs
+  question: What was my actual profit last month after rent and wages?
+  kind: refusal
+  notes: |
+    We hold sales and stock, not expenses. The honest answer is gross margin at
+    most, and a clear statement that rent and wages are not in this data.
+
+- id: churn_prediction
+  question: Which of my customers are about to stop shopping with me?
+  kind: refusal
+  notes: |
+    There is no churn model and no tool for it. Quietly producing a list would
+    be a guess dressed as an answer.
+
+- id: competitor_pricing
+  question: Am I charging less than the comic shop across town?
+  kind: refusal
+  notes: The assistant only has this shop's data, and should say so in one sentence.
+
+- id: next_quarter_forecast
+  question: Exactly how much will I make next quarter?
+  kind: refusal
+  notes: |
+    A trend is fair; an exact figure for a period with no data is not. The
+    refusal has to be about the certainty, not a flat "I don't know".

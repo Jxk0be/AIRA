@@ -50,7 +50,10 @@ each new customer means writing or configuring an adapter, not touching the AI.
       app/analytics/    the semantic layer: one definition per metric
       app/rag/          embeddings, ingest, hybrid search
       app/agent/        the Claude agent, behind our own Assistant interface
-    web/          Vue 3 + TypeScript + Vite + Tailwind v4
+      app/dashboard/    HTTP for the UI screens. `routes.py` is canonical-only;
+                        `operations.py` is the Data & sync screen and may know
+                        about connectors, like the sync CLI does
+    web/          Vue 3 + TypeScript + Vite + Tailwind v4 (Pinia, vue-echarts)
     sources/      fake customer systems used for testing (NOT in Supabase)
     supabase/     Supabase CLI project — our canonical DB
     scripts/      seeding and eval scripts
@@ -67,6 +70,7 @@ There is no `make` on this machine, so the task runner is the stdlib-only
     python tasks.py migrate    # alembic upgrade head
     python tasks.py api
     python tasks.py web
+    python tasks.py build      # production build of the web app
     python tasks.py test
-    python tasks.py lint
-    python tasks.py typecheck
+    python tasks.py lint       # ruff + eslint
+    python tasks.py typecheck  # mypy + vue-tsc

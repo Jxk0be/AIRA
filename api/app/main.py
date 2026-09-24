@@ -11,7 +11,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy import text
 
+from app.agent.routes import router as agent_router
 from app.config import get_settings
+from app.dashboard import dashboard_router, operations_router
 from app.db import dispose_engine, get_sessionmaker
 from app.rag.routes import router as rag_router
 
@@ -71,7 +73,10 @@ async def _check_database() -> DatabaseHealth:
     )
 
 
+app.include_router(dashboard_router)
+app.include_router(operations_router)
 app.include_router(rag_router)
+app.include_router(agent_router)
 
 
 @app.get("/health", response_model=Health)
