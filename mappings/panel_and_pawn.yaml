@@ -1,0 +1,167 @@
+# Panel & Pawn — comics and board games, Knoxville.
+#
+# Their "system" is a spreadsheet somebody exports from the register. This file
+# is the entire integration: no code was written for this customer.
+#
+# Reviewed by: (your name here)
+# Drafted by `python -m app.onboard draft-mapping`, then edited by hand.
+
+version: 1
+source: panel_and_pawn
+display_name: Panel & Pawn (spreadsheet export)
+
+workbook: sources/spreadsheet_shop/export/panel_and_pawn.xlsx
+
+# What this source can honestly answer. Each `false` here switches off a tool
+# for this tenant and a widget on their dashboard — which is the point. The
+# alternative is a confident wrong number.
+capabilities:
+  # Costs exist for about half the catalog, on the Inventory sheet. Margin is
+  # reported with its coverage stated; board games have no cost at all, so
+  # margin for that category is refused rather than guessed.
+  has_costs: true
+  # There is no customer column anywhere in the file.
+  has_customers: false
+  # Only a current stock count. No receiving, no adjustments, no history.
+  has_inventory_history: false
+  multi_location: false
+  has_online_channel: false
+  # A file, not an API. Every sync re-reads the whole export.
+  supports_incremental: false
+
+notes:
+  - The export records a date but no time of day, so sales are placed at midday
+    in the shop's timezone. Hour-of-day questions cannot be answered.
+  - There are no SKUs. Items are matched between the sales and inventory sheets
+    on their name, which is typed inconsistently, so matching is case- and
+    whitespace-insensitive.
+  - About half the catalog has no cost recorded, and none of the board games do,
+    so margin is reported with its coverage stated and cannot be answered at all
+    for board games.
+  - The file keeps no cost history. The cost on a past sale is the item's cost as
+    it stands on the Inventory sheet today.
+
+settings:
+  timezone: America/New_York
+  currency: USD
+  assumed_time_of_day: "12:00"
+  # Every export ends with a summary line. It is not a sale, and counting it
+  # would roughly double the shop's revenue.
+  skip_rows_matching: ["TOTAL", "SUBTOTAL", "GRAND TOTAL"]
+
+sheets:
+  # One sheet per year, same shape. The regex picks up next year's without an
+  # edit to this file.
+  sales:
+    match: "^Sales \\d{4}$"
+    header_row: 1
+  inventory:
+    match: "^Inventory$"
+    header_row: 1
+
+entities:
+  # The file never mentions a location, so the single shop is synthesised.
+  locations:
+    constant:
+      - external_id: MAIN
+        name: Panel & Pawn
+        timezone: America/New_York
+
+  categories:
+    from: sales
+    distinct_by: { column: Category, transforms: [fold_key] }
+    # 9% of rows have no category. Those products end up uncategorised, which
+    # the data quality report tells the owner about.
+    skip_when_blank: [Category]
+    fields:
+      external_id: { column: Category, transforms: [fold_key, { hash_id: { prefix: "cat_" } }] }
+      name: { column: Category, transforms: [trim] }
+
+  products:
+    from: sales
+    # Grouping on the folded name is what stops "IRON GUTTER #3", "iron gutter
+    # #3" and " Iron Gutter #3" becoming three products. Within a group the
+    # most common spelling wins the display name.
+    distinct_by: { column: Item Desc, transforms: [fold_key] }
+    fields:
+      external_id: { column: Item Desc, transforms: [fold_key, { hash_id: { prefix: "prd_" } }] }
+      name: { column: Item Desc, transforms: [trim] }
+      category_external_id:
+        { column: Category, transforms: [fold_key, { hash_id: { prefix: "cat_" } }] }
+
+  # One variant per product: this shop does not sell sizes or conditions, but
+  # everything downstream still expects the variant to be the sellable thing.
+  variants:
+    from: sales
+    distinct_by: { column: Item Desc, transforms: [fold_key] }
+    fields:
+      external_id: { column: Item Desc, transforms: [fold_key, { hash_id: { prefix: "var_" } }] }
+      product_external_id:
+        { column: Item Desc, transforms: [fold_key, { hash_id: { prefix: "prd_" } }] }
+      name: { column: Item Desc, transforms: [trim] }
+      price: { column: Unit Price, transforms: [parse_money] }
+      # Cost lives on the other sheet, and the only thing joining them is the
+      # name. Blank stays blank: a missing cost is data, not a zero.
+      cost:
+        lookup:
+          sheet: inventory
+          key: Item
+          value: Cost
+          match_on: Item Desc
+        transforms: [parse_money]
+
+  orders:
+    from: sales
+    # Rows sharing a receipt number are one sale. About 2% of rows have no
+    # receipt number; those become single-line orders of their own rather than
+    # being merged into one enormous unnumbered sale.
+    group_by: { column: "Receipt #", transforms: [trim] }
+    fields:
+      external_id: { column: "Receipt #", transforms: [trim] }
+      # A date with no clock. `at_time` places it at midday local and converts
+      # to UTC, so it buckets onto the right local day.
+      placed_at:
+        column: Date
+        transforms:
+          - { parse_date: { formats: ["%m/%d/%y", "%m/%d/%Y", "%Y-%m-%d"] } }
+          - at_time
+      location_external_id: { constant: MAIN }
+      status: { constant: completed }
+      # Everything in this file was rung up at the counter.
+      channel: { constant: in_store }
+    lines:
+      fields:
+        # Built on the group, not on the receipt column: 2% of rows have no
+        # receipt number, and two such rows selling the same item would
+        # otherwise land on one id and silently become a single line.
+        external_id:
+          concat:
+            - { group_key: true }
+            - { constant: ":" }
+            - { column: Item Desc, transforms: [fold_key] }
+        variant_external_id:
+          { column: Item Desc, transforms: [fold_key, { hash_id: { prefix: "var_" } }] }
+        name_snapshot: { column: Item Desc, transforms: [trim] }
+        quantity: { column: Qty Sold, transforms: [to_decimal] }
+        unit_price: { column: Unit Price, transforms: [parse_money] }
+        discount: { column: Discount, transforms: [parse_money] }
+        note: { column: Notes, transforms: [trim] }
+        # The only cost this shop has is today's, on the Inventory sheet — the
+        # file keeps no cost history. Using it is the best available answer and
+        # is stated as such in `notes`, so margin is reported with a caveat
+        # rather than either guessed at or silently unavailable. Items with no
+        # cost stay null, which is what keeps board games out of margin.
+        unit_cost_snapshot:
+          lookup:
+            sheet: inventory
+            key: Item
+            value: Cost
+            match_on: Item Desc
+          transforms: [parse_money]
+
+  inventory_levels:
+    from: inventory
+    fields:
+      variant_external_id: { column: Item, transforms: [fold_key, { hash_id: { prefix: "var_" } }] }
+      location_external_id: { constant: MAIN }
+      on_hand: { column: On Hand, transforms: [to_decimal] }

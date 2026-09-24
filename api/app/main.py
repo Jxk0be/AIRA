@@ -13,6 +13,7 @@ from sqlalchemy import text
 
 from app.config import get_settings
 from app.db import dispose_engine, get_sessionmaker
+from app.rag.routes import router as rag_router
 
 
 @asynccontextmanager
@@ -68,6 +69,9 @@ async def _check_database() -> DatabaseHealth:
         pgvector=vector_version is not None,
         pgvector_version=vector_version,
     )
+
+
+app.include_router(rag_router)
 
 
 @app.get("/health", response_model=Health)

@@ -53,4 +53,4 @@ def load_builtin_adapters() -> None:
     Called by the sync CLI and the API's startup. Importing `app.connectors`
     alone deliberately does not drag in every vendor SDK.
     """
-    from app.connectors.adapters import registerone  # noqa: F401
+    from app.connectors.adapters import mapping, registerone  # noqa: F401

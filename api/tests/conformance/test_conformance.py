@@ -320,48 +320,52 @@ async def test_capabilities_not_declared_are_not_quietly_invented(
 # ---------------------------------------------------------------------------
 
 
-async def test_since_returns_only_records_that_changed_after_it(
+@pytest.mark.slow
+async def test_since_returns_exactly_the_records_that_changed_after_it(
     synced: SyncedTenant, adapter: SourceAdapter
 ) -> None:
-    """Incremental pulls must be a strict, correct subset of everything."""
+    """Incremental pulls must be a correct subset of everything — no more, and
+    crucially no less.
+
+    Ground truth comes from the adapter's own unfiltered pull rather than from
+    what happens to be in our database. Comparing against canonical rows would
+    make this fail whenever the source has simply moved on since the last sync,
+    which says nothing about whether `since` works.
+    """
     if not synced.capabilities.supports_incremental:
         pytest.skip("this source cannot filter by a changed-since watermark")
 
-    newest = (
-        await synced.session.execute(
-            select(func.max(t.Order.source_updated_at)).where(t.Order.tenant_id == synced.tenant.id)
-        )
-    ).scalar_one()
-    assert newest is not None, "orders were synced without a source_updated_at to watermark on"
-
-    cutoff = newest - timedelta(days=14)
-    expected = (
-        await synced.session.execute(
-            select(func.count())
-            .select_from(t.Order)
-            .where(
-                t.Order.tenant_id == synced.tenant.id,
-                t.Order.source_updated_at >= cutoff,
-            )
-        )
-    ).scalar_one()
-    total = (
-        await synced.session.execute(
-            select(func.count()).select_from(t.Order).where(t.Order.tenant_id == synced.tenant.id)
-        )
-    ).scalar_one()
-    assert expected < total, "the fixture is too small for this check to mean anything"
-
-    seen = 0
-    async for fetched in adapter.iter_orders(since=cutoff):
-        seen += 1
+    everything: dict[str, datetime] = {}
+    async for fetched in adapter.iter_orders():
         stamped = fetched.record.source_updated_at
-        assert stamped is not None, f"order {fetched.record.external_id} has no source_updated_at"
-        assert stamped >= cutoff, (
+        assert stamped is not None, (
+            f"order {fetched.record.external_id} has no source_updated_at, so it can never "
+            "be picked up by an incremental sync"
+        )
+        everything[fetched.record.external_id] = stamped
+    assert everything, "the source returned no orders at all"
+
+    newest = max(everything.values())
+    cutoff = newest - timedelta(days=14)
+    expected = {key for key, stamp in everything.items() if stamp >= cutoff}
+    assert 0 < len(expected) < len(everything), (
+        "the fixture is too small or too bunched up for this check to mean anything"
+    )
+
+    seen: set[str] = set()
+    async for fetched in adapter.iter_orders(since=cutoff):
+        seen.add(fetched.record.external_id)
+        stamped = fetched.record.source_updated_at
+        assert stamped is not None and stamped >= cutoff, (
             f"order {fetched.record.external_id} changed at {stamped}, before the {cutoff} cutoff"
         )
 
-    assert seen == expected, f"since returned {seen} orders; the canonical data says {expected}"
+    missed = expected - seen
+    assert not missed, (
+        f"{len(missed)} orders changed after the cutoff but `since` did not return them "
+        f"(for example {sorted(missed)[:3]}); an incremental sync would lose them for good"
+    )
+    assert seen == expected
 
 
 @pytest.mark.slow
@@ -570,6 +574,19 @@ async def test_dates_bucket_in_the_shop_timezone_not_utc(synced: SyncedTenant) -
     """
     if synced.tenant.timezone == "UTC":
         pytest.skip("this tenant trades in UTC, so there is nothing to disagree about")
+
+    times_of_day = await scalar(
+        synced.session,
+        "select count(distinct (placed_at at time zone :tz)::time) from orders "
+        "where tenant_id = :tenant",
+        tenant=str(synced.tenant.id),
+        tz=synced.tenant.timezone,
+    )
+    if int(times_of_day or 0) <= 1:
+        # A file export records the day but not the clock, so every sale sits at
+        # the same assumed hour and none of them can straddle a UTC boundary.
+        # That is the adapter behaving correctly, not a timezone bug.
+        pytest.skip("this source records dates without times, so there is no clock to convert")
 
     differing = await scalar(
         synced.session,

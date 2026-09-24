@@ -64,6 +64,7 @@ SPEC: tuple[EnvVar, ...] = (
     EnvVar("EMBEDDING_PROVIDER", "Embeddings"),
     EnvVar("EMBEDDING_MODEL", "Embeddings"),
     EnvVar("EMBEDDING_DIM", "Embeddings", hint="must stay 1024; the chunks table is migrated"),
+    EnvVar("EMBEDDING_MAX_RPM", "Embeddings", hint="0 = no pacing; 3 suits a free Voyage account"),
     EnvVar("API_HOST", "API server"),
     EnvVar("API_PORT", "API server"),
     EnvVar("CORS_ORIGINS", "API server"),

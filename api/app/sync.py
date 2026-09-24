@@ -27,6 +27,8 @@ from app.connectors.dev_tenants import ensure_dev_tenant
 from app.connectors.secrets import resolve
 from app.connectors.sync import SyncEngine, SyncReport
 from app.db import dispose_engine, get_sessionmaker
+from app.rag.embeddings import EmbeddingError
+from app.rag.ingest import IngestReport, ingest_tenant
 
 
 async def load_tenant(session: AsyncSession, slug: str) -> tuple[t.Tenant, t.Integration]:
@@ -55,6 +57,21 @@ async def load_tenant(session: AsyncSession, slug: str) -> tuple[t.Tenant, t.Int
 def build_adapter(integration: t.Integration) -> object:
     registry.load_builtin_adapters()
     return registry.build(integration.adapter, integration.config, resolve(integration.secret_ref))
+
+
+async def reindex(session: AsyncSession, tenant: t.Tenant) -> IngestReport | None:
+    """Re-embed whatever the sync changed.
+
+    Runs here rather than inside the sync engine: `app.connectors` must not
+    import the AI layer, and this CLI is above both. A failure is reported and
+    swallowed — a shop whose embedding provider is down has still had its sales
+    synced, and every number on the dashboard still works.
+    """
+    try:
+        return await ingest_tenant(session, tenant)
+    except EmbeddingError as exc:
+        print(f"\n  Retrieval index not updated: {exc}")
+        return None
 
 
 def print_report(report: SyncReport, quality: QualityReport | None) -> None:
@@ -93,6 +110,11 @@ async def main(argv: list[str] | None = None) -> int:
         help=f"comma-separated subset of: {', '.join(ENTITIES)}",
     )
     parser.add_argument("--health", action="store_true", help="check the connection and stop")
+    parser.add_argument(
+        "--no-embed",
+        action="store_true",
+        help="skip re-indexing for search (no embedding calls)",
+    )
     parser.add_argument("-v", "--verbose", action="store_true")
     args = parser.parse_args(argv)
 
@@ -124,8 +146,16 @@ async def main(argv: list[str] | None = None) -> int:
                 await adapter.aclose()  # type: ignore[attr-defined]
 
             quality = await build_report(session, tenant, integration)
+            indexed = None
+            if report.ok and not args.no_embed:
+                indexed = await reindex(session, tenant)
             await session.commit()
+
             print_report(report, quality)
+            if indexed is not None:
+                print("\n  Retrieval index")
+                for line in indexed.lines():
+                    print(f"    {line}")
             return 0 if report.ok else 1
     finally:
         await dispose_engine()

@@ -299,6 +299,24 @@ class SyncEngine:
         if not rows:
             return 0
         keys = conflict or ("tenant_id", "source", "external_id")
+
+        # Postgres refuses an ON CONFLICT DO UPDATE that would touch the same
+        # row twice in one statement, so collapse duplicates here. A source
+        # with real ids never produces them; a spreadsheet with no ids at all
+        # produces them the moment two rows describe the same thing. Last one
+        # wins, and the count is logged rather than swallowed.
+        seen: dict[tuple[Any, ...], dict[str, Any]] = {}
+        for row in rows:
+            seen[tuple(row[key] for key in keys)] = row
+        if len(seen) != len(rows):
+            log.warning(
+                "%s: %s rows collapsed onto %s distinct keys in one batch",
+                table.name,
+                len(rows),
+                len(seen),
+            )
+        rows = list(seen.values())
+
         now = datetime.now(tz=UTC)
         statement = insert(table).values(rows)
         updatable = {

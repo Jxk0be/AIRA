@@ -11,11 +11,16 @@ There is no `make` on Windows, so this stdlib-only script plays its part:
     python tasks.py sources    # start the fake customer systems (docker compose)
     python tasks.py sources-stop
     python tasks.py seed       # fill RegisterOne with 18 months of history
+    python tasks.py export     # regenerate the Panel & Pawn spreadsheet export
     python tasks.py simulate-day
     python tasks.py sources-test
     python tasks.py backfill    # sync a tenant from its source system
     python tasks.py incremental
     python tasks.py conformance # the suite every adapter must pass
+    python tasks.py ingest      # embed a tenant's catalogue and documents
+    python tasks.py documents   # upload the fake shops' policies and FAQs
+    python tasks.py reembed
+    python tasks.py eval-retrieval
     python tasks.py api
     python tasks.py web
     python tasks.py test
@@ -35,6 +40,7 @@ ROOT = Path(__file__).resolve().parent
 API = ROOT / "api"
 WEB = ROOT / "web"
 REGISTERONE = ROOT / "sources" / "registerone"
+SPREADSHEET_SHOP = ROOT / "sources" / "spreadsheet_shop"
 
 # The Supabase CLI is not installed globally here; npx fetches the pinned binary.
 SUPABASE = ["npx", "--yes", "supabase@latest"]
@@ -72,6 +78,9 @@ def task_setup(argv: list[str]) -> int:
     code = uv(["sync", "--all-groups"], cwd=REGISTERONE)
     if code:
         return code
+    code = uv(["sync", "--all-groups"], cwd=SPREADSHEET_SHOP)
+    if code:
+        return code
     return npm(["install"])
 
 
@@ -91,6 +100,11 @@ def task_sources_logs(argv: list[str]) -> int:
 def task_seed(argv: list[str]) -> int:
     """Eighteen months of Tsundoku & Tabletop history, plus a summary."""
     return uv(["run", "python", "-m", "registerone.seed", "--reset", *argv], cwd=REGISTERONE)
+
+
+def task_export(argv: list[str]) -> int:
+    """Regenerate Panel & Pawn's messy spreadsheet export."""
+    return uv(["run", "python", "-m", "panelpawn.generate", *argv], cwd=SPREADSHEET_SHOP)
 
 
 def task_simulate_day(argv: list[str]) -> int:
@@ -123,6 +137,40 @@ def task_backfill(argv: list[str]) -> int:
 
 def task_incremental(argv: list[str]) -> int:
     return _sync("incremental", argv)
+
+
+def task_ingest(argv: list[str]) -> int:
+    """Embed a tenant's catalogue and documents. Cheap to repeat: unchanged
+    chunks are skipped and cost nothing."""
+    tenant = argv[0] if argv and not argv[0].startswith("-") else "tsundoku"
+    rest = argv[1:] if argv and not argv[0].startswith("-") else argv
+    return uv(["run", "python", "-m", "app.rag.cli", "--tenant", tenant, *rest])
+
+
+def task_documents(argv: list[str]) -> int:
+    """Upload the fake shops' policies and FAQs, then index them."""
+    for slug in ("tsundoku", "panel_and_pawn"):
+        folder = ROOT / "sources" / "documents" / slug
+        if not folder.is_dir():
+            continue
+        code = uv(
+            ["run", "python", "-m", "app.rag.cli", "--tenant", slug, "--load", str(folder), *argv]
+        )
+        if code:
+            return code
+    return 0
+
+
+def task_reembed(argv: list[str]) -> int:
+    """Re-embed everything, for when the model or the dimension changes."""
+    tenant = argv[0] if argv and not argv[0].startswith("-") else "tsundoku"
+    rest = argv[1:] if argv and not argv[0].startswith("-") else argv
+    return uv(["run", "python", "-m", "app.rag.reembed", "--tenant", tenant, *rest])
+
+
+def task_eval_retrieval(argv: list[str]) -> int:
+    """hit@5 for vector-only, text-only and hybrid, on every fake shop."""
+    return uv(["run", "python", str(ROOT / "scripts" / "eval_retrieval.py"), *argv])
 
 
 def task_conformance(argv: list[str]) -> int:
@@ -179,9 +227,14 @@ TASKS = {
     "sources-logs": task_sources_logs,
     "sources-test": task_sources_test,
     "seed": task_seed,
+    "export": task_export,
     "backfill": task_backfill,
     "incremental": task_incremental,
     "conformance": task_conformance,
+    "ingest": task_ingest,
+    "documents": task_documents,
+    "reembed": task_reembed,
+    "eval-retrieval": task_eval_retrieval,
     "simulate-day": task_simulate_day,
     "db": task_db,
     "db-stop": task_db_stop,

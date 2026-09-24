@@ -1,0 +1,69 @@
+# Retrieval golden set — Panel & Pawn
+#
+# The harder of the two, and the more useful. Panel & Pawn's export has no
+# product descriptions at all, so every catalogue chunk is a name, a category, a
+# price and a shelf count. Anything that works here works on the thinnest data a
+# real customer is likely to hand over.
+
+- query: board game for two players
+  expect: [Questions we get asked]
+  note: only the FAQ knows this; no product record says how many players
+
+- query: comic about a brass cathedral
+  expect: [Brass Cathedral]
+
+- query: Iron Gutter issue 3
+  expect: ["Iron Gutter #3"]
+
+- query: Nocturne Mile omnibus
+  expect: [nocturne mile omnibus]
+  note: lower-cased in the source export, on purpose
+
+- query: The Quiet Siege collected edition
+  expect: ["The Quiet Siege: Complete"]
+
+- query: Dead Letter Club collected
+  expect: [Dead Letter Club Vol. 1]
+
+- query: Glasshouse Saints first issue
+  expect: ["Glasshouse Saints #1"]
+
+- query: dice
+  expect: [Dice Set]
+
+- query: bags and boards for comics
+  expect: [Comic Bags & Boards]
+
+- query: somewhere to store my back issues
+  expect: [Comic Storage Box]
+
+- query: sleeves for board games
+  expect: [Board Game Sleeves]
+
+- query: roleplaying rulebook
+  expect: [Hollow Crown RPG Core Rulebook]
+
+- query: Salt Road
+  expect: [Salt Road]
+
+- query: a game about trading on the coast
+  expect: [Harborline, Salt Road, Tidewreck]
+  note: semantic guess against names alone — thin content, and it should still land
+
+- query: can I return a board game I already opened
+  expect: [Store policies]
+
+- query: do you buy comics
+  expect: [Questions we get asked]
+
+- query: trade in my old board games
+  expect: [Store policies, Questions we get asked]
+
+- query: when do new comics arrive
+  expect: [Questions we get asked, Store policies]
+
+- query: what are your opening hours
+  expect: [Store policies]
+
+- query: can I try a game before buying it
+  expect: [Store policies, Questions we get asked]

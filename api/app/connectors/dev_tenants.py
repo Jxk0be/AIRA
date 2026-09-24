@@ -49,6 +49,19 @@ DEV_TENANTS: dict[str, DevTenant] = {
         secret_ref="env:REGISTERONE_TOKEN",
         settings={"low_stock_threshold": 3, "dead_stock_days": 90},
     ),
+    "panel_and_pawn": DevTenant(
+        slug="panel_and_pawn",
+        name="Panel & Pawn",
+        timezone="America/New_York",
+        currency="USD",
+        # Same adapter every table-shaped customer uses. What makes this one
+        # Panel & Pawn is the mapping file, not any code.
+        adapter="mapping",
+        source="panel_and_pawn",
+        config={"mapping_file": "mappings/panel_and_pawn.yaml"},
+        secret_ref=None,
+        settings={"low_stock_threshold": 2, "dead_stock_days": 120},
+    ),
 }
 
 
@@ -76,7 +89,12 @@ async def ensure_dev_tenant(session: AsyncSession, slug: str) -> tuple[t.Tenant,
         await session.flush()
 
     registry.load_builtin_adapters()
-    info = registry.describe(spec.adapter)
+    if spec.adapter == "mapping":
+        # This adapter has no fixed capabilities: they are whatever the
+        # customer's mapping file declares, so it has to be built to be asked.
+        capabilities = registry.build(spec.adapter, spec.config).describe().capabilities
+    else:
+        capabilities = registry.describe(spec.adapter).capabilities
 
     integration = (
         await session.execute(
@@ -93,12 +111,12 @@ async def ensure_dev_tenant(session: AsyncSession, slug: str) -> tuple[t.Tenant,
             source=spec.source,
             config=spec.config,
             secret_ref=spec.secret_ref,
-            capabilities=info.capabilities.model_dump(),
+            capabilities=capabilities.model_dump(),
         )
         session.add(integration)
     else:
         # The adapter is the authority on what it can do; a stale row is not.
-        integration.capabilities = info.capabilities.model_dump()
+        integration.capabilities = capabilities.model_dump()
         integration.config = spec.config
         integration.secret_ref = spec.secret_ref
 

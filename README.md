@@ -47,6 +47,7 @@ database is reachable and whether pgvector is enabled.
 | `python tasks.py db` / `db-stop` / `db-reset` | Local Supabase stack |
 | `python tasks.py sources` / `sources-stop` | Fake customer systems (docker compose) |
 | `python tasks.py seed` | 18 months of RegisterOne history, with a summary |
+| `python tasks.py export` | Regenerate the Panel & Pawn spreadsheet export |
 | `python tasks.py simulate-day` | One more day of sales, for incremental sync |
 | `python tasks.py sources-test` | RegisterOne's own API test suite |
 | `python tasks.py backfill [tenant]` | Sync a tenant from its source system |
@@ -72,6 +73,10 @@ globally.
 | `api/app/agent/` | The Claude agent, behind our own Assistant interface |
 | `web/` | Vue 3 + TypeScript + Vite + Tailwind v4 |
 | `sources/registerone/` | A fictional cloud POS to test adapters against — deliberately *not* in Supabase |
+| `sources/spreadsheet_shop/` | A second fake customer whose whole system is a messy Excel export |
+| `mappings/` | One YAML per table-shaped customer. This *is* their integration |
+| `sources/documents/` | The policies and FAQs the fake shops uploaded — not from any POS |
+| `scripts/evals/` | Golden sets: what good retrieval looks like, per shop |
 | `docs/canonical-model.md` | Read this before writing an adapter |
 
 `CLAUDE.md` holds the standing rules that keep the AI core platform-blind.
@@ -133,6 +138,125 @@ python tasks.py incremental   # ~5s, only the new day
 python tasks.py conformance
 ```
 
+## The second test customer
+
+**Panel & Pawn** is a comics and board game shop whose entire system is a
+spreadsheet somebody exports from the register. It exists to prove the core is
+genuinely platform-blind: no API, no ids, no cents, no cursors, no customers, no
+history. The same conformance suite runs against it unchanged — the checks its
+capabilities rule out are skipped, not failed.
+
+Nothing was written in code for this customer.
+[`mappings/panel_and_pawn.yaml`](mappings/panel_and_pawn.yaml) is the entire
+integration; [QUIRKS.md](sources/spreadsheet_shop/QUIRKS.md) lists the sixteen
+traps in the file and how each is handled in config.
+
+```bash
+python tasks.py export
+python tasks.py backfill panel_and_pawn
+python tasks.py conformance          # runs against both adapters
+```
+
+And for a customer you have never seen, Claude writes the first draft of that
+YAML — with a comment on every field and a `TODO(review):` on everything it is
+unsure about:
+
+```bash
+python -m app.onboard draft-mapping --file their-export.xlsx --tenant their_slug --dry-run
+```
+
+It never runs the mapping and never overwrites a reviewed one. `--dry-run`
+prints the exact prompt first, because this puts a sample of a customer's data
+into an API request.
+
+## The semantic layer
+
+Every number in this product comes out of `api/app/analytics`. The dashboard
+endpoints and the agent's tools will both be thin wrappers over these
+functions, so "net sales" cannot come to mean one thing in a chart and another
+in a sentence.
+
+```python
+ctx = await load_context(session, "tsundoku")          # timezone + capabilities
+summary = await sales_summary(session, ctx, ctx.month(2025, 12))
+summary.net_sales                                      # Decimal("18534.57")
+```
+
+Three rules hold across all of it:
+
+* **Periods are shop days.** A range is calendar days in the tenant's own
+  timezone, converted to UTC instants in one place. The day the clocks go back
+  is twenty-five hours long and a day's takings are all of them.
+* **Results carry caveats.** Margin says what share of sales it covers, a
+  product breakdown says it is before refunds, a total says how much of it was
+  rung up as a custom amount with no product attached.
+* **A missing capability refuses.** Ask Panel & Pawn for a repeat rate and you
+  get `CapabilityUnavailable` with a sentence for the owner — never a 0% that
+  reads as "nobody comes back".
+
+Each metric's plain-English definition lives in
+[`definitions.py`](api/app/analytics/definitions.py); the agent puts those
+strings in its tool descriptions, so it can explain any number it reports.
+
+```bash
+python tasks.py test -k analytics   # every metric, recomputed against registerone_db
+```
+
+## Retrieval
+
+Numbers come from the semantic layer. Everything else — what a product is, what
+the returns policy says, when the next draft night is — comes from
+`api/app/rag`, which indexes canonical products and uploaded documents into one
+`chunks` table and searches it with pgvector and Postgres full-text together.
+
+```bash
+python tasks.py documents        # upload the fake shops' policies and FAQs
+python tasks.py ingest           # embed a tenant's catalogue and documents
+python tasks.py eval-retrieval   # hit@5 for vector-only, text-only and hybrid
+```
+
+Ingest runs automatically after every sync, and that is only affordable because
+it costs nothing when nothing changed: each chunk stores a hash of its text plus
+the model that embedded it, so a sync that changed three prices embeds three
+chunks and a sync that changed nothing embeds none.
+
+    tsundoku — ingest (voyage-4@1024)
+      products 230   documents 3
+      embedded 0   unchanged 236   removed 0
+      0 embedding requests, 0 tokens
+
+Search fuses two rankers with reciprocal rank fusion inside one SQL function,
+so the dashboard, the agent and the evals cannot drift apart on what "search"
+means. The two halves fail in opposite directions, which is the whole argument
+for having both: an embedding finds "cosy manga set in a coffee shop" and
+returns Ronin Barista, which never mentions coffee; full-text finds `MNG-SS-04`,
+which an embedding turns to mush.
+
+Measured on the golden sets in `scripts/evals/retrieval/`, hit@5:
+
+| Shop | vector | text | hybrid |
+| --- | --- | --- | --- |
+| Tsundoku & Tabletop | 95% | 95% | 95% |
+| Panel & Pawn | 75% | 80% | **95%** |
+
+Hybrid earns its keep where the data is thin. Panel & Pawn's export has no
+description column at all, so every catalogue chunk is a name, a category, a
+price and a shelf count — and that is where fusion adds twenty points. On a shop
+with real descriptions, vector search alone is already good, and hybrid matching
+it is the honest result rather than a disappointing one.
+
+Two details worth knowing:
+
+* **Vectors from different models are not comparable.** Every chunk records
+  `voyage-4@1024`, search filters on it, and changing the model or the
+  dimension makes every chunk stale by hash — so `python tasks.py reembed`
+  rebuilds rather than leaving a corpus half in one vector space and half in
+  another.
+* **A rate-limited account still works.** A Voyage key with no payment method
+  on it is capped at 3 requests and 10,000 tokens a minute. Set
+  `EMBEDDING_MAX_RPM=3` and the embedder paces itself, and halves a batch
+  whenever the provider says it was too large.
+
 ## Build status
 
 | Phase | State |
@@ -141,9 +265,9 @@ python tasks.py conformance
 | 2. Canonical model | Done |
 | 3. Test POS (RegisterOne) | Done |
 | 4. Adapter framework + conformance suite | Done |
-| 5. Mapping adapter (spreadsheet shop) | Not started |
-| 6. Semantic layer | Not started |
-| 7. Retrieval | Not started |
+| 5. Mapping adapter (spreadsheet shop) | Done |
+| 6. Semantic layer | Done |
+| 7. Retrieval | Done |
 | 8. Agent | Not started |
 | 9. Evals | Not started |
 | 10. Vue dashboard | Not started |

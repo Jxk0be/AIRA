@@ -33,6 +33,10 @@ class Settings(BaseSettings):
     embedding_provider: str = "voyage"
     embedding_model: str = "voyage-4"
     embedding_dim: int = 1024
+    # Requests per minute to hold the embedding provider to. 0 means no
+    # pacing; set it when the account has a low ceiling, so a big ingest waits
+    # its turn instead of burning its retries on 429s.
+    embedding_max_rpm: int = 0
 
     api_host: str = "127.0.0.1"
     api_port: int = 8000

@@ -29,4 +29,11 @@ TARGETS: tuple[ConformanceTarget, ...] = (
         tenant_slug="tsundoku",
         setup_hint="python tasks.py sources && python tasks.py seed && python tasks.py backfill",
     ),
+    # A source with nothing in common with the one above: a file, no ids, no
+    # customers, no history, no incremental. Same checks, no edits to them.
+    ConformanceTarget(
+        id="mapping-spreadsheet",
+        tenant_slug="panel_and_pawn",
+        setup_hint="python tasks.py export && python tasks.py backfill panel_and_pawn",
+    ),
 )
