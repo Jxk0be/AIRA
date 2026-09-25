@@ -1,7 +1,7 @@
 """Run the detectors for a shop and print what they found.
 
-    python -m app.insights.cli --tenant tsundoku
-    python -m app.insights.cli --tenant tsundoku --as-of 2026-09-23 --kind reorder
+    python -m app.insights.cli --tenant animanga_knox
+    python -m app.insights.cli --tenant animanga_knox --as-of 2026-09-23 --kind reorder
 
 The fast way to see whether a detector works against real fixture data without
 waiting for the worker's next round, and the thing to reach for when a finding
@@ -25,7 +25,7 @@ from app.insights.registry import known, load_builtin_detectors
 
 async def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--tenant", required=True, help="tenant slug, e.g. tsundoku")
+    parser.add_argument("--tenant", required=True, help="tenant slug, e.g. animanga_knox")
     parser.add_argument(
         "--as-of",
         type=date.fromisoformat,

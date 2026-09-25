@@ -26,7 +26,7 @@ class ConformanceTarget:
 TARGETS: tuple[ConformanceTarget, ...] = (
     ConformanceTarget(
         id="registerone",
-        tenant_slug="tsundoku",
+        tenant_slug="animanga_knox",
         setup_hint="python tasks.py sources && python tasks.py seed && python tasks.py backfill",
     ),
     # A source with nothing in common with the one above: a file, no ids, no

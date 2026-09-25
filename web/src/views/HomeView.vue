@@ -32,7 +32,7 @@ import WorthDoingList from '../components/WorthDoingList.vue'
 import { shopDate } from '../lib/format'
 import { useTenantStore } from '../stores/tenant'
 import UiButton from '../ui/UiButton.vue'
-import { withToast } from '../ui/toast'
+import { worked } from '../ui/toast'
 
 const route = useRoute()
 const shop = useTenantStore()
@@ -71,11 +71,11 @@ onMounted(load)
 watch([slug, days], load)
 
 async function unpin(chart: PinnedChart) {
-  const done = await withToast(() => api.unpinChart(slug.value, chart.id), {
+  const done = await worked(() => api.unpinChart(slug.value, chart.id), {
     success: `Unpinned “${chart.title}”`,
     failure: 'Could not unpin that',
   })
-  if (done !== undefined) pinned.value = pinned.value.filter((row) => row.id !== chart.id)
+  if (done) pinned.value = pinned.value.filter((row) => row.id !== chart.id)
 }
 
 /** Deduped: two widgets often carry the same caveat, and it needs saying once. */

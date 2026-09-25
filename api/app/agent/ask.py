@@ -1,6 +1,6 @@
 """Ask a shop's assistant something, from the terminal.
 
-    python -m app.agent.ask --tenant tsundoku "How did last December go?"
+    python -m app.agent.ask --tenant animanga_knox "How did last December go?"
     python -m app.agent.ask --tenant panel_and_pawn "What's my margin on board games?"
 
 The same code path the API uses, printed instead of streamed over HTTP. It is
@@ -24,7 +24,7 @@ from app.db import dispose_engine, get_sessionmaker
 
 async def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Ask a shop's assistant a question.")
-    parser.add_argument("--tenant", required=True, help="tenant slug, e.g. tsundoku")
+    parser.add_argument("--tenant", required=True, help="tenant slug, e.g. animanga_knox")
     parser.add_argument("question", help="what to ask")
     parser.add_argument("-v", "--verbose", action="store_true")
     args = parser.parse_args(argv)

@@ -40,7 +40,7 @@ services:
         condition: service_healthy
     environment:
       REGISTERONE_DSN: postgresql://registerone:registerone@registerone_db:5432/registerone
-      REGISTERONE_TOKEN: ro_test_tsundoku_2f8a41
+      REGISTERONE_TOKEN: ro_test_animanga_knox_2f8a41
       REGISTERONE_ADMIN_TOKEN: ro_admin_9c3e77
       # Requests per second before the API starts answering 429.
       REGISTERONE_RATE_LIMIT: "10"

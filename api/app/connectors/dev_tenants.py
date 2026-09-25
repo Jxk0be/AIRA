@@ -2,7 +2,7 @@
 
 Strictly a convenience for local work. Phase 11's `python -m app.onboard`
 replaces this with a real create-tenant / connect flow; until then this is what
-gives `python -m app.sync --tenant tsundoku` something to sync.
+gives `python -m app.sync --tenant animanga_knox` something to sync.
 
 Capabilities are never written by hand here: they come from the adapter's own
 `describe()`, so a tenant cannot claim something its adapter cannot do.
@@ -42,9 +42,9 @@ class DevTenant:
 
 
 DEV_TENANTS: dict[str, DevTenant] = {
-    "tsundoku": DevTenant(
-        slug="tsundoku",
-        name="Tsundoku & Tabletop",
+    "animanga_knox": DevTenant(
+        slug="animanga_knox",
+        name="Animanga Knox",
         timezone="America/New_York",
         currency="USD",
         adapter="registerone",
@@ -55,7 +55,7 @@ DEV_TENANTS: dict[str, DevTenant] = {
         },
         secret_ref="env:REGISTERONE_TOKEN",
         settings={"low_stock_threshold": 3, "dead_stock_days": 90},
-        digest_to="owner@tsundoku.example",
+        digest_to="owner@animanga_knox.example",
     ),
     "panel_and_pawn": DevTenant(
         slug="panel_and_pawn",

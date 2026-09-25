@@ -25,6 +25,25 @@ const screen = ref<DataScreen | null>(null)
 const jobs = ref<JobsScreen | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
+/** What this tab asked for, until the server's own running row catches up. */
+const asked = ref<'incremental' | 'backfill' | null>(null)
+
+/**
+ * Which sync is running, so the spinner sits on the button that started it.
+ *
+ * `syncing` is one boolean, and both buttons were reading it — so pressing
+ * "Re-read everything" spun *"Sync now"* and merely greyed out the button that
+ * had actually been pressed. The running row in the history says which mode it
+ * is, and that stays right when the sync was started in another tab or by
+ * somebody else. `asked` only covers the moment between the POST returning and
+ * that row appearing; when neither knows, nothing spins rather than the wrong
+ * thing spinning.
+ */
+const runningMode = computed(() =>
+  screen.value?.syncing
+    ? (screen.value.history.find((run) => run.status === 'running')?.mode ?? asked.value)
+    : null,
+)
 
 let poll: ReturnType<typeof setInterval> | undefined
 
@@ -52,11 +71,15 @@ function watchSync() {
   clearInterval(poll)
   poll = setInterval(async () => {
     await load()
-    if (!screen.value?.syncing) clearInterval(poll)
+    if (!screen.value?.syncing) {
+      clearInterval(poll)
+      asked.value = null
+    }
   }, 2000)
 }
 
 async function syncNow(mode: 'incremental' | 'backfill') {
+  asked.value = mode
   try {
     const started = await api.startSync(slug.value, mode)
     if (started.started) {
@@ -64,9 +87,13 @@ async function syncNow(mode: 'incremental' | 'backfill') {
       await load()
       watchSync()
     } else {
+      // Already running, or nothing to do. Either way this tab did not start
+      // it, so it must not claim the spinner.
+      asked.value = null
       toast.warning(started.detail)
     }
   } catch (cause) {
+    asked.value = null
     error.value = cause instanceof Error ? cause.message : String(cause)
   }
 }
@@ -175,11 +202,20 @@ const severityClass: Record<string, string> = {
     <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
       <p class="text-sm text-ink-muted">Everything on the other screens is read from here.</p>
       <div class="flex items-center gap-2">
-        <UiButton :loading="screen?.syncing" @click="syncNow('incremental')">
-          {{ screen?.syncing ? 'Syncing' : 'Sync now' }}
+        <UiButton
+          :loading="runningMode === 'incremental'"
+          :disabled="screen?.syncing"
+          @click="syncNow('incremental')"
+        >
+          {{ runningMode === 'incremental' ? 'Syncing' : 'Sync now' }}
         </UiButton>
-        <UiButton variant="secondary" :disabled="screen?.syncing" @click="syncNow('backfill')">
-          Re-read everything
+        <UiButton
+          variant="secondary"
+          :loading="runningMode === 'backfill'"
+          :disabled="screen?.syncing"
+          @click="syncNow('backfill')"
+        >
+          {{ runningMode === 'backfill' ? 'Re-reading' : 'Re-read everything' }}
         </UiButton>
       </div>
     </div>

@@ -24,7 +24,7 @@ from sqlalchemy.pool import NullPool
 from app.canonical import tables as t
 from app.canonical.enums import Channel, OrderStatus
 
-TENANT_SLUG = "tsundoku"
+TENANT_SLUG = "animanga_knox"
 SOURCE_DSN = os.environ.get(
     "REGISTERONE_DB_DSN",
     "postgresql+asyncpg://registerone:registerone@127.0.0.1:5433/registerone",
@@ -38,14 +38,14 @@ async def tenant(db: AsyncSession) -> t.Tenant:
         await db.execute(select(t.Tenant).where(t.Tenant.slug == TENANT_SLUG))
     ).scalar_one_or_none()
     if found is None:
-        pytest.skip("tsundoku is not synced; run `python tasks.py backfill`")
+        pytest.skip("animanga_knox is not synced; run `python tasks.py backfill`")
     orders = (
         await db.execute(
             select(func.count()).select_from(t.Order).where(t.Order.tenant_id == found.id)
         )
     ).scalar_one()
     if not orders:
-        pytest.skip("tsundoku has no orders; run `python tasks.py backfill`")
+        pytest.skip("animanga_knox has no orders; run `python tasks.py backfill`")
     return found
 
 

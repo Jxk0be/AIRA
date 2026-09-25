@@ -29,7 +29,7 @@ def baseline(values: list[str], **overrides: object) -> Baseline:
     centre = median(numbers)
     base: dict[str, object] = {
         "location_id": None,
-        "location_name": "Gay St",
+        "location_name": "Market Square",
         "weekday": 5,
         "observations": len(numbers),
         "median_net_sales": centre,
@@ -44,8 +44,8 @@ def baseline(values: list[str], **overrides: object) -> Baseline:
 def context(**settings: object) -> AnalyticsContext:
     return AnalyticsContext(
         tenant_id=uuid.uuid4(),
-        slug="tsundoku",
-        name="Tsundoku & Tabletop",
+        slug="animanga_knox",
+        name="Animanga Knox",
         timezone="America/New_York",
         currency="USD",
         capabilities=Capabilities(),

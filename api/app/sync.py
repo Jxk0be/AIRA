@@ -1,8 +1,8 @@
 """Sync a tenant from its source system.
 
-    python -m app.sync --tenant tsundoku --mode backfill
-    python -m app.sync --tenant tsundoku --mode incremental
-    python -m app.sync --tenant tsundoku --health
+    python -m app.sync --tenant animanga_knox --mode backfill
+    python -m app.sync --tenant animanga_knox --mode incremental
+    python -m app.sync --tenant animanga_knox --health
 
 Backfill pulls everything and soft-deletes whatever the source no longer
 returns. Incremental pulls only what changed since the last run's watermark.
@@ -103,7 +103,7 @@ def print_report(report: SyncReport, quality: QualityReport | None) -> None:
 
 async def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--tenant", required=True, help="tenant slug, e.g. tsundoku")
+    parser.add_argument("--tenant", required=True, help="tenant slug, e.g. animanga_knox")
     parser.add_argument("--mode", choices=[m.value for m in SyncMode], default="backfill")
     parser.add_argument(
         "--entities",

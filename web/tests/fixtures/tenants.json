@@ -1,5 +1,21 @@
 [
   {
+    "tenant": "animanga_knox",
+    "name": "Animanga Knox",
+    "timezone": "America/New_York",
+    "currency": "USD",
+    "capabilities": {
+      "has_costs": true,
+      "has_customers": true,
+      "has_inventory_history": true,
+      "multi_location": true,
+      "has_online_channel": true,
+      "supports_incremental": true,
+      "has_vendors": true,
+      "has_payments": true
+    }
+  },
+  {
     "tenant": "panel_and_pawn",
     "name": "Panel & Pawn",
     "timezone": "America/New_York",
@@ -13,22 +29,6 @@
       "supports_incremental": false,
       "has_vendors": false,
       "has_payments": false
-    }
-  },
-  {
-    "tenant": "tsundoku",
-    "name": "Tsundoku & Tabletop",
-    "timezone": "America/New_York",
-    "currency": "USD",
-    "capabilities": {
-      "has_costs": true,
-      "has_customers": true,
-      "has_inventory_history": true,
-      "multi_location": true,
-      "has_online_channel": true,
-      "supports_incremental": true,
-      "has_vendors": true,
-      "has_payments": true
     }
   }
 ]

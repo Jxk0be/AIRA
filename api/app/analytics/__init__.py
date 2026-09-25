@@ -9,7 +9,7 @@ which POS a tenant runs, and it must never import from `app.connectors`
 (CLAUDE.md rule 1). What a source can and cannot provide reaches it as
 capabilities on the tenant's context, which is canonical data.
 
-    ctx = await load_context(session, "tsundoku")
+    ctx = await load_context(session, "animanga_knox")
     summary = await sales_summary(session, ctx, ctx.last_days(30))
 """
 

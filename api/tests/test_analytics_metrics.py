@@ -29,7 +29,7 @@ from app.analytics import AnalyticsContext, DateRange, Filters
 from app.canonical import tables as t
 from app.monthend import build
 
-TENANT_SLUG = "tsundoku"
+TENANT_SLUG = "animanga_knox"
 SOURCE_DSN = os.environ.get(
     "REGISTERONE_DB_DSN",
     "postgresql+asyncpg://registerone:registerone@127.0.0.1:5433/registerone",

@@ -1,6 +1,6 @@
 """Re-embed everything for a tenant.
 
-    python -m app.rag.reembed --tenant tsundoku
+    python -m app.rag.reembed --tenant animanga_knox
 
 For when the model or the dimension changes. Ordinary ingest skips chunks whose
 content and model are unchanged, which is what keeps it free to run after every

@@ -37,7 +37,8 @@ import { useTenantStore } from '../stores/tenant'
 import UiBadge from '../ui/UiBadge.vue'
 import UiButton from '../ui/UiButton.vue'
 import UiSkeleton from '../ui/UiSkeleton.vue'
-import { toast, withToast } from '../ui/toast'
+import { useBusy } from '../lib/busy'
+import { toast, withToast, worked } from '../ui/toast'
 
 const route = useRoute()
 const shop = useTenantStore()
@@ -47,7 +48,9 @@ const screen = ref<ReorderScreen | null>(null)
 const orders = ref<PurchaseOrder[]>([])
 const open = ref<PurchaseOrder | null>(null)
 const loading = ref(true)
-const working = ref(false)
+// Keyed by supplier, not a plain boolean: this button is inside a `v-for`, and
+// a shared flag spun every supplier's button at once.
+const drafting = useBusy()
 const error = ref<string | null>(null)
 
 const skipped = computed(() => Object.entries(screen.value?.skipped ?? {}))
@@ -68,17 +71,17 @@ async function load() {
   }
 }
 
-async function draft(vendorId: string | null) {
-  working.value = true
-  const created = await withToast(() => api.createDrafts(slug.value, vendorId ?? undefined), {
-    success: (made) =>
-      made.length
-        ? `${made.length} draft order${made.length === 1 ? '' : 's'} ready to review`
-        : 'Nothing to order from that supplier right now',
-    failure: 'Could not build that draft',
-  })
+async function draft(vendor: { vendor_id: string | null; vendor_name: string }) {
+  const created = await drafting.run(vendor.vendor_name, () =>
+    withToast(() => api.createDrafts(slug.value, vendor.vendor_id ?? undefined), {
+      success: (made) =>
+        made.length
+          ? `${made.length} draft order${made.length === 1 ? '' : 's'} ready to review`
+          : 'Nothing to order from that supplier right now',
+      failure: 'Could not build that draft',
+    }),
+  )
   if (created !== undefined) await load()
-  working.value = false
 }
 
 async function review(order: PurchaseOrder) {
@@ -91,20 +94,20 @@ async function review(order: PurchaseOrder) {
 
 async function setQuantity(lineId: string, value: string) {
   if (!open.value) return
-  const done = await withToast(
+  const done = await worked(
     () => api.updatePurchaseOrderLine(slug.value, lineId, { quantity: value }),
     { success: 'Quantity updated', failure: 'Could not change that quantity' },
   )
-  if (done !== undefined) open.value = await api.purchaseOrder(slug.value, open.value.id)
+  if (done) open.value = await api.purchaseOrder(slug.value, open.value.id)
 }
 
 async function removeLine(lineId: string) {
   if (!open.value) return
-  const done = await withToast(
+  const done = await worked(
     () => api.updatePurchaseOrderLine(slug.value, lineId, { remove: true }),
     { success: 'Line removed', failure: 'Could not remove that line' },
   )
-  if (done !== undefined) open.value = await api.purchaseOrder(slug.value, open.value.id)
+  if (done) open.value = await api.purchaseOrder(slug.value, open.value.id)
 }
 
 async function mark(status: 'sent' | 'received') {
@@ -282,7 +285,14 @@ watch(slug, load)
                 {{ group.lines.length }} lines · {{ money(group.total_at_cost, shop.currency) }}
               </p>
             </div>
-            <UiButton size="sm" :loading="working" @click="draft(group.vendor_id)">
+            <!-- The one being built spins; the rest go quiet rather than
+                 pretend to be working too. -->
+            <UiButton
+              size="sm"
+              :loading="drafting.busy(group.vendor_name)"
+              :disabled="drafting.anyBusy.value"
+              @click="draft(group)"
+            >
               Make a draft
             </UiButton>
           </header>

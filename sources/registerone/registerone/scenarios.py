@@ -58,12 +58,12 @@ SHRINK_MIN_UNITS_28D = 3
 # lands anywhere between "a slow day" and "the shop was shut", depending on
 # which baskets they were.
 #
-# A third is the number, and the reason is worth knowing: an ordinary Saturday
-# here ranges from about $230 to about $620, so a day 45% below the median is
+# A fifth is the number, and the reason is worth knowing: an ordinary Saturday
+# here ranges from about $250 to about $900, so a day 45% below the median is
 # still inside normal variation and a detector that flagged it would be
 # flagging a third of the Saturdays in the year. For the scenario to be a
 # scenario, the day has to be one anybody would agree is alarming.
-QUIET_SATURDAY_KEEPS = 0.33
+QUIET_SATURDAY_KEEPS = 0.20
 QUIET_SATURDAY_WEEKS_AGO = 3
 
 # One week where refunds run well above normal. Planted as a count of extra
@@ -71,7 +71,9 @@ QUIET_SATURDAY_WEEKS_AGO = 3
 # money goes back, not when the sale happened: raising the chance on orders
 # placed that week would put the refunds one to three weeks later, which is
 # a different week and not the scenario.
-REFUND_SPIKE_EXTRA = 8
+# Sixteen, not eight: the week has to clear a detector that wants refunds
+# above 5% of the week's sales, and this shop takes about $3,000 in a week.
+REFUND_SPIKE_EXTRA = 16
 REFUND_SPIKE_DRAWN_FROM_DAYS = 21
 REFUND_SPIKE_WEEKS_AGO = 5
 
@@ -203,7 +205,7 @@ def _refund_spike(data: Dataset, rng: random.Random) -> dict:
         headroom = payment["amount_money"] - already[payment["id"]]
         if headroom < 200:
             continue
-        amount = max(100, int(headroom * rng.uniform(0.3, 0.7)))
+        amount = max(100, int(headroom * rng.uniform(0.5, 0.9)))
         highest += 1
         refunded_at = _local(
             week_start + timedelta(days=rng.randint(0, 6)), rng.randint(10, 17), rng.randint(0, 59)

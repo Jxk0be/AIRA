@@ -167,7 +167,7 @@ async def test_hybrid_search_ranks_a_double_hit_above_a_single_hit(
     text only matches the second. Reciprocal rank fusion should still put the
     second one on top, because it places in both lists.
     """
-    await _insert_chunk(db, smoke_tenant, "Hollow Lantern Vol. 3 manga paperback", hot_index=0)
+    await _insert_chunk(db, smoke_tenant, "Chainsaw Man Vol. 3 manga paperback", hot_index=0)
     await _insert_chunk(db, smoke_tenant, "Store return policy: 14 days with receipt", hot_index=1)
 
     rows = (

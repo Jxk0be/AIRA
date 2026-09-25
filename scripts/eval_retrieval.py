@@ -1,7 +1,7 @@
 """Does retrieval actually find the right thing, and is hybrid worth it?
 
     python tasks.py eval-retrieval
-    python tasks.py eval-retrieval --tenant tsundoku --csv out.csv
+    python tasks.py eval-retrieval --tenant animanga_knox --csv out.csv
 
 Runs every golden question through vector-only, text-only and hybrid search and
 reports hit@k for each. The point is not the absolute number. It is the

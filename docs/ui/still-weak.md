@@ -45,7 +45,7 @@ toast: click a write, assert the live region got the message.
 
 ## 3. Only one shop is ever rendered
 
-Every test uses `tsundoku`, which has every capability turned on. `panel_and_pawn`
+Every test uses `animanga_knox`, which has every capability turned on. `panel_and_pawn`
 exists in the same dev stack with **only** `has_costs` — no customers, no
 inventory history, one location, no online channel.
 

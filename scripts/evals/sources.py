@@ -1,7 +1,7 @@
 """Ground truth, taken from the customer's own system.
 
 Every expected answer in the golden sets is computed here, from the source the
-shop actually runs — RegisterOne's database for Tsundoku, the raw spreadsheet
+shop actually runs — RegisterOne's database for Animanga Knox, the raw spreadsheet
 for Panel & Pawn. Never from our canonical copy.
 
 That is the only way an eval can catch a mistake in the adapter. If the truth

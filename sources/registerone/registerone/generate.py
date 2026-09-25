@@ -24,31 +24,48 @@ from zoneinfo import ZoneInfo
 
 from registerone import scenarios
 from registerone.catalog import (
-    APPAREL_DESIGNS,
+    APPAREL,
+    APPAREL_SIZE_WEIGHT,
     APPAREL_SIZES,
+    CARD_CONDITION_WEIGHT,
     CARD_CONDITIONS,
-    CARD_NAMES,
+    CARD_GAMES,
+    CARD_SETS,
     CATEGORIES,
-    FIGURE_CHARACTERS,
+    CHIBI_FIGURES,
+    COST_RATIO,
+    DESK_MATS,
+    DRINKS,
+    GAME_NAMES,
     LOCATIONS,
+    MAGNETS,
     MANGA_SERIES,
-    MODEL_KIT_LINES,
-    PLUSH_CHARACTERS,
-    SEALED_PRODUCTS,
+    MANGA_SPECIAL_EDITION_SURCHARGE,
+    MODEL_KITS,
+    PINS,
+    PLUSH,
+    PRIZE_FIGURES,
+    SCALE_FIGURES,
     SHOP_TIMEZONE,
+    SINGLES,
+    SNACKS,
     SUPPLIES,
     TAX_RATE,
-    TCG_NAME,
-    TCG_SETS,
     VENDORS,
+    VENDORS_ACCEPTING_RETURNS,
+    WALL_ART,
     ItemSpec,
+    Product,
     VariationSpec,
 )
 
 TZ = ZoneInfo(SHOP_TIMEZONE)
 UTC = ZoneInfo("UTC")
 
-TARGET_ORDERS = 3000
+# A shop that sells $2.99 ramune and $0.99 umaibo rings up more tickets a day
+# than one that only sells $9.99 volumes, so the target is set for the catalog
+# the shop actually carries.
+TARGET_ORDERS = 4200
 HISTORY_DAYS = 548  # eighteen months
 
 # Target shares for the deliberate mess. QUIRKS.md documents each one, and the
@@ -71,13 +88,61 @@ VARIABLE_PRICED_VARIATIONS = 5
 SHELF_DEPTH = {
     "manga": (4, 9),
     "figures_prize": (4, 10),
-    "figures_scale": (4, 7),
+    "figures_chibi": (3, 7),
+    "figures_scale": (2, 5),
     "tcg_sealed": (6, 18),
-    "tcg_singles": (4, 8),
+    "tcg_singles": (2, 6),
     "kits": (4, 8),
     "plush": (5, 12),
     "apparel": (4, 10),
+    "wall_art": (6, 20),
+    "desk": (3, 8),
+    "pins": (8, 24),
+    "magnets": (10, 30),
+    "snacks": (12, 40),
+    "drinks": (12, 36),
     "supplies": (10, 30),
+}
+
+# How often a line is for more than one unit. Nobody buys two $220 scale figures
+# in one go; buying four ramune and a box of Pocky is a Saturday afternoon.
+MULTI_UNIT_CHANCE = {
+    "supplies": 0.18,
+    "manga": 0.18,
+    "tcg_sealed": 0.28,
+    "snacks": 0.46,
+    "drinks": 0.40,
+    "magnets": 0.22,
+    "pins": 0.16,
+}
+
+# Roughly what the shop is willing to have standing on the shelf in any one
+# product, at retail. Caps the depths above for the expensive end of a category.
+FACING_VALUE_CENTS = 50_000
+
+# Categories people buy on the way to the register rather than on the way in.
+IMPULSE_CATEGORIES = ("snacks", "drinks", "pins", "magnets")
+
+# Who the shop buys each part of the shelf from, by position in VENDORS. Nobody
+# orders Pocky from a book distributor, and a reorder list that says otherwise
+# is a reorder list an owner stops trusting.
+VENDOR_BY_CATEGORY: dict[str, tuple[int, ...]] = {
+    "manga": (1, 2),
+    "figures_prize": (5, 2),
+    "figures_chibi": (5,),
+    "figures_scale": (5, 2),
+    "tcg_sealed": (3, 4),
+    "tcg_singles": (3,),
+    "kits": (5,),
+    "plush": (6, 2),
+    "apparel": (6,),
+    "wall_art": (6, 2),
+    "desk": (6,),
+    "pins": (6,),
+    "magnets": (6,),
+    "snacks": (7,),
+    "drinks": (7,),
+    "supplies": (3, 4),
 }
 
 WEEKDAY_WEIGHT = {0: 0.70, 1: 0.75, 2: 0.85, 3: 0.95, 4: 1.50, 5: 1.90, 6: 1.20}
@@ -222,9 +287,69 @@ def _sku(prefix: str, n: int) -> str:
 # ---------------------------------------------------------------------------
 
 
+def _shelf(
+    specs: list[ItemSpec],
+    products: tuple[Product, ...],
+    category_key: str,
+    *,
+    describe: str,
+) -> None:
+    """Put a run of single-variation products on the shelf.
+
+    Most of the shop is like this: one product, one price, one SKU. Manga, cards
+    and apparel are the exceptions, and they get their own code below.
+    """
+    for index, product in enumerate(products):
+        attributes: dict[str, str] = {}
+        if product.brand:
+            attributes["brand"] = product.brand
+        if product.franchise:
+            attributes["franchise"] = product.franchise
+        spec = ItemSpec(
+            name=product.name,
+            category_key=category_key,
+            product_type="REGULAR",
+            description=describe.format(name=product.name, franchise=product.franchise or ""),
+            custom_attributes=attributes,
+            popularity=product.popularity,
+            con_affinity=product.con_affinity,
+        )
+        spec.variations.append(
+            VariationSpec(
+                name=None,
+                price_cents=product.price_cents,
+                cost_ratio=COST_RATIO[category_key],
+                sku_hint=_hint(category_key, product.name, index),
+            )
+        )
+        specs.append(spec)
+
+
+def _hint(prefix: str, name: str, index: int) -> str:
+    """A SKU stem a human could read off a shelf label."""
+    letters = "".join(c for c in name.upper() if c.isalnum())[:6]
+    return f"{prefix[:3].upper()}-{letters}-{index:02d}"
+
+
+def _shelf_depth(rng: random.Random, category_key: str, price_cents: int | None) -> int:
+    """How many of one thing the shop keeps facing out.
+
+    Category alone is not enough: "sealed product" covers a $4.49 booster pack
+    and a $161.64 booster box, and a shop that keeps eighteen of each has ten
+    thousand dollars standing in a display case. Money on the shelf per SKU is
+    roughly flat, so the category range is capped by what the item costs.
+    """
+    low, high = SHELF_DEPTH.get(category_key, (4, 8))
+    if price_cents:
+        cap = max(1, min(high, FACING_VALUE_CENTS // price_cents))
+        low, high = min(low, cap), cap
+    return rng.randint(low, high)
+
+
 def build_item_specs(rng: random.Random) -> list[ItemSpec]:
     specs: list[ItemSpec] = []
 
+    # --- manga: the shelf that defines the shop -----------------------------
     for series in MANGA_SERIES:
         for volume in range(1, series.volumes + 1):
             # Volume 1 outsells volume 12 by a wide margin in every real shop.
@@ -234,10 +359,14 @@ def build_item_specs(rng: random.Random) -> list[ItemSpec]:
                 category_key="manga",
                 product_type="REGULAR",
                 description=(
-                    f"Volume {volume} of {series.title}, paperback. "
+                    f"Volume {volume} of {series.title}, {series.publisher}, paperback. "
                     f"{'Series opener.' if volume == 1 else 'Continues the story.'}"
                 ),
-                custom_attributes={"series": series.title, "volume": str(volume)},
+                custom_attributes={
+                    "series": series.title,
+                    "volume": str(volume),
+                    "publisher": series.publisher,
+                },
                 series_key=series.key,
                 series_index=volume,
                 popularity=series.popularity * decay,
@@ -247,176 +376,139 @@ def build_item_specs(rng: random.Random) -> list[ItemSpec]:
                 VariationSpec(
                     name="Paperback",
                     price_cents=series.price_cents,
-                    cost_ratio=0.55,
-                    sku_hint=f"MNG-{series.key[:4].upper()}-{volume:02d}",
+                    cost_ratio=COST_RATIO["manga"],
+                    sku_hint=f"MNG-{series.key[:6].upper()}-{volume:02d}",
                 )
             )
             if volume == 1 and series.popularity > 1.3:
                 spec.variations.append(
                     VariationSpec(
                         name="Special Edition",
-                        price_cents=series.price_cents + 1200,
-                        cost_ratio=0.60,
-                        sku_hint=f"MNG-{series.key[:4].upper()}-{volume:02d}-SE",
+                        price_cents=series.price_cents + MANGA_SPECIAL_EDITION_SURCHARGE,
+                        cost_ratio=COST_RATIO["manga"] + 0.05,
+                        sku_hint=f"MNG-{series.key[:6].upper()}-{volume:02d}-SE",
                         popularity=0.25,
                     )
                 )
             specs.append(spec)
 
-    for i, character in enumerate(FIGURE_CHARACTERS):
-        for kind, price, cat, pop, con in (
-            ("Prize Figure", rng.choice([1899, 2299, 2699]), "figures_prize", 1.1, 1.8),
-            ("1/7 Scale Figure", rng.choice([12999, 15999, 19999, 22999]), "figures_scale", 0.35, 1.4),
-        ):
-            if kind.startswith("1/7") and i % 3 != 0:
-                continue  # scale figures are rarer on the shelf
-            spec = ItemSpec(
-                name=f"{character} {kind}",
-                category_key=cat,
-                product_type="REGULAR",
-                description=f"{kind} of {character}, in box.",
-                custom_attributes={"character": character},
-                popularity=pop,
-                con_affinity=con,
-            )
-            spec.variations.append(
-                VariationSpec(
-                    name="Standard",
-                    price_cents=price,
-                    cost_ratio=0.62,
-                    sku_hint=f"FIG-{character[:4].upper()}-{i:02d}",
-                )
-            )
-            specs.append(spec)
+    # --- figures ------------------------------------------------------------
+    _shelf(
+        specs,
+        PRIZE_FIGURES,
+        "figures_prize",
+        describe="{name}. Prize figure, in box.",
+    )
+    _shelf(
+        specs,
+        CHIBI_FIGURES,
+        "figures_chibi",
+        describe="{name}. Articulated collector figure, in box.",
+    )
+    _shelf(
+        specs,
+        SCALE_FIGURES,
+        "figures_scale",
+        describe="{name}. Scale figure, in box. Locked case.",
+    )
 
-    for code, set_name in TCG_SETS:
-        for product, price, pop in SEALED_PRODUCTS:
-            spec = ItemSpec(
-                name=f"{TCG_NAME}: {set_name} {product}",
-                category_key="tcg_sealed",
-                product_type="REGULAR",
-                description=f"Sealed {product.lower()} from the {set_name} set.",
-                custom_attributes={"set": code, "set_name": set_name},
-                popularity=pop,
-                con_affinity=2.2,
-            )
-            spec.variations.append(
-                VariationSpec(
-                    name=None,
-                    price_cents=price,
-                    cost_ratio=0.68,
-                    sku_hint=f"SLD-{code}-{product[:3].upper()}",
+    # --- sealed trading card product ----------------------------------------
+    for game in CARD_GAMES:
+        for code, set_name in game.sets:
+            for product, price, popularity in game.sealed:
+                spec = ItemSpec(
+                    name=f"{game.name}: {set_name} {product}",
+                    category_key="tcg_sealed",
+                    product_type="REGULAR",
+                    description=f"Sealed {product.lower()} from the {set_name} set.",
+                    custom_attributes={
+                        "game": game.name,
+                        "set": code,
+                        "set_name": set_name,
+                    },
+                    popularity=popularity,
+                    con_affinity=2.2,
                 )
-            )
-            specs.append(spec)
-
-    singles = 0
-    for code, set_name in TCG_SETS:
-        for card in CARD_NAMES:
-            if singles >= 45:
-                break
-            base = rng.choice([399, 699, 1299, 2499, 4999, 8999])
-            spec = ItemSpec(
-                name=f"{card} ({code})",
-                category_key="tcg_singles",
-                product_type="REGULAR",
-                description=f"Single card: {card}, {set_name}.",
-                custom_attributes={"set": code, "card": card},
-                popularity=0.9,
-                con_affinity=1.6,
-            )
-            for condition, ratio in CARD_CONDITIONS:
                 spec.variations.append(
                     VariationSpec(
-                        name=condition,
-                        price_cents=max(99, int(base * ratio / 25) * 25),
-                        cost_ratio=0.50,
-                        sku_hint=f"SGL-{code}-{card[:4].upper()}-{condition}",
-                        popularity={"NM": 1.0, "LP": 0.6, "MP": 0.35}[condition],
+                        name=None,
+                        price_cents=price,
+                        cost_ratio=COST_RATIO["tcg_sealed"],
+                        sku_hint=f"SLD-{code}-{product[:3].upper()}",
                     )
                 )
-            specs.append(spec)
-            singles += 1
+                specs.append(spec)
 
-    for line, price in MODEL_KIT_LINES:
-        for grade in ("Basic Grade", "High Grade", "Master Grade", "Mini"):
-            spec = ItemSpec(
-                name=f"{line} {grade} Model Kit",
-                category_key="kits",
-                product_type="REGULAR",
-                description=f"Snap-fit {grade.lower()} model kit, {line} frame.",
-                popularity=0.55,
-                con_affinity=0.9,
-            )
-            spec.variations.append(
-                VariationSpec(
-                    name=None,
-                    price_cents=price if grade != "Mini" else int(price * 0.45),
-                    cost_ratio=0.64,
-                    sku_hint=f"KIT-{line[:4].upper()}-{grade[:2].upper()}",
-                )
-            )
-            specs.append(spec)
-
-    for character in PLUSH_CHARACTERS:
-        for size, price in (("Small", 1699), ("Large", 3299)):
-            spec = ItemSpec(
-                name=f"{character} Plush ({size})",
-                category_key="plush",
-                product_type="REGULAR",
-                description=f"{size} plush of {character}.",
-                popularity=0.8 if size == "Small" else 0.4,
-                con_affinity=1.7,
-            )
-            spec.variations.append(
-                VariationSpec(
-                    name=size,
-                    price_cents=price,
-                    cost_ratio=0.50,
-                    sku_hint=f"PLU-{character[:4].upper()}-{size[:1]}",
-                )
-            )
-            specs.append(spec)
-
-    for design, price in APPAREL_DESIGNS:
+    # --- singles, graded by condition ---------------------------------------
+    for index, card in enumerate(SINGLES):
         spec = ItemSpec(
-            name=design,
+            name=f"{card.name} - {card.set_name}",
+            category_key="tcg_singles",
+            product_type="REGULAR",
+            description=f"Single card: {card.name}, {card.set_name}, {GAME_NAMES[card.game_key]}.",
+            custom_attributes={
+                "game": GAME_NAMES[card.game_key],
+                "set_name": card.set_name,
+                "card": card.name,
+            },
+            # A $420 Umbreon moves once a quarter; a $9 Budew moves most weeks.
+            # Capped low on purpose: a shop has one or two copies of a given
+            # single in the case, not a stack, so even the cheap ones are a few
+            # dozen sales a year rather than a few hundred.
+            popularity=max(0.06, min(0.40, 800 / max(400, card.price_cents))),
+            con_affinity=1.6,
+        )
+        for condition, ratio in CARD_CONDITIONS:
+            spec.variations.append(
+                VariationSpec(
+                    name=condition,
+                    price_cents=max(99, int(card.price_cents * ratio / 25) * 25),
+                    cost_ratio=COST_RATIO["tcg_singles"],
+                    sku_hint=f"SGL-{card.game_key.upper()}-{index:02d}-{condition}",
+                    popularity=CARD_CONDITION_WEIGHT[condition],
+                )
+            )
+        specs.append(spec)
+
+    # --- model kits, plush --------------------------------------------------
+    _shelf(specs, MODEL_KITS, "kits", describe="{name}. Snap-fit plastic model kit.")
+    _shelf(specs, PLUSH, "plush", describe="{name}. Licensed plush.")
+
+    # --- apparel, one variation per size ------------------------------------
+    for index, garment in enumerate(APPAREL):
+        spec = ItemSpec(
+            name=garment.name,
             category_key="apparel",
             product_type="REGULAR",
-            description=f"{design}. Screen printed, unisex sizing.",
-            popularity=0.5,
-            con_affinity=1.5,
+            description=f"{garment.name}. Unisex sizing.",
+            custom_attributes=({"franchise": garment.franchise} if garment.franchise else {}),
+            popularity=garment.popularity,
+            con_affinity=garment.con_affinity,
         )
         for size in APPAREL_SIZES:
             spec.variations.append(
                 VariationSpec(
                     name=size,
-                    price_cents=price,
-                    cost_ratio=0.45,
-                    sku_hint=f"APP-{design[:4].upper()}-{size}",
-                    popularity={"S": 0.5, "M": 1.0, "L": 1.0, "XL": 0.6}[size],
+                    price_cents=garment.price_cents,
+                    cost_ratio=COST_RATIO["apparel"],
+                    sku_hint=f"APP-{_hint('APP', garment.name, index)[4:]}-{size}",
+                    popularity=APPAREL_SIZE_WEIGHT[size],
                 )
             )
         specs.append(spec)
 
-    for name, price, pop in SUPPLIES:
-        spec = ItemSpec(
-            name=name,
-            category_key="supplies",
-            product_type="REGULAR",
-            description=f"{name}. Shop staple.",
-            popularity=pop,
-            con_affinity=1.3,
-        )
-        spec.variations.append(
-            VariationSpec(
-                name=None,
-                price_cents=price,
-                cost_ratio=0.52,
-                sku_hint=f"SUP-{name[:6].upper().replace(' ', '')}",
-            )
-        )
-        specs.append(spec)
+    # --- the wall, the desk, the counter ------------------------------------
+    _shelf(specs, WALL_ART, "wall_art", describe="{name}. Rolled in a tube.")
+    _shelf(specs, DESK_MATS, "desk", describe="{name}. Stitched edge, rubber base.")
+    _shelf(specs, PINS, "pins", describe="{name}. Counter display.")
+    _shelf(specs, MAGNETS, "magnets", describe="{name}. Counter display.")
+
+    # --- the cooler and the snack rack --------------------------------------
+    _shelf(specs, SNACKS, "snacks", describe="{name}. Japanese import.")
+    _shelf(specs, DRINKS, "drinks", describe="{name}. Japanese import. Cooler.")
+
+    # --- card supplies ------------------------------------------------------
+    _shelf(specs, SUPPLIES, "supplies", describe="{name}. Shop staple.")
 
     return specs
 
@@ -461,12 +553,12 @@ def build_catalog(data: Dataset, rng: random.Random) -> list[Variation]:
                 "account_number": account,
                 "email": email,
                 "phone": phone,
-                # Two of the five take returns on sealed product, which is what
-                # makes "ask them to take it back" a real dead-stock play for
-                # some items and not for others.
+                # Two of the seven take stock back, which is what makes "ask
+                # them to take it back" a real dead-stock play for some items
+                # and not for others.
                 "notes": (
-                    "Accepts returns on sealed product within 90 days."
-                    if i in (1, 5)
+                    "Accepts returns on unsold stock within 90 days."
+                    if i in VENDORS_ACCEPTING_RETURNS
                     else "No returns; damaged-goods credit only."
                 ),
             }
@@ -526,8 +618,8 @@ def build_catalog(data: Dataset, rng: random.Random) -> list[Variation]:
                         if var_spec.cost_ratio is None or var_spec.price_cents is None
                         else int(var_spec.price_cents * var_spec.cost_ratio)
                     ),
-                    vendor_id=rng.choice(vendor_ids),
-                    shelf_depth=rng.randint(*SHELF_DEPTH.get(spec.category_key, (4, 8))),
+                    vendor_id=f"VEND_{rng.choice(VENDOR_BY_CATEGORY[spec.category_key]):03d}",
+                    shelf_depth=_shelf_depth(rng, spec.category_key, var_spec.price_cents),
                 )
             )
 
@@ -699,9 +791,9 @@ def pick_release_weeks(rng: random.Random, start: date, end: date) -> dict[date,
     """One release per set, each kicking off a visibly busier week."""
     span = (end - start).days
     releases: dict[date, str] = {}
-    for i, (code, _name) in enumerate(TCG_SETS):
-        # Spread the four sets across the window, with a little jitter.
-        offset = int(span * (i + 0.6) / (len(TCG_SETS) + 0.4)) + rng.randint(-10, 10)
+    for i, (code, _name) in enumerate(CARD_SETS):
+        # Spread the sets across the window, with a little jitter.
+        offset = int(span * (i + 0.6) / (len(CARD_SETS) + 0.4)) + rng.randint(-10, 10)
         release_day = start + timedelta(days=max(20, min(span - 20, offset)))
         # Sets drop on Fridays.
         release_day += timedelta(days=(4 - release_day.weekday()) % 7)
@@ -721,6 +813,7 @@ def simulate_sales(
         if v.series_key and v.series_index and v.name == "Paperback":
             by_series[(v.series_key, v.series_index)] = v
     supplies = [v for v in variations if v.category_key == "supplies" and v.weight > 0]
+    impulse = [v for v in variations if v.category_key in IMPULSE_CATEGORIES and v.weight > 0]
 
     con_weekends = pick_con_weekends(rng, data.start_date, data.end_date)
     release_days = pick_release_weeks(rng, data.start_date, data.end_date)
@@ -774,7 +867,15 @@ def simulate_sales(
                 )
 
                 lines = _build_basket(
-                    rng, by_series, supplies, variations, at_con, release_code, placed, order_id
+                    rng,
+                    by_series,
+                    supplies,
+                    impulse,
+                    variations,
+                    at_con,
+                    release_code,
+                    placed,
+                    order_id,
                 )
                 if not lines:
                     order_counter -= 1
@@ -886,6 +987,7 @@ def _build_basket(
     rng: random.Random,
     by_series: dict[tuple[str, int], Variation],
     supplies: list[Variation],
+    impulse: list[Variation],
     variations: list[Variation],
     at_con: bool,
     release_code: str | None,
@@ -926,11 +1028,21 @@ def _build_basket(
             if sleeve not in chosen:
                 chosen.append(sleeve)
 
+    # The counter: a ramune, a Pocky, a pin off the board. Roughly a third of
+    # baskets pick one up, and it is the reason the average basket here has more
+    # lines than its money would suggest.
+    if impulse and rng.random() < (0.42 if at_con else 0.33):
+        extra = rng.choices(impulse, weights=[v.weight for v in impulse], k=1)[0]
+        if extra not in chosen:
+            chosen.append(extra)
+
     lines: list[dict] = []
     for i, variation in enumerate(chosen):
         quantity = 1
-        if variation.category_key in {"supplies", "manga", "tcg_sealed"} and rng.random() < 0.18:
-            quantity = rng.choice([2, 2, 3])
+        if rng.random() < MULTI_UNIT_CHANCE.get(variation.category_key, 0.0):
+            quantity = rng.choice(
+                [2, 2, 3, 3, 4] if variation.category_key in {"snacks", "drinks"} else [2, 2, 3]
+            )
 
         if variation.pricing_type == "VARIABLE" or variation.price_amount is None:
             # Priced at the register, so the catalog cannot tell us the price.

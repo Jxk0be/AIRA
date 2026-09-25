@@ -19,8 +19,8 @@ apart. The code is `registerone/scenarios.py`.
 | 1 | Items that will run out inside ten days | 8 variations | Reorder assistant |
 | 2 | Dead stock, never sold, still on the shelf | 12 items, ~$1,500 at cost | Dead stock rescue |
 | 3 | Stock that left as a sale with nothing rung up | 6 units, one variation | Possible-shrink alert |
-| 4 | A Saturday well below a normal Saturday | ~two thirds down | Sales anomaly alert |
-| 5 | A week where refunds spike | ~8 extra refunds, ~10% of that week's sales | Refund spike alert |
+| 4 | A Saturday well below a normal Saturday | ~four fifths down | Sales anomaly alert |
+| 5 | A week where refunds spike | ~16 extra refunds, ~15% of that week's sales | Refund spike alert |
 
 Two things the fixture deliberately does **not** contain, because they are
 absences rather than events: a lead time on any supplier, and a case size. No
@@ -158,7 +158,7 @@ roughly a dozen days in total, which is the rate an owner will keep reading.
 
 ## 5. One week of refunds
 
-Eight extra refunds land inside one week, five weeks before the end, drawn from
+Sixteen extra refunds land inside one week, five weeks before the end, drawn from
 sales in the three weeks before it. That is how a real refund week works: a bad
 batch, or a display model everybody brings back at once.
 

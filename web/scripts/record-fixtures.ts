@@ -27,7 +27,7 @@ import { fileURLToPath } from 'node:url'
 const HERE = dirname(fileURLToPath(import.meta.url))
 const OUT = resolve(HERE, '../tests/fixtures')
 const API = process.env.VITE_API_BASE ?? 'http://localhost:8000'
-const TENANT = process.env.FIXTURE_TENANT ?? 'tsundoku'
+const TENANT = process.env.FIXTURE_TENANT ?? 'animanga_knox'
 
 /**
  * Every GET the app makes on first paint of each screen, keyed by the file it

@@ -62,7 +62,7 @@ read them without importing anything from `app.connectors`.
 ### Tenancy
 
 **`tenants`** — one shop. `slug` is the human handle used on the CLI
-(`--tenant tsundoku`). `timezone` is an IANA name and is the timezone every date
+(`--tenant animanga_knox`). `timezone` is an IANA name and is the timezone every date
 bucket is cut in. `currency` is ISO-4217. `settings` is free-form jsonb for
 per-shop preferences (low-stock thresholds, dead-stock window).
 
@@ -232,7 +232,7 @@ CanonicalOrder(
         CanonicalOrderLine(
             external_id="ORD_00412:1",
             variant_external_id="VAR_0881",
-            name_snapshot="Hollow Lantern Vol. 3",
+            name_snapshot="Chainsaw Man Vol. 3",
             quantity=Decimal("2"),
             unit_price=Decimal("12.00"),
             discount=Decimal("2.40"),

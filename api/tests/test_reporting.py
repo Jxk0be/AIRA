@@ -17,7 +17,7 @@ from app.reporting import Column, Document, Sheet, csv_bytes, money, quantity, w
 
 
 def sample() -> Document:
-    doc = Document("Purchase order PO-2026-09-0001", "Tsundoku & Tabletop")
+    doc = Document("Purchase order PO-2026-09-0001", "Animanga Knox")
     doc.field("Vendor", "Paper Lantern Books")
     doc.heading("Items")
     doc.table(
@@ -26,7 +26,7 @@ def sample() -> Document:
         total=["Total", "18", "$128.52"],
     )
     doc.note("Figures at cost where a cost is on file.")
-    doc.footer("Tsundoku & Tabletop")
+    doc.footer("Animanga Knox")
     return doc
 
 
@@ -62,7 +62,7 @@ def test_output_is_byte_identical_for_the_same_input() -> None:
 
 
 def test_a_long_document_breaks_into_pages() -> None:
-    doc = Document("Month end", "Tsundoku & Tabletop")
+    doc = Document("Month end", "Animanga Knox")
     doc.table(
         [Column("Item", 300), Column("Net", 100, "right")],
         [[f"Product {index}", f"${index}.00"] for index in range(120)],

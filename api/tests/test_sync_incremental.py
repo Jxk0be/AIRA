@@ -31,7 +31,7 @@ from app.connectors import registry
 from app.connectors.secrets import resolve
 from app.connectors.sync import SyncEngine
 
-TENANT_SLUG = "tsundoku"
+TENANT_SLUG = "animanga_knox"
 API_BASE = os.environ.get("REGISTERONE_BASE_URL", "http://localhost:8100")
 ADMIN_TOKEN = os.environ.get("REGISTERONE_ADMIN_TOKEN", "ro_admin_9c3e77")
 SOURCE_DSN = os.environ.get(
@@ -62,7 +62,7 @@ async def _context(db: AsyncSession) -> tuple[t.Tenant, t.Integration]:
         await db.execute(select(t.Tenant).where(t.Tenant.slug == TENANT_SLUG))
     ).scalar_one_or_none()
     if tenant is None:
-        pytest.skip("tsundoku is not set up; run `python tasks.py backfill`")
+        pytest.skip("animanga_knox is not set up; run `python tasks.py backfill`")
     integration = (
         (await db.execute(select(t.Integration).where(t.Integration.tenant_id == tenant.id)))
         .scalars()
@@ -105,7 +105,7 @@ async def test_incremental_picks_up_a_simulated_day_and_nothing_else(
 
     before = await _counts(db, tenant_id)
     if before["orders"] == 0:
-        pytest.skip("tsundoku has not been backfilled yet")
+        pytest.skip("animanga_knox has not been backfilled yet")
     latest_before = (
         await db.execute(
             select(func.max(t.Order.placed_at)).where(

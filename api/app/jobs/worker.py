@@ -1,7 +1,7 @@
 """The worker: a loop, a clock, and one round per tick.
 
     python -m app.jobs.worker
-    python -m app.jobs.worker --once --tenant tsundoku
+    python -m app.jobs.worker --once --tenant animanga_knox
 
 Deliberately not a scheduling framework. Every schedule in this product is per
 tenant and cut in that tenant's own timezone, so what a framework would give us

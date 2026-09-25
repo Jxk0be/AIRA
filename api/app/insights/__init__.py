@@ -9,7 +9,7 @@ This package reads the canonical schema through `app.analytics` and nothing
 else. It does not know which POS a tenant runs (CLAUDE.md rule 1), and no
 detector writes SQL of its own (rule 4).
 
-    ctx = await load_context(session, "tsundoku")
+    ctx = await load_context(session, "animanga_knox")
     runs = await run_detectors(session, ctx)
     actions = await top_open(session, ctx, limit=3)
 """

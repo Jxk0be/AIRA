@@ -44,7 +44,7 @@ async def shop_named(db: AsyncSession, slug: str) -> ShopContext:
 
 @pytest.fixture
 async def pos(db: AsyncSession) -> ShopContext:
-    return await shop_named(db, "tsundoku")
+    return await shop_named(db, "animanga_knox")
 
 
 @pytest.fixture

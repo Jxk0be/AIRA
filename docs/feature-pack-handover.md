@@ -94,7 +94,7 @@ reseed command, rather than with a bare assertion about the forecast.
 
 * **Stored capabilities now refresh on every sync.** `SyncEngine.run` asks the
   adapter what it can do and writes it to `integrations.capabilities` before it
-  opens the run, logging what was gained or lost. `tsundoku` reports
+  opens the run, logging what was gained or lost. `animanga_knox` reports
   `has_vendors` and `has_payments` again, so the month-end packet splits
   takings by tender and the conformance check passes.
 * **Agent tools had no test coverage.** `reorder_suggestions` and
@@ -104,7 +104,7 @@ reseed command, rather than with a bare assertion about the forecast.
   `test_every_tool_has_arguments_to_call_it_with` fails loudly if the next tool
   is added without an entry.
 * **Dev tenants get a digest recipient.** `ensure_dev_tenant` now writes one
-  (`owner@tsundoku.example`, `owner@panelandpawn.example` — `.example` is
+  (`owner@animanga_knox.example`, `owner@panelandpawn.example` — `.example` is
   reserved by RFC 2606 and cannot be delivered to), so a fresh checkout's
   digest job does something instead of skipping with "nobody at this shop has
   asked for the digest". It only runs when the tenant is first created; for an
@@ -117,7 +117,7 @@ reseed command, rather than with a bare assertion about the forecast.
   one is worth reading. A payment's `amount` is the sale *without* its tip —
   the tip rides alongside it on the same row — so takings worked out as
   `payments - refunds` came up short by exactly the month's tips, every month,
-  against a `net sales + tax + tips` expectation that included them. Tsundoku's
+  against a `net sales + tax + tips` expectation that included them. Animanga Knox's
   August was $9.00 out and December $33.00, both past the $5 tolerance, so the
   packet printed "a gap of $9.00. Left in rather than adjusted out" in the data
   notes. The arithmetic was doing what it was told; what it was told was wrong.
@@ -168,7 +168,7 @@ reseed command, rather than with a bare assertion about the forecast.
 ## Things worth knowing before changing anything
 
 * **Detector thresholds were tuned against this one shop.** A 45%-down Saturday
-  is *inside* Tsundoku's normal Saturday range — the ordinary ones run $230 to
+  is *inside* Animanga Knox's normal Saturday range — the ordinary ones run $230 to
   $620 — which is why the planted scenario had to be made much deeper and why
   the baseline keeps a spread per side. Any threshold change should be checked
   against `test_an_ordinary_stretch_is_quiet`, which fails if the detector gets

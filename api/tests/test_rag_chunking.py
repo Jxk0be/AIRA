@@ -60,7 +60,7 @@ def test_consecutive_passages_overlap() -> None:
 
 def test_a_paragraph_longer_than_a_chunk_is_split_at_sentences() -> None:
     """Falling back to a smaller seam rather than cutting mid-word."""
-    sentence = "The shop is on Gay Street in downtown Knoxville and opens at eleven. "
+    sentence = "The shop is on Market Square in downtown Knoxville and opens at eleven. "
     chunks = split_text(sentence * 80)
 
     assert len(chunks) > 1

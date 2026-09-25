@@ -1,6 +1,6 @@
 {
-  "tenant": "tsundoku",
-  "name": "Tsundoku & Tabletop",
+  "tenant": "animanga_knox",
+  "name": "Animanga Knox",
   "timezone": "America/New_York",
   "currency": "USD",
   "today": "2026-09-24",
@@ -16,12 +16,12 @@
   },
   "locations": [
     {
-      "id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-      "name": "Con Booth"
+      "id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+      "name": "Animanga Knox - Con Booth"
     },
     {
-      "id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-      "name": "Tsundoku & Tabletop — Gay St"
+      "id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+      "name": "Animanga Knox - Market Square"
     }
   ],
   "channels": [
@@ -31,18 +31,25 @@
   ],
   "categories": [
     "Apparel",
+    "Card Supplies",
+    "Desk Mats & Mousepads",
+    "Drinks",
     "Figures",
+    "Magnets",
     "Manga",
     "Model Kits",
+    "Nendoroids & Figma",
+    "Pins & Keychains",
     "Plush",
+    "Posters & Wall Scrolls",
     "Prize Figures",
     "Scale Figures",
     "Sealed Product",
     "Singles",
-    "Supplies",
+    "Snacks & Candy",
     "Trading Cards"
   ],
-  "data_from": "2025-03-25",
-  "data_to": "2026-10-01",
+  "data_from": "2025-03-26",
+  "data_to": "2026-09-26",
   "brand_color": null
 }

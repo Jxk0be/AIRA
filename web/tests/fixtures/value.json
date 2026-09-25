@@ -1,12 +1,12 @@
 {
-  "tenant": "tsundoku",
+  "tenant": "animanga_knox",
   "start": "2026-09-01",
   "end": "2026-09-24",
   "insights_created": 5,
-  "insights_acted": 1,
+  "insights_acted": 0,
   "attributed_revenue": "0",
   "cash_recovered": "0",
-  "flagged_impact": "27333.3100",
+  "flagged_impact": "43630.5700",
   "outcomes": 0,
-  "has_anything_to_show": true
+  "has_anything_to_show": false
 }

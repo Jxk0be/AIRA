@@ -134,7 +134,7 @@ def _units(value: Decimal | int | float) -> str:
     """Whole numbers read as whole numbers.
 
     `Decimal("17.0000")` formats as "17.0000" under every format spec, and
-    "17.0000 at Gay St" in a chunk is noise the embedding has to look past.
+    "17.0000 at Market Square" in a chunk is noise the embedding has to look past.
     """
     quantity = Decimal(str(value))
     if quantity == quantity.to_integral_value():

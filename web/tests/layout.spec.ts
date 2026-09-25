@@ -78,6 +78,37 @@ for (const route of ROUTES) {
       ).toBeLessThanOrEqual(overflow.clientWidth + 1)
     })
 
+    test('the tab strip fits the phone instead of scrolling (audit U1)', async ({
+      page,
+    }, testInfo) => {
+      test.skip(!isMobile(testInfo), 'there is room for one row on a desktop')
+      await open(page, route.path, testInfo)
+
+      // The overflow test above deliberately excuses anything inside a
+      // horizontal scroller, which is exactly what the tab strip used to be:
+      // Settings needed 477px of a 343px screen and opened on "ta & sync",
+      // clipped at both ends. Nothing catches that but a check aimed at it.
+      const strip = await page.evaluate(() => {
+        const list = document.querySelector<HTMLElement>('[role="tablist"]')
+        if (!list) return null
+        const box = list.getBoundingClientRect()
+        const tabs = [...list.querySelectorAll<HTMLElement>('[role="tab"]')]
+        return {
+          hidden: list.scrollWidth - list.clientWidth,
+          clipped: tabs
+            .filter((tab) => {
+              const rect = tab.getBoundingClientRect()
+              return rect.left < box.left - 1 || rect.right > box.right + 1
+            })
+            .map((tab) => tab.textContent?.trim() ?? ''),
+        }
+      })
+
+      test.skip(strip === null, 'this screen has no tabs')
+      expect(strip!.hidden, 'the tab strip scrolls sideways').toBeLessThanOrEqual(1)
+      expect(strip!.clipped, 'tabs cut off at the edge of the strip').toEqual([])
+    })
+
     test('only the content scrolls, never the page (shell)', async ({ page }, testInfo) => {
       test.skip(!route.shell, 'renders outside AppShell on purpose')
       await open(page, route.path, testInfo)

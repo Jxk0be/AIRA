@@ -8,8 +8,8 @@ unhappy.
 
 Unopened items come back within 30 days with a receipt for a full refund to the
 original payment method. Opened items can be exchanged for store credit within
-14 days. Sealed trading card product, single cards and clearance items are
-final sale.
+14 days. Sealed trading card product, single cards, food, drink and clearance
+items are final sale.
 
 ## Manga, art books and light novels
 
@@ -39,6 +39,13 @@ Single cards are sold as graded by condition — NM, LP or MP — and are final
 sale. If you believe a card was graded wrong, bring it back within 48 hours and
 we will look at it together under the counter light.
 
+## Snacks and drinks
+
+Final sale, both because it is food and because a ramune bottle that has been out
+of the cooler is one nobody else will buy. If something is past its best-before
+date on the shelf that is our mistake, not yours: bring it back and we will swap
+it or refund it, no receipt needed.
+
 ## Apparel
 
 Unworn, with tags, within 30 days, for a refund or a size swap. We keep one of
@@ -47,7 +54,7 @@ guess.
 
 ## Convention purchases
 
-Anything bought at our convention booth can be returned at the Gay Street shop
+Anything bought at our convention booth can be returned at the Market Square shop
 on the same terms, and the con receipt is valid. We cannot process returns at
 the booth itself — there is no register cash float for refunds there.
 

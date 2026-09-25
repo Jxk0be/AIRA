@@ -30,7 +30,7 @@ from app.canonical import tables as t
 from app.canonical.enums import Channel
 from app.canonical.models import Capabilities
 
-POS_SHOP = "tsundoku"
+POS_SHOP = "animanga_knox"
 SPREADSHEET_SHOP = "panel_and_pawn"
 
 

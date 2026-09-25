@@ -18,7 +18,7 @@ import psycopg
 import pytest
 
 BASE = "http://localhost:8100"
-TOKEN = "ro_test_tsundoku_2f8a41"
+TOKEN = "ro_test_animanga_knox_2f8a41"
 ADMIN_TOKEN = "ro_admin_9c3e77"
 DSN = "postgresql://registerone:registerone@127.0.0.1:5433/registerone"
 AUTH = {"Authorization": f"Bearer {TOKEN}"}

@@ -82,8 +82,36 @@ export const toast = {
  */
 export async function withToast<T>(
   run: () => Promise<T>,
-  messages: { success: string | ((result: T) => string); failure?: string },
+  messages: Messages<T>,
 ): Promise<T | undefined> {
+  const result = await attempt(run, messages)
+  return result === FAILED ? undefined : result
+}
+
+/**
+ * The same thing for a write that answers 204 and returns nothing.
+ *
+ * `withToast` cannot be used for those: it reports failure by returning
+ * `undefined`, which is exactly what a successful 204 also returns, so
+ * `if (done !== undefined)` was never true and the screen never refreshed —
+ * the toast said the line was removed and the row sat there until a reload.
+ */
+export async function worked(
+  run: () => Promise<void>,
+  messages: { success: string; failure?: string },
+): Promise<boolean> {
+  return (await attempt(run, messages)) !== FAILED
+}
+
+type Messages<T> = { success: string | ((result: T) => string); failure?: string }
+
+/** Distinguishable from anything an API call can return, including `undefined`. */
+const FAILED = Symbol('failed')
+
+async function attempt<T>(
+  run: () => Promise<T>,
+  messages: Messages<T>,
+): Promise<T | typeof FAILED> {
   try {
     const result = await run()
     const line =
@@ -94,8 +122,8 @@ export async function withToast<T>(
     const named = cause instanceof Error && cause.name === 'ApiError'
     toast.danger(messages.failure ?? 'That did not work', {
       detail: named ? (cause as Error).message : 'Check the connection and try again.',
-      action: { label: 'Try again', run: () => void withToast(run, messages) },
+      action: { label: 'Try again', run: () => void attempt(run, messages) },
     })
-    return undefined
+    return FAILED
   }
 }

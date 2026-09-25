@@ -22,7 +22,7 @@ There is no `make` on Windows, so this stdlib-only script plays its part:
     python tasks.py reembed
     python tasks.py eval        # golden questions through the agent, graded
     python tasks.py eval-retrieval
-    python tasks.py ask tsundoku "How did last December go?"
+    python tasks.py ask animanga_knox "How did last December go?"
     python tasks.py worker      # the background worker: sync, detectors, digest
     python tasks.py round       # one worker round now, then stop
     python tasks.py detect      # run the detectors for a tenant and print what they found
@@ -107,7 +107,7 @@ def task_sources_logs(argv: list[str]) -> int:
 
 
 def task_seed(argv: list[str]) -> int:
-    """Eighteen months of Tsundoku & Tabletop history, plus a summary."""
+    """Eighteen months of Animanga Knox history, plus a summary."""
     return uv(["run", "python", "-m", "registerone.seed", "--reset", *argv], cwd=REGISTERONE)
 
 
@@ -135,7 +135,7 @@ def task_sources_test(argv: list[str]) -> int:
 
 
 def _sync(mode: str, argv: list[str]) -> int:
-    tenant = argv[0] if argv and not argv[0].startswith("-") else "tsundoku"
+    tenant = argv[0] if argv and not argv[0].startswith("-") else "animanga_knox"
     rest = argv[1:] if argv and not argv[0].startswith("-") else argv
     return uv(["run", "python", "-m", "app.sync", "--tenant", tenant, "--mode", mode, *rest])
 
@@ -151,14 +151,14 @@ def task_incremental(argv: list[str]) -> int:
 def task_ingest(argv: list[str]) -> int:
     """Embed a tenant's catalog and documents. Cheap to repeat: unchanged
     chunks are skipped and cost nothing."""
-    tenant = argv[0] if argv and not argv[0].startswith("-") else "tsundoku"
+    tenant = argv[0] if argv and not argv[0].startswith("-") else "animanga_knox"
     rest = argv[1:] if argv and not argv[0].startswith("-") else argv
     return uv(["run", "python", "-m", "app.rag.cli", "--tenant", tenant, *rest])
 
 
 def task_documents(argv: list[str]) -> int:
     """Upload the fake shops' policies and FAQs, then index them."""
-    for slug in ("tsundoku", "panel_and_pawn"):
+    for slug in ("animanga_knox", "panel_and_pawn"):
         folder = ROOT / "sources" / "documents" / slug
         if not folder.is_dir():
             continue
@@ -172,7 +172,7 @@ def task_documents(argv: list[str]) -> int:
 
 def task_reembed(argv: list[str]) -> int:
     """Re-embed everything, for when the model or the dimension changes."""
-    tenant = argv[0] if argv and not argv[0].startswith("-") else "tsundoku"
+    tenant = argv[0] if argv and not argv[0].startswith("-") else "animanga_knox"
     rest = argv[1:] if argv and not argv[0].startswith("-") else argv
     return uv(["run", "python", "-m", "app.rag.reembed", "--tenant", tenant, *rest])
 
@@ -180,9 +180,9 @@ def task_reembed(argv: list[str]) -> int:
 def task_ask(argv: list[str]) -> int:
     """Ask a shop's assistant a question, printed to the terminal.
 
-        python tasks.py ask tsundoku "How did last December go?"
+        python tasks.py ask animanga_knox "How did last December go?"
     """
-    tenant = argv[0] if argv and not argv[0].startswith("-") else "tsundoku"
+    tenant = argv[0] if argv and not argv[0].startswith("-") else "animanga_knox"
     rest = argv[1:] if argv and not argv[0].startswith("-") else argv
     return uv(["run", "python", "-m", "app.agent.ask", "--tenant", tenant, *rest])
 
@@ -203,14 +203,14 @@ def task_round(argv: list[str]) -> int:
 
 def task_detect(argv: list[str]) -> int:
     """Run every detector for a shop and print what they found."""
-    tenant = argv[0] if argv and not argv[0].startswith("-") else "tsundoku"
+    tenant = argv[0] if argv and not argv[0].startswith("-") else "animanga_knox"
     rest = argv[1:] if argv and not argv[0].startswith("-") else argv
     return uv(["run", "python", "-m", "app.insights.cli", "--tenant", tenant, *rest])
 
 
 def task_digest(argv: list[str]) -> int:
     """Print the digest this shop would get on Monday, without sending it."""
-    tenant = argv[0] if argv and not argv[0].startswith("-") else "tsundoku"
+    tenant = argv[0] if argv and not argv[0].startswith("-") else "animanga_knox"
     rest = argv[1:] if argv and not argv[0].startswith("-") else argv
     return uv(["run", "python", "-m", "app.digest.cli", "--tenant", tenant, *rest])
 

@@ -122,11 +122,20 @@ Two different things, kept apart on purpose:
 
 ## The test customer
 
-**Tsundoku & Tabletop** is a Knoxville anime, manga and hobby shop running
+**Animanga Knox** is a Knoxville anime, manga and hobby shop running
 **RegisterOne**, a fictional cloud POS. Eighteen months of history, a main store
 and a convention booth, and a long list of deliberate mess — missing costs,
 duplicate customers, partial refunds, custom-amount lines, a category renamed
-mid-history. See [SCHEMA.md](sources/registerone/SCHEMA.md) for the shape and
+mid-history.
+
+The shop is invented; its catalog is not. Real manga runs at their publishers'
+real prices, real figure lines, real Gunpla kit numbers, real card sets and
+sealed configurations, real Japanese snacks and soda — 434 products across 546
+variations, from a $0.99 Umaibo to a $319.99 scale figure. That range is the
+point: a fixture where everything costs about the same hides every bug that
+only shows up at the ends.
+
+See [SCHEMA.md](sources/registerone/SCHEMA.md) for the shape and
 [QUIRKS.md](sources/registerone/QUIRKS.md) for every trap and how to find it.
 
 ```bash
@@ -185,7 +194,7 @@ functions, so "net sales" cannot come to mean one thing in a chart and another
 in a sentence.
 
 ```python
-ctx = await load_context(session, "tsundoku")          # timezone + capabilities
+ctx = await load_context(session, "animanga_knox")          # timezone + capabilities
 summary = await sales_summary(session, ctx, ctx.month(2025, 12))
 summary.net_sales                                      # Decimal("18534.57")
 ```
@@ -228,7 +237,7 @@ it costs nothing when nothing changed: each chunk stores a hash of its text plus
 the model that embedded it, so a sync that changed three prices embeds three
 chunks and a sync that changed nothing embeds none.
 
-    tsundoku — ingest (voyage-4@1024)
+    animanga_knox — ingest (voyage-4@1024)
       products 230   documents 3
       embedded 0   unchanged 236   removed 0
       0 embedding requests, 0 tokens
@@ -237,14 +246,15 @@ Search fuses two rankers with reciprocal rank fusion inside one SQL function,
 so the dashboard, the agent and the evals cannot drift apart on what "search"
 means. The two halves fail in opposite directions, which is the whole argument
 for having both: an embedding finds "cosy manga set in a coffee shop" and
-returns Ronin Barista, which never mentions coffee; full-text finds `MNG-SS-04`,
+returns Delicious in Dungeon, which never mentions cooking; full-text finds
+`MNG-JJK-04`,
 which an embedding turns to mush.
 
 Measured on the golden sets in `scripts/evals/retrieval/`, hit@5:
 
 | Shop | vector | text | hybrid |
 | --- | --- | --- | --- |
-| Tsundoku & Tabletop | 95% | 95% | 95% |
+| Animanga Knox | 95% | 95% | 95% |
 | Panel & Pawn | 75% | 80% | **95%** |
 
 Hybrid earns its keep where the data is thin. Panel & Pawn's export has no
@@ -273,7 +283,7 @@ layer — so a figure in a sentence and the same figure on a dashboard cannot
 disagree.
 
 ```bash
-python tasks.py ask tsundoku "How did last December go?"
+python tasks.py ask animanga_knox "How did last December go?"
 ```
 
     [sales_summary {'start_date': '2025-12-01', 'end_date': '2025-12-31'}]
@@ -330,7 +340,7 @@ from our canonical copy.
 
 ```bash
 python tasks.py eval                                    # both shops, graded
-python tasks.py eval --tenant tsundoku --csv out.csv
+python tasks.py eval --tenant animanga_knox --csv out.csv
 python tasks.py eval --id net_sales_december            # just one
 ```
 
@@ -356,14 +366,14 @@ Last measured run:
 | Shop | Questions | Accuracy | Avg cost | p95 latency |
 | --- | --- | --- | --- | --- |
 | Panel & Pawn | 20 | 100% | $0.007 | 8.4s |
-| Tsundoku & Tabletop | 34 | 97% | $0.013 | 7.0s |
+| Animanga Knox | 34 | 97% | $0.013 | 7.0s |
 
 About **1.1 cents a question**, so a shop asking twenty questions a day costs
 roughly **$6.50 a month** to answer. That figure is the reason this eval writes
 a CSV: pricing a per-shop subscription is guesswork until questions have a
 measured cost.
 
-The one Tsundoku failure is the grader's, not the assistant's — on the hardest
+The one Animanga Knox failure is the grader's, not the assistant's — on the hardest
 question in the set ("how did the con booth do against a normal weekend?") it
 called a correct answer invented. Every figure in that answer was checked by
 hand against RegisterOne and was exact. It is left in the set, and left failing,
@@ -381,7 +391,7 @@ python tasks.py web      # http://localhost:5173
 ```
 
 A dev-only shop switcher sits at the top of the rail, and the shop is part of
-the URL (`/tsundoku/dashboard`), so a link to a screen is a link to that shop's
+the URL (`/animanga_knox/dashboard`), so a link to a screen is a link to that shop's
 screen.
 
 * **Dashboard** — net sales, orders, average order value and inventory value
@@ -399,7 +409,7 @@ screen.
 What makes it this product's dashboard rather than a generic one is that
 **widgets a shop cannot support do not render**. Each one arrives from the API
 wrapped: either available with data, or unavailable with a sentence. Panel &
-Pawn has one location and one channel, so where Tsundoku shows two splits it
+Pawn has one location and one channel, so where Animanga Knox shows two splits it
 shows
 
     — Panel & Pawn has a single location, so there is nothing to split by location.

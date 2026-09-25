@@ -15,6 +15,7 @@ import { useRoute } from 'vue-router'
 import { api } from '../api/client'
 import type { DeadStockScreen, RescueAction, StaleItem } from '../api/types'
 import SectionCard from '../components/SectionCard.vue'
+import { useBusy } from '../lib/busy'
 import UiButton from '../ui/UiButton.vue'
 import { withToast } from '../ui/toast'
 import { money, moneyShort, percent, quantity, shopDate } from '../lib/format'
@@ -27,6 +28,10 @@ const slug = computed(() => String(route.params.tenant ?? ''))
 const screen = ref<DeadStockScreen | null>(null)
 const actions = ref<RescueAction[]>([])
 const loading = ref(true)
+// Keyed by item: these buttons are one per row, and a shared flag would spin
+// the whole list. Without any state at all — which is what this had — a slow
+// POST looks like a dead button and gets pressed twice.
+const logging = useBusy()
 const error = ref<string | null>(null)
 const expanded = ref<string | null>(null)
 
@@ -61,18 +66,20 @@ async function load() {
  * after without having to guess which rung the owner took.
  */
 async function log(item: StaleItem, priceAfter?: string) {
-  const done = await withToast(
-    () =>
-      api.logRescue(slug.value, {
-        variant_id: item.variant_id,
-        kind: item.play,
-        detail: item.detail,
-        price_after: priceAfter ?? null,
-      }),
-    {
-      success: `Logged. We will check back on ${item.label} in 30 days`,
-      failure: 'Could not log that',
-    },
+  const done = await logging.run(item.variant_id, () =>
+    withToast(
+      () =>
+        api.logRescue(slug.value, {
+          variant_id: item.variant_id,
+          kind: item.play,
+          detail: item.detail,
+          price_after: priceAfter ?? null,
+        }),
+      {
+        success: `Logged. We will check back on ${item.label} in 30 days`,
+        failure: 'Could not log that',
+      },
+    ),
   )
   if (done !== undefined) await load()
 }
@@ -147,7 +154,14 @@ watch(slug, load)
               </span>
             </template>
             <template v-else>
-              <UiButton size="sm" @click="log(item, item.ladder[0]?.price)">I did this</UiButton>
+              <UiButton
+                size="sm"
+                :loading="logging.busy(item.variant_id)"
+                :disabled="logging.anyBusy.value"
+                @click="log(item, item.ladder[0]?.price)"
+              >
+                I did this
+              </UiButton>
               <UiButton
                 v-if="item.ladder.length"
                 size="sm"

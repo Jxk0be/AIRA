@@ -122,7 +122,7 @@ def test_a_returnable_vendor_beats_a_markdown_for_dead_stock() -> None:
     """Getting the cost back beats getting a fraction of it."""
     rescue = choose(
         item(kind=StaleKind.DEAD),
-        vendor={"id": uuid.uuid4(), "name": "Blue Kettle", "takes_returns": True},
+        vendor={"id": uuid.uuid4(), "name": "Bluefin Brands", "takes_returns": True},
     )
     assert rescue.play == "return_to_vendor"
     assert rescue.detail["value_at_cost"] == "108.00"
@@ -140,7 +140,7 @@ def test_a_return_is_not_offered_for_merely_stale_stock() -> None:
     """Two months quiet is a markdown problem, not a send-it-back problem."""
     rescue = choose(
         item(kind=StaleKind.STALE),
-        vendor={"id": uuid.uuid4(), "name": "Blue Kettle", "takes_returns": True},
+        vendor={"id": uuid.uuid4(), "name": "Bluefin Brands", "takes_returns": True},
     )
     assert rescue.play != "return_to_vendor"
 
@@ -186,7 +186,7 @@ def test_moving_is_not_offered_to_where_it_already_is() -> None:
         locations=[
             LocationStrength(
                 location_id=here,
-                location_name="Gay St",
+                location_name="Market Square",
                 units=Decimal("40"),
                 share=Decimal("0.9"),
             )

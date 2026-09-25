@@ -22,7 +22,7 @@ from app.canonical import tables as t
 from app.db import get_sessionmaker
 from app.notify.tables import NotificationPref
 
-TENANT = "tsundoku"
+TENANT = "animanga_knox"
 SETUP = "python tasks.py sources && python tasks.py seed && python tasks.py backfill"
 
 # Nobody's real address, and undeliverable by design: RFC 2606 reserves

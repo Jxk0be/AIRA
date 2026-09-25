@@ -6,7 +6,7 @@ Claiming is an insert on `(tenant_id, job, due_at)`, which is what makes the
 whole thing idempotent and what lets two workers run at once without talking.
 
     python -m app.jobs.worker
-    python -m app.jobs.worker --once --tenant tsundoku --job detectors
+    python -m app.jobs.worker --once --tenant animanga_knox --job detectors
 """
 
 from app.jobs.runner import (

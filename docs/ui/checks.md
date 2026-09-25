@@ -15,7 +15,8 @@
 | **Business color** | `brand.spec.ts` — picks a color in Settings, then measures the button the browser actually painted. The luminance maths is written out again in the spec: an app that checked its own contrast with the function that chose the color would agree with itself whatever it did. |
 | **axe** | WCAG 2.2 AA tags only, every screen, every theme, every size. Nothing excluded. |
 | **Keyboard** | Focus always visible, never trapped, skip link present, one labeled `<main>` and `<nav>`. |
-| **Layout** | No horizontal scroll, no text under 13px, tap targets ≥44px on mobile. |
+| **Layout** | No horizontal scroll, no text under 13px, tap targets ≥44px on mobile, and the tab strip fits a phone without scrolling. |
+| **Loading** | `loading.spec.ts` — holds a write open and checks that exactly one button reports `aria-busy`, so a shared flag cannot come back. |
 
 Ten screens × four projects (375×812 and 1280×800, each light and dark) = 40 runs
 per check.
@@ -40,6 +41,49 @@ Re-record with `python tasks.py ui-fixtures` (needs `python tasks.py api`)
 whenever a response model changes. The diff is the review.
 
 ## Baseline
+
+### After the loading states — 488 passed, 0 failed, 0 flaky
+
+Twelve more: `loading.spec.ts`, three cases across four projects.
+
+Every screen with a row of buttons held one `working` boolean and bound it to
+all of them, so pressing "Make a draft" for one supplier spun the button for
+all five, and Data & sync managed to spin *"Sync now"* when the button actually
+pressed was "Re-read everything". Nothing here could have caught it: the
+fixture mock answers every write instantly, so the loading state exists for
+less than a frame and a screenshot of a settled page shows nothing at all.
+
+The spec holds the response open and asserts while it is held — and asserts
+*how many* buttons are busy rather than that the right one is, because "this
+one is spinning" is just as true when all five are. Each case was run against
+the unfixed component first: the reorder one reported five spinners where one
+was expected, which is the bug as the owner sees it.
+
+The route that holds the response matches on `pathname`, not a glob. A glob is
+compared against the whole URL, so `**/reorder/drafts` misses
+`/reorder/drafts?vendor_id=…`, the fixture mock answers instantly instead, and
+the spec passes on the very thing it exists to catch. It did, until the
+unfixed-component run showed it should not have.
+
+### After the conversation actions and the tab strip — 476 passed, 0 failed, 0 flaky
+
+Thirty-four more than the business-color baseline: twelve `actions.spec.ts`
+cases across four projects, and a new layout check on each tabbed screen.
+
+The layout check is the one worth explaining. "Does not scroll horizontally"
+deliberately excuses anything inside a *deliberate* scroller, and the tab strip
+was one — so Settings could need 477px of a 343px phone, open on "ta & sync"
+clipped at the left edge with "Appearance" off the right, and pass every gate
+in this file. A check that has to be aimed at the thing is still a check; the
+lesson is that "no overflow" and "nothing is hidden" are different questions.
+
+Fixing it turned up a second thing no gate was asking about: Reka's
+`TabsIndicator` renders under a `v-if` on a measurement that never arrived
+here, so the rule under the active tab — the third signal, the one that is not
+color — had never rendered on any tabbed screen, in any theme, at any size.
+Nothing failed, because every check was looking at contrast, size or position
+of things that *were* there. It is a border on the trigger now, which cannot
+silently not happen.
 
 ### After the business color — 442 passed, 0 failed, 0 flaky
 

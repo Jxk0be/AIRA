@@ -19,6 +19,7 @@
 import { computed, ref, watch } from 'vue'
 
 import { PRESETS, evaluateBrand, previewSurfaces } from '../lib/brand'
+import { useBusy } from '../lib/busy'
 import { normalizeHex } from '../lib/color'
 import { useTenantStore } from '../stores/tenant'
 import UiButton from '../ui/UiButton.vue'
@@ -28,7 +29,9 @@ const shop = useTenantStore()
 
 /** What is in the field. May be half-typed, may be nonsense — that is the point. */
 const draft = ref(shop.brandColor ?? PRESETS[0]!.hex)
-const saving = ref(false)
+// Two buttons doing two different jobs. They shared one boolean, so saving a
+// color spun "Back to the default" as well.
+const busy = useBusy<'save' | 'reset'>()
 
 // Someone switching shop in the dev picker should see that shop's color, not
 // the last one they were looking at.
@@ -77,21 +80,21 @@ const previews = computed(() => {
 async function save() {
   const color = normalizeHex(draft.value)
   if (!color || !verdict.value.ok) return
-  saving.value = true
-  await withToast(() => shop.setBrandColor(color), {
+  await busy.run('save', () =>
+    withToast(() => shop.setBrandColor(color), {
       success: 'Saved. This is your color on every device you sign in on.',
-    failure: 'Could not save that color',
-  })
-  saving.value = false
+      failure: 'Could not save that color',
+    }),
+  )
 }
 
 async function reset() {
-  saving.value = true
-  await withToast(() => shop.setBrandColor(null), {
-    success: 'Back to the color we ship',
-    failure: 'Could not change that back',
-  })
-  saving.value = false
+  await busy.run('reset', () =>
+    withToast(() => shop.setBrandColor(null), {
+      success: 'Back to the color we ship',
+      failure: 'Could not change that back',
+    }),
+  )
 }
 </script>
 
@@ -217,10 +220,20 @@ async function reset() {
     </div>
 
     <div class="mt-4 flex flex-wrap gap-2">
-      <UiButton :disabled="!verdict.ok || !changed" :loading="saving" @click="save">
+      <UiButton
+        :disabled="!verdict.ok || !changed || busy.anyBusy.value"
+        :loading="busy.busy('save')"
+        @click="save"
+      >
         Save this color
       </UiButton>
-      <UiButton v-if="saved" variant="secondary" :loading="saving" @click="reset">
+      <UiButton
+        v-if="saved"
+        variant="secondary"
+        :disabled="busy.anyBusy.value"
+        :loading="busy.busy('reset')"
+        @click="reset"
+      >
         Use the default
       </UiButton>
     </div>

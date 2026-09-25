@@ -1,1092 +1,1098 @@
 {
-  "tenant": "tsundoku",
+  "tenant": "animanga_knox",
   "as_of": "2026-09-24",
-  "total_cash": "27283.14",
-  "planned_cash": "15691.98",
-  "item_count": 175,
+  "total_cash": "42928.76",
+  "planned_cash": "14888.72",
+  "item_count": 315,
   "cost_coverage": "0.89",
   "counts": {
-    "slowing": 98,
-    "stale": 39,
-    "dead": 38
+    "stale": 82,
+    "slowing": 159,
+    "dead": 74
   },
   "items": [
     {
-      "variant_id": "dcd79422-8b97-47aa-b11a-4399e5ac952c",
-      "label": "Astral Clash: Gilded Static Booster Box",
-      "sku": "SLD-AC04-BOO-00189",
-      "category": "Sealed Product",
-      "kind": "slowing",
-      "units_on_hand": "34.0000",
-      "days_since_last_sale": 32,
-      "never_sold": false,
-      "cash_tied_up": "3005.26",
-      "cash_at_cost": "3005.26",
-      "price": "129.9900",
-      "cost": "88.3900",
-      "play": "bundle",
-      "headline": "Bundle it with Matte Card Sleeves, 100ct",
-      "why": "5 customers bought both in the last year, and Matte Card Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
-      "detail": {
-        "partner_variant_id": "47f4c884-8221-4617-ad4b-538a5f7beefc",
-        "partner_label": "Matte Card Sleeves, 100ct",
-        "baskets": 5,
-        "suggested_bundle_price": "123.99"
-      },
-      "ladder": [
-        {
-          "discount": "0.15",
-          "price": "110.49",
-          "margin_per_unit": "22.10",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.30",
-          "price": "90.99",
-          "margin_per_unit": "2.60",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.50",
-          "price": "65.00",
-          "margin_per_unit": "-23.39",
-          "clears_cost": false
-        }
-      ]
-    },
-    {
-      "variant_id": "874e9b8b-55d1-48c2-b36b-8c97b0eb8493",
-      "label": "Loomkeeper Hana 1/7 Scale Figure — Standard",
-      "sku": "FIG-LOOM-09-00102",
-      "category": "Scale Figures",
-      "kind": "stale",
-      "units_on_hand": "16.0000",
-      "days_since_last_sale": 68,
-      "never_sold": false,
-      "cash_tied_up": "1587.04",
-      "cash_at_cost": "1587.04",
-      "price": "159.9900",
-      "cost": "99.1900",
-      "play": "markdown",
-      "headline": "Mark it down 15% to $135.99",
-      "why": "16 copies on the shelf, nothing sold in 68 days. At $135.99 that is still $36.80 a copy over cost.",
-      "detail": {
-        "discount": "0.15",
-        "new_price": "135.99",
-        "margin_per_unit": "36.80",
-        "break_even_price": "99.1900",
-        "units": "16.0000"
-      },
-      "ladder": [
-        {
-          "discount": "0.15",
-          "price": "135.99",
-          "margin_per_unit": "36.80",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.30",
-          "price": "111.99",
-          "margin_per_unit": "12.80",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.50",
-          "price": "80.00",
-          "margin_per_unit": "-19.19",
-          "clears_cost": false
-        }
-      ]
-    },
-    {
-      "variant_id": "3142e67a-cb70-4f9b-8960-949616017564",
-      "label": "Astral Clash: Gilded Static Collector Bundle",
-      "sku": "SLD-AC04-COL-00260",
+      "variant_id": "fd7d9482-5f30-4124-bbef-cd14fe848e4c",
+      "label": "Weiss Schwarz: Attack on Titan Booster Box",
+      "sku": "SLD-WS-AOT-BOO-00457",
       "category": "Sealed Product",
       "kind": "stale",
-      "units_on_hand": "36.0000",
-      "days_since_last_sale": 60,
-      "never_sold": false,
-      "cash_tied_up": "1346.04",
-      "cash_at_cost": "1346.04",
-      "price": "54.9900",
-      "cost": "37.3900",
-      "play": "move",
-      "headline": "Move it to Tsundoku & Tabletop — Gay St",
-      "why": "83% of this category's sales happen at Tsundoku & Tabletop — Gay St. The stock is in the wrong room, not the wrong shop.",
-      "detail": {
-        "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-        "location_name": "Tsundoku & Tabletop — Gay St",
-        "category_share": "0.83",
-        "units": "36.0000"
-      },
-      "ladder": [
-        {
-          "discount": "0.15",
-          "price": "46.74",
-          "margin_per_unit": "9.35",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.30",
-          "price": "38.49",
-          "margin_per_unit": "1.10",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.50",
-          "price": "27.50",
-          "margin_per_unit": "-9.89",
-          "clears_cost": false
-        }
-      ]
-    },
-    {
-      "variant_id": "fd4f9821-5400-4cd2-9682-a901ba6e048e",
-      "label": "Clockwork Vandal (AC03) — NM",
-      "sku": "SGL-AC03-CLOC-NM-00282",
-      "category": "Singles",
-      "kind": "slowing",
-      "units_on_hand": "12.0000",
-      "days_since_last_sale": 41,
-      "never_sold": false,
-      "cash_tied_up": "1077.00",
-      "cash_at_cost": null,
-      "price": "89.7500",
-      "cost": null,
-      "play": "bundle",
-      "headline": "Bundle it with Matte Card Sleeves, 100ct",
-      "why": "5 customers bought both in the last year, and Matte Card Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
-      "detail": {
-        "partner_variant_id": "47f4c884-8221-4617-ad4b-538a5f7beefc",
-        "partner_label": "Matte Card Sleeves, 100ct",
-        "baskets": 5,
-        "suggested_bundle_price": "87.99"
-      },
-      "ladder": [
-        {
-          "discount": "0.15",
-          "price": "76.29",
-          "margin_per_unit": null,
-          "clears_cost": true
-        },
-        {
-          "discount": "0.30",
-          "price": "62.83",
-          "margin_per_unit": null,
-          "clears_cost": true
-        },
-        {
-          "discount": "0.50",
-          "price": "44.88",
-          "margin_per_unit": null,
-          "clears_cost": true
-        }
-      ]
-    },
-    {
-      "variant_id": "8169e1ba-6e9b-482f-bd35-9a89a976d871",
-      "label": "Vending Oracle (AC03) — LP",
-      "sku": "SGL-AC03-VEND-LP-00317",
-      "category": "Singles",
-      "kind": "stale",
-      "units_on_hand": "22.0000",
-      "days_since_last_sale": 71,
-      "never_sold": false,
-      "cash_tied_up": "789.14",
-      "cash_at_cost": "789.14",
-      "price": "71.7500",
-      "cost": "35.8700",
-      "play": "markdown",
-      "headline": "Mark it down 15% to $60.99",
-      "why": "22 copies on the shelf, nothing sold in 71 days. At $60.99 that is still $25.12 a copy over cost.",
-      "detail": {
-        "discount": "0.15",
-        "new_price": "60.99",
-        "margin_per_unit": "25.12",
-        "break_even_price": "35.8700",
-        "units": "22.0000"
-      },
-      "ladder": [
-        {
-          "discount": "0.15",
-          "price": "60.99",
-          "margin_per_unit": "25.12",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.30",
-          "price": "50.23",
-          "margin_per_unit": "14.36",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.50",
-          "price": "35.88",
-          "margin_per_unit": "0.01",
-          "clears_cost": true
-        }
-      ]
-    },
-    {
-      "variant_id": "960e9062-8a36-4dd7-aff6-1e244f61ad32",
-      "label": "Saltwind Duelist (AC01) — LP",
-      "sku": "SGL-AC01-SALT-LP-00166",
-      "category": "Singles",
-      "kind": "slowing",
       "units_on_hand": "10.0000",
-      "days_since_last_sale": 52,
+      "days_since_last_sale": 62,
       "never_sold": false,
-      "cash_tied_up": "717.50",
-      "cash_at_cost": null,
-      "price": "71.7500",
-      "cost": null,
-      "play": "bundle",
-      "headline": "Bundle it with Matte Card Sleeves, 100ct",
-      "why": "3 customers bought both in the last year, and Matte Card Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
-      "detail": {
-        "partner_variant_id": "47f4c884-8221-4617-ad4b-538a5f7beefc",
-        "partner_label": "Matte Card Sleeves, 100ct",
-        "baskets": 3,
-        "suggested_bundle_price": "71.99"
-      },
-      "ladder": [
-        {
-          "discount": "0.15",
-          "price": "60.99",
-          "margin_per_unit": null,
-          "clears_cost": true
-        },
-        {
-          "discount": "0.30",
-          "price": "50.23",
-          "margin_per_unit": null,
-          "clears_cost": true
-        },
-        {
-          "discount": "0.50",
-          "price": "35.88",
-          "margin_per_unit": null,
-          "clears_cost": true
-        }
-      ]
-    },
-    {
-      "variant_id": "28aca7ee-0b08-4f71-826d-112eacd4ddc3",
-      "label": "Loomshadow (AC02) — LP",
-      "sku": "SGL-AC02-LOOM-LP-00306",
-      "category": "Singles",
-      "kind": "slowing",
-      "units_on_hand": "15.0000",
-      "days_since_last_sale": 53,
-      "never_sold": false,
-      "cash_tied_up": "596.25",
-      "cash_at_cost": null,
-      "price": "39.7500",
-      "cost": null,
-      "play": "bundle",
-      "headline": "Bundle it with Perfect Fit Sleeves, 100ct",
-      "why": "4 customers bought both in the last year, and Perfect Fit Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
-      "detail": {
-        "partner_variant_id": "15dac2c8-d35e-47db-a056-f26ac6c13db3",
-        "partner_label": "Perfect Fit Sleeves, 100ct",
-        "baskets": 4,
-        "suggested_bundle_price": "39.99"
-      },
-      "ladder": [
-        {
-          "discount": "0.15",
-          "price": "33.79",
-          "margin_per_unit": null,
-          "clears_cost": true
-        },
-        {
-          "discount": "0.30",
-          "price": "27.83",
-          "margin_per_unit": null,
-          "clears_cost": true
-        },
-        {
-          "discount": "0.50",
-          "price": "19.88",
-          "margin_per_unit": null,
-          "clears_cost": true
-        }
-      ]
-    },
-    {
-      "variant_id": "497a3748-eb9e-4d08-a698-981e9ea11430",
-      "label": "Clockwork Vandal (AC03) — LP",
-      "sku": "SGL-AC03-CLOC-LP-00283",
-      "category": "Singles",
-      "kind": "slowing",
-      "units_on_hand": "16.0000",
-      "days_since_last_sale": 47,
-      "never_sold": false,
-      "cash_tied_up": "573.92",
-      "cash_at_cost": "573.92",
-      "price": "71.7500",
-      "cost": "35.8700",
-      "play": "bundle",
-      "headline": "Bundle it with Perfect Fit Sleeves, 100ct",
-      "why": "5 customers bought both in the last year, and Perfect Fit Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
-      "detail": {
-        "partner_variant_id": "15dac2c8-d35e-47db-a056-f26ac6c13db3",
-        "partner_label": "Perfect Fit Sleeves, 100ct",
-        "baskets": 5,
-        "suggested_bundle_price": "68.99"
-      },
-      "ladder": [
-        {
-          "discount": "0.15",
-          "price": "60.99",
-          "margin_per_unit": "25.12",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.30",
-          "price": "50.23",
-          "margin_per_unit": "14.36",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.50",
-          "price": "35.88",
-          "margin_per_unit": "0.01",
-          "clears_cost": true
-        }
-      ]
-    },
-    {
-      "variant_id": "fb1e90ae-d108-4998-86ae-c89a6ec46e42",
-      "label": "Paper Crane Envoy (AC02) — LP",
-      "sku": "SGL-AC02-PAPE-LP-00196",
-      "category": "Singles",
-      "kind": "slowing",
-      "units_on_hand": "14.0000",
-      "days_since_last_sale": 48,
-      "never_sold": false,
-      "cash_tied_up": "502.18",
-      "cash_at_cost": "502.18",
-      "price": "71.7500",
-      "cost": "35.8700",
+      "cash_tied_up": "759.90",
+      "cash_at_cost": "759.90",
+      "price": "99.9900",
+      "cost": "75.9900",
       "play": "markdown",
-      "headline": "Mark it down 15% to $60.99",
-      "why": "14 copies on the shelf, nothing sold in 48 days. At $60.99 that is still $25.12 a copy over cost.",
+      "headline": "Mark it down 15% to $84.99",
+      "why": "10 copies on the shelf, nothing sold in 62 days. At $84.99 that is still $9.00 a copy over cost.",
       "detail": {
         "discount": "0.15",
-        "new_price": "60.99",
-        "margin_per_unit": "25.12",
-        "break_even_price": "35.8700",
-        "units": "14.0000"
+        "new_price": "84.99",
+        "margin_per_unit": "9.00",
+        "break_even_price": "75.9900",
+        "units": "10.0000"
       },
       "ladder": [
         {
           "discount": "0.15",
-          "price": "60.99",
-          "margin_per_unit": "25.12",
+          "price": "84.99",
+          "margin_per_unit": "9.00",
           "clears_cost": true
         },
         {
           "discount": "0.30",
-          "price": "50.23",
-          "margin_per_unit": "14.36",
-          "clears_cost": true
+          "price": "69.99",
+          "margin_per_unit": "-6.00",
+          "clears_cost": false
         },
         {
           "discount": "0.50",
-          "price": "35.88",
-          "margin_per_unit": "0.01",
-          "clears_cost": true
-        }
-      ]
-    },
-    {
-      "variant_id": "792b0995-0792-46d9-abb4-63a6ae2fb1cc",
-      "label": "Saltwind Duelist (AC01) — NM",
-      "sku": "SGL-AC01-SALT-NM-00165",
-      "category": "Singles",
-      "kind": "slowing",
-      "units_on_hand": "11.0000",
-      "days_since_last_sale": -4,
-      "never_sold": false,
-      "cash_tied_up": "493.57",
-      "cash_at_cost": "493.57",
-      "price": "89.7500",
-      "cost": "44.8700",
-      "play": "bundle",
-      "headline": "Bundle it with Perfect Fit Sleeves, 100ct",
-      "why": "5 customers bought both in the last year, and Perfect Fit Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
-      "detail": {
-        "partner_variant_id": "15dac2c8-d35e-47db-a056-f26ac6c13db3",
-        "partner_label": "Perfect Fit Sleeves, 100ct",
-        "baskets": 5,
-        "suggested_bundle_price": "84.99"
-      },
-      "ladder": [
-        {
-          "discount": "0.15",
-          "price": "76.29",
-          "margin_per_unit": "31.42",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.30",
-          "price": "62.83",
-          "margin_per_unit": "17.96",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.50",
-          "price": "44.88",
-          "margin_per_unit": "0.01",
-          "clears_cost": true
-        }
-      ]
-    },
-    {
-      "variant_id": "7fc0be90-76ce-417e-9b04-50acb7cd0d97",
-      "label": "Paper Crane Envoy (AC02) — MP",
-      "sku": "SGL-AC02-PAPE-MP-00197",
-      "category": "Singles",
-      "kind": "stale",
-      "units_on_hand": "16.0000",
-      "days_since_last_sale": 68,
-      "never_sold": false,
-      "cash_tied_up": "429.92",
-      "cash_at_cost": "429.92",
-      "price": "53.7500",
-      "cost": "26.8700",
-      "play": "move",
-      "headline": "Move it to Tsundoku & Tabletop — Gay St",
-      "why": "92% of this category's sales happen at Tsundoku & Tabletop — Gay St. The stock is in the wrong room, not the wrong shop.",
-      "detail": {
-        "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-        "location_name": "Tsundoku & Tabletop — Gay St",
-        "category_share": "0.92",
-        "units": "16.0000"
-      },
-      "ladder": [
-        {
-          "discount": "0.15",
-          "price": "45.69",
-          "margin_per_unit": "18.82",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.30",
-          "price": "37.63",
-          "margin_per_unit": "10.76",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.50",
-          "price": "26.88",
-          "margin_per_unit": "0.01",
-          "clears_cost": true
-        }
-      ]
-    },
-    {
-      "variant_id": "581fc1a6-3498-45d4-945f-03daa800917b",
-      "label": "Astral Clash: Veil of Nine Collector Bundle",
-      "sku": "SLD-AC03-COL-00285",
-      "category": "Sealed Product",
-      "kind": "dead",
-      "units_on_hand": "11.0000",
-      "days_since_last_sale": null,
-      "never_sold": true,
-      "cash_tied_up": "411.29",
-      "cash_at_cost": "411.29",
-      "price": "54.9900",
-      "cost": "37.3900",
-      "play": "markdown",
-      "headline": "Mark it down 15% to $46.74",
-      "why": "11 copies on the shelf, nothing sold in since it arrived — it has never sold. At $46.74 that is still $9.35 a copy over cost.",
-      "detail": {
-        "discount": "0.15",
-        "new_price": "46.74",
-        "margin_per_unit": "9.35",
-        "break_even_price": "37.3900",
-        "units": "11.0000"
-      },
-      "ladder": [
-        {
-          "discount": "0.15",
-          "price": "46.74",
-          "margin_per_unit": "9.35",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.30",
-          "price": "38.49",
-          "margin_per_unit": "1.10",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.50",
-          "price": "27.50",
-          "margin_per_unit": "-9.89",
+          "price": "50.00",
+          "margin_per_unit": "-25.99",
           "clears_cost": false
         }
       ]
     },
     {
-      "variant_id": "363ea2bb-f956-4262-923a-50909fb4ce88",
-      "label": "Kettle Paladin (AC02) — NM",
-      "sku": "SGL-AC02-KETT-NM-00069",
-      "category": "Singles",
+      "variant_id": "7883c726-eab7-47fe-ad2a-2bc4a63107f2",
+      "label": "Pokemon TCG: Journey Together Elite Trainer Box",
+      "sku": "SLD-SV09-ELI-00013",
+      "category": "Sealed Product",
       "kind": "slowing",
-      "units_on_hand": "16.0000",
-      "days_since_last_sale": 33,
-      "never_sold": false,
-      "cash_tied_up": "397.92",
-      "cash_at_cost": "397.92",
-      "price": "49.7500",
-      "cost": "24.8700",
-      "play": "move",
-      "headline": "Move it to Tsundoku & Tabletop — Gay St",
-      "why": "92% of this category's sales happen at Tsundoku & Tabletop — Gay St. The stock is in the wrong room, not the wrong shop.",
-      "detail": {
-        "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-        "location_name": "Tsundoku & Tabletop — Gay St",
-        "category_share": "0.92",
-        "units": "16.0000"
-      },
-      "ladder": [
-        {
-          "discount": "0.15",
-          "price": "42.29",
-          "margin_per_unit": "17.42",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.30",
-          "price": "34.83",
-          "margin_per_unit": "9.96",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.50",
-          "price": "24.88",
-          "margin_per_unit": "0.01",
-          "clears_cost": true
-        }
-      ]
-    },
-    {
-      "variant_id": "31ae6e4b-16d8-4890-806e-2152da4b7b46",
-      "label": "Tsundoku & Tabletop House Tee — M",
-      "sku": "APP-TSUN-M-00289",
-      "category": "Apparel",
-      "kind": "slowing",
-      "units_on_hand": "16.0000",
-      "days_since_last_sale": 35,
-      "never_sold": false,
-      "cash_tied_up": "367.84",
-      "cash_at_cost": null,
-      "price": "22.9900",
-      "cost": null,
-      "play": "move",
-      "headline": "Move it to Tsundoku & Tabletop — Gay St",
-      "why": "80% of this category's sales happen at Tsundoku & Tabletop — Gay St. The stock is in the wrong room, not the wrong shop.",
-      "detail": {
-        "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-        "location_name": "Tsundoku & Tabletop — Gay St",
-        "category_share": "0.80",
-        "units": "16.0000"
-      },
-      "ladder": [
-        {
-          "discount": "0.15",
-          "price": "19.54",
-          "margin_per_unit": null,
-          "clears_cost": true
-        },
-        {
-          "discount": "0.30",
-          "price": "16.09",
-          "margin_per_unit": null,
-          "clears_cost": true
-        },
-        {
-          "discount": "0.50",
-          "price": "11.50",
-          "margin_per_unit": null,
-          "clears_cost": true
-        }
-      ]
-    },
-    {
-      "variant_id": "c2abdcd1-0a07-48b3-b85e-83fdabac275b",
-      "label": "Veiled Cartographer (AC01) — NM",
-      "sku": "SGL-AC01-VEIL-NM-00308",
-      "category": "Singles",
-      "kind": "slowing",
-      "units_on_hand": "14.0000",
-      "days_since_last_sale": 40,
-      "never_sold": false,
-      "cash_tied_up": "346.50",
-      "cash_at_cost": null,
-      "price": "24.7500",
-      "cost": null,
-      "play": "bundle",
-      "headline": "Bundle it with Perfect Fit Sleeves, 100ct",
-      "why": "7 customers bought both in the last year, and Perfect Fit Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
-      "detail": {
-        "partner_variant_id": "15dac2c8-d35e-47db-a056-f26ac6c13db3",
-        "partner_label": "Perfect Fit Sleeves, 100ct",
-        "baskets": 7,
-        "suggested_bundle_price": "26.99"
-      },
-      "ladder": [
-        {
-          "discount": "0.15",
-          "price": "21.04",
-          "margin_per_unit": null,
-          "clears_cost": true
-        },
-        {
-          "discount": "0.30",
-          "price": "17.33",
-          "margin_per_unit": null,
-          "clears_cost": true
-        },
-        {
-          "discount": "0.50",
-          "price": "12.38",
-          "margin_per_unit": null,
-          "clears_cost": true
-        }
-      ]
-    },
-    {
-      "variant_id": "f4568968-7143-4815-a6c5-13f6ac52edd1",
-      "label": "Tidepool Slime Plush (Small) — Small",
-      "sku": "PLU-TIDE-S-00185",
-      "category": "Plush",
-      "kind": "stale",
       "units_on_hand": "20.0000",
-      "days_since_last_sale": 100,
+      "days_since_last_sale": 22,
       "never_sold": false,
-      "cash_tied_up": "339.80",
-      "cash_at_cost": null,
-      "price": "16.9900",
-      "cost": null,
+      "cash_tied_up": "759.80",
+      "cash_at_cost": "759.80",
+      "price": "49.9900",
+      "cost": "37.9900",
       "play": "bundle",
-      "headline": "Bundle it with Matte Card Sleeves, 100ct",
-      "why": "3 customers bought both in the last year, and Matte Card Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "headline": "Bundle it with Glico Pocky - Chocolate",
+      "why": "3 customers bought both in the last year, and Glico Pocky - Chocolate is still selling. A bundle moves the slow half without marking either down on the shelf.",
       "detail": {
-        "partner_variant_id": "47f4c884-8221-4617-ad4b-538a5f7beefc",
-        "partner_label": "Matte Card Sleeves, 100ct",
+        "partner_variant_id": "db572239-04ff-4a20-b125-ea2ae96cf9cc",
+        "partner_label": "Glico Pocky - Chocolate",
         "baskets": 3,
-        "suggested_bundle_price": "21.99"
+        "suggested_bundle_price": "46.99"
       },
       "ladder": [
         {
           "discount": "0.15",
-          "price": "14.44",
-          "margin_per_unit": null,
+          "price": "42.49",
+          "margin_per_unit": "4.50",
           "clears_cost": true
         },
         {
           "discount": "0.30",
-          "price": "11.89",
-          "margin_per_unit": null,
-          "clears_cost": true
+          "price": "34.99",
+          "margin_per_unit": "-3.00",
+          "clears_cost": false
         },
         {
           "discount": "0.50",
-          "price": "8.50",
-          "margin_per_unit": null,
-          "clears_cost": true
+          "price": "25.00",
+          "margin_per_unit": "-12.99",
+          "clears_cost": false
         }
       ]
     },
     {
-      "variant_id": "3cdcd33c-63c1-4dbe-bc19-685b098d35ce",
-      "label": "Mochi the Fox Plush (Large) — Large",
-      "sku": "PLU-MOCH-L-00148",
-      "category": "Plush",
+      "variant_id": "a8c9191a-ba16-4fe7-bdde-26c95f2da8bf",
+      "label": "Pokemon TCG: Prismatic Evolutions Booster Box",
+      "sku": "SLD-SVPE-BOO-00173",
+      "category": "Sealed Product",
       "kind": "slowing",
-      "units_on_hand": "20.0000",
+      "units_on_hand": "6.0000",
+      "days_since_last_sale": 31,
+      "never_sold": false,
+      "cash_tied_up": "737.04",
+      "cash_at_cost": "737.04",
+      "price": "161.6400",
+      "cost": "122.8400",
+      "play": "move",
+      "headline": "Move it to Animanga Knox - Market Square",
+      "why": "96% of this category's sales happen at Animanga Knox - Market Square. The stock is in the wrong room, not the wrong shop.",
+      "detail": {
+        "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+        "location_name": "Animanga Knox - Market Square",
+        "category_share": "0.96",
+        "units": "6.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "137.39",
+          "margin_per_unit": "14.55",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "113.15",
+          "margin_per_unit": "-9.69",
+          "clears_cost": false
+        },
+        {
+          "discount": "0.50",
+          "price": "80.82",
+          "margin_per_unit": "-42.02",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "5a9dc9e4-68d0-4a40-a547-079efec2051f",
+      "label": "Pokemon TCG: Destined Rivals Booster Box",
+      "sku": "SLD-SV10-BOO-00470",
+      "category": "Sealed Product",
+      "kind": "slowing",
+      "units_on_hand": "6.0000",
+      "days_since_last_sale": 34,
+      "never_sold": false,
+      "cash_tied_up": "737.04",
+      "cash_at_cost": "737.04",
+      "price": "161.6400",
+      "cost": "122.8400",
+      "play": "move",
+      "headline": "Move it to Animanga Knox - Market Square",
+      "why": "96% of this category's sales happen at Animanga Knox - Market Square. The stock is in the wrong room, not the wrong shop.",
+      "detail": {
+        "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+        "location_name": "Animanga Knox - Market Square",
+        "category_share": "0.96",
+        "units": "6.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "137.39",
+          "margin_per_unit": "14.55",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "113.15",
+          "margin_per_unit": "-9.69",
+          "clears_cost": false
+        },
+        {
+          "discount": "0.50",
+          "price": "80.82",
+          "margin_per_unit": "-42.02",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "462864df-b178-4c4f-9f1b-d8264262bf42",
+      "label": "Pokemon TCG: Journey Together Booster Box",
+      "sku": "SLD-SV09-BOO-00362",
+      "category": "Sealed Product",
+      "kind": "slowing",
+      "units_on_hand": "6.0000",
       "days_since_last_sale": 38,
       "never_sold": false,
-      "cash_tied_up": "329.80",
-      "cash_at_cost": "329.80",
-      "price": "32.9900",
-      "cost": "16.4900",
+      "cash_tied_up": "737.04",
+      "cash_at_cost": "737.04",
+      "price": "161.6400",
+      "cost": "122.8400",
       "play": "move",
-      "headline": "Move it to Tsundoku & Tabletop — Gay St",
-      "why": "97% of this category's sales happen at Tsundoku & Tabletop — Gay St. The stock is in the wrong room, not the wrong shop.",
+      "headline": "Move it to Animanga Knox - Market Square",
+      "why": "96% of this category's sales happen at Animanga Knox - Market Square. The stock is in the wrong room, not the wrong shop.",
       "detail": {
-        "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-        "location_name": "Tsundoku & Tabletop — Gay St",
-        "category_share": "0.97",
-        "units": "20.0000"
+        "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+        "location_name": "Animanga Knox - Market Square",
+        "category_share": "0.96",
+        "units": "6.0000"
       },
       "ladder": [
         {
           "discount": "0.15",
-          "price": "28.04",
-          "margin_per_unit": "11.55",
+          "price": "137.39",
+          "margin_per_unit": "14.55",
           "clears_cost": true
         },
         {
           "discount": "0.30",
-          "price": "23.09",
-          "margin_per_unit": "6.60",
-          "clears_cost": true
+          "price": "113.15",
+          "margin_per_unit": "-9.69",
+          "clears_cost": false
         },
         {
           "discount": "0.50",
-          "price": "16.50",
-          "margin_per_unit": "0.01",
-          "clears_cost": true
-        }
-      ]
-    },
-    {
-      "variant_id": "a51cb4d3-9d4e-4003-ad4d-7a7b0444aa3b",
-      "label": "Bento Cat Plush (Large) — Large",
-      "sku": "PLU-BENT-L-00125",
-      "category": "Plush",
-      "kind": "stale",
-      "units_on_hand": "20.0000",
-      "days_since_last_sale": 65,
-      "never_sold": false,
-      "cash_tied_up": "329.80",
-      "cash_at_cost": "329.80",
-      "price": "32.9900",
-      "cost": "16.4900",
-      "play": "move",
-      "headline": "Move it to Tsundoku & Tabletop — Gay St",
-      "why": "97% of this category's sales happen at Tsundoku & Tabletop — Gay St. The stock is in the wrong room, not the wrong shop.",
-      "detail": {
-        "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-        "location_name": "Tsundoku & Tabletop — Gay St",
-        "category_share": "0.97",
-        "units": "20.0000"
-      },
-      "ladder": [
-        {
-          "discount": "0.15",
-          "price": "28.04",
-          "margin_per_unit": "11.55",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.30",
-          "price": "23.09",
-          "margin_per_unit": "6.60",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.50",
-          "price": "16.50",
-          "margin_per_unit": "0.01",
-          "clears_cost": true
-        }
-      ]
-    },
-    {
-      "variant_id": "b48afd5e-118e-4bf7-9da3-3ec3d7663b5c",
-      "label": "Manga Shelf Dividers, 6ct",
-      "sku": "SUP-MANGA-00097",
-      "category": "Supplies",
-      "kind": "dead",
-      "units_on_hand": "42.0000",
-      "days_since_last_sale": 160,
-      "never_sold": false,
-      "cash_tied_up": "327.18",
-      "cash_at_cost": "327.18",
-      "price": "14.9900",
-      "cost": "7.7900",
-      "play": "return_to_vendor",
-      "headline": "Ask Blue Kettle Distribution to take it back",
-      "why": "Nothing has sold in 160 days and Blue Kettle Distribution is on file as the supplier. A return gets the cost back rather than a fraction of it.",
-      "detail": {
-        "vendor_id": "1e7eee1d-0296-4d21-a46d-8a8df7be9c0d",
-        "vendor_name": "Blue Kettle Distribution",
-        "vendor_email": "orders@bluekettledist.example",
-        "units": "42.0000",
-        "value_at_cost": "327.18"
-      },
-      "ladder": [
-        {
-          "discount": "0.15",
-          "price": "12.74",
-          "margin_per_unit": "4.95",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.30",
-          "price": "10.49",
-          "margin_per_unit": "2.70",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.50",
-          "price": "7.50",
-          "margin_per_unit": "-0.29",
+          "price": "80.82",
+          "margin_per_unit": "-42.02",
           "clears_cost": false
         }
       ]
     },
     {
-      "variant_id": "a60c0ec2-1cf2-4078-955e-1c64bf1c93c8",
-      "label": "Tidebreaker Mk II Basic Grade Model Kit",
-      "sku": "KIT-TIDE-BA-00280",
-      "category": "Model Kits",
-      "kind": "slowing",
-      "units_on_hand": "7.0000",
-      "days_since_last_sale": 46,
+      "variant_id": "42fe788c-101e-440b-ad3e-373a60ecff33",
+      "label": "Dragon Ball Super Card Game Fusion World: Raging Roar Booster Box",
+      "sku": "SLD-FB03-BOO-00342",
+      "category": "Sealed Product",
+      "kind": "dead",
+      "units_on_hand": "10.0000",
+      "days_since_last_sale": 135,
       "never_sold": false,
-      "cash_tied_up": "321.93",
+      "cash_tied_up": "729.50",
+      "cash_at_cost": "729.50",
+      "price": "95.9900",
+      "cost": "72.9500",
+      "play": "markdown",
+      "headline": "Mark it down 15% to $81.59",
+      "why": "10 copies on the shelf, nothing sold in 135 days. At $81.59 that is still $8.64 a copy over cost.",
+      "detail": {
+        "discount": "0.15",
+        "new_price": "81.59",
+        "margin_per_unit": "8.64",
+        "break_even_price": "72.9500",
+        "units": "10.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "81.59",
+          "margin_per_unit": "8.64",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "67.19",
+          "margin_per_unit": "-5.76",
+          "clears_cost": false
+        },
+        {
+          "discount": "0.50",
+          "price": "48.00",
+          "margin_per_unit": "-24.95",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "6a1a7eec-aea7-42b5-ab0b-93c6b62d4d6a",
+      "label": "Weiss Schwarz: hololive production Booster Box",
+      "sku": "SLD-WS-HOL-BOO-00171",
+      "category": "Sealed Product",
+      "kind": "stale",
+      "units_on_hand": "9.0000",
+      "days_since_last_sale": 75,
+      "never_sold": false,
+      "cash_tied_up": "683.91",
+      "cash_at_cost": "683.91",
+      "price": "99.9900",
+      "cost": "75.9900",
+      "play": "markdown",
+      "headline": "Mark it down 15% to $84.99",
+      "why": "9 copies on the shelf, nothing sold in 75 days. At $84.99 that is still $9.00 a copy over cost.",
+      "detail": {
+        "discount": "0.15",
+        "new_price": "84.99",
+        "margin_per_unit": "9.00",
+        "break_even_price": "75.9900",
+        "units": "9.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "84.99",
+          "margin_per_unit": "9.00",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "69.99",
+          "margin_per_unit": "-6.00",
+          "clears_cost": false
+        },
+        {
+          "discount": "0.50",
+          "price": "50.00",
+          "margin_per_unit": "-25.99",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "a5b4565c-6031-4dbd-b401-683143387871",
+      "label": "Pokemon TCG: Prismatic Evolutions Elite Trainer Box",
+      "sku": "SLD-SVPE-ELI-00222",
+      "category": "Sealed Product",
+      "kind": "slowing",
+      "units_on_hand": "18.0000",
+      "days_since_last_sale": -1,
+      "never_sold": false,
+      "cash_tied_up": "683.82",
+      "cash_at_cost": "683.82",
+      "price": "49.9900",
+      "cost": "37.9900",
+      "play": "markdown",
+      "headline": "Mark it down 15% to $42.49",
+      "why": "18 copies on the shelf, nothing sold in -1 days. At $42.49 that is still $4.50 a copy over cost.",
+      "detail": {
+        "discount": "0.15",
+        "new_price": "42.49",
+        "margin_per_unit": "4.50",
+        "break_even_price": "37.9900",
+        "units": "18.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "42.49",
+          "margin_per_unit": "4.50",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "34.99",
+          "margin_per_unit": "-3.00",
+          "clears_cost": false
+        },
+        {
+          "discount": "0.50",
+          "price": "25.00",
+          "margin_per_unit": "-12.99",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "6f5e63c3-bb41-43b1-9b1f-2163d1135fa4",
+      "label": "Kotobukiya ARTFX J 1/8 Scale - Tanjiro Kamado",
+      "sku": "FIG-KOTOBU-02-00249",
+      "category": "Scale Figures",
+      "kind": "stale",
+      "units_on_hand": "4.0000",
+      "days_since_last_sale": 96,
+      "never_sold": false,
+      "cash_tied_up": "679.96",
       "cash_at_cost": null,
-      "price": "45.9900",
+      "price": "169.9900",
       "cost": null,
-      "play": "bundle",
-      "headline": "Bundle it with Matte Card Sleeves, 100ct",
-      "why": "3 customers bought both in the last year, and Matte Card Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "play": "markdown",
+      "headline": "Mark it down 15% to $144.49",
+      "why": "4 copies on the shelf, nothing sold in 96 days. No cost on file, so what this leaves per copy is not knowable here.",
       "detail": {
-        "partner_variant_id": "47f4c884-8221-4617-ad4b-538a5f7beefc",
-        "partner_label": "Matte Card Sleeves, 100ct",
-        "baskets": 3,
-        "suggested_bundle_price": "48.99"
+        "discount": "0.15",
+        "new_price": "144.49",
+        "margin_per_unit": null,
+        "break_even_price": null,
+        "units": "4.0000"
       },
       "ladder": [
         {
           "discount": "0.15",
-          "price": "39.09",
+          "price": "144.49",
           "margin_per_unit": null,
           "clears_cost": true
         },
         {
           "discount": "0.30",
-          "price": "32.19",
+          "price": "118.99",
           "margin_per_unit": null,
           "clears_cost": true
         },
         {
           "discount": "0.50",
-          "price": "23.00",
+          "price": "85.00",
           "margin_per_unit": null,
           "clears_cost": true
         }
       ]
     },
     {
-      "variant_id": "31f2048c-7396-4a15-8d24-a287d0719bef",
-      "label": "Ash Herald (AC02) — NM",
-      "sku": "SGL-AC02-ASH -NM-00277",
-      "category": "Singles",
+      "variant_id": "baa907bc-2aab-4bbc-899d-163706a9e207",
+      "label": "Good Smile Company 1/7 Scale - Makima",
+      "sku": "FIG-GOODSM-01-00373",
+      "category": "Scale Figures",
       "kind": "stale",
-      "units_on_hand": "12.0000",
-      "days_since_last_sale": 89,
+      "units_on_hand": "4.0000",
+      "days_since_last_sale": 81,
       "never_sold": false,
-      "cash_tied_up": "298.44",
-      "cash_at_cost": "298.44",
-      "price": "49.7500",
-      "cost": "24.8700",
-      "play": "bundle",
-      "headline": "Bundle it with Perfect Fit Sleeves, 100ct",
-      "why": "6 customers bought both in the last year, and Perfect Fit Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "cash_tied_up": "659.96",
+      "cash_at_cost": "659.96",
+      "price": "249.9900",
+      "cost": "164.9900",
+      "play": "markdown",
+      "headline": "Mark it down 15% to $212.49",
+      "why": "4 copies on the shelf, nothing sold in 81 days. At $212.49 that is still $47.50 a copy over cost.",
       "detail": {
-        "partner_variant_id": "15dac2c8-d35e-47db-a056-f26ac6c13db3",
-        "partner_label": "Perfect Fit Sleeves, 100ct",
-        "baskets": 6,
-        "suggested_bundle_price": "48.99"
+        "discount": "0.15",
+        "new_price": "212.49",
+        "margin_per_unit": "47.50",
+        "break_even_price": "164.9900",
+        "units": "4.0000"
       },
       "ladder": [
         {
           "discount": "0.15",
-          "price": "42.29",
-          "margin_per_unit": "17.42",
+          "price": "212.49",
+          "margin_per_unit": "47.50",
           "clears_cost": true
         },
         {
           "discount": "0.30",
-          "price": "34.83",
-          "margin_per_unit": "9.96",
+          "price": "174.99",
+          "margin_per_unit": "10.00",
           "clears_cost": true
         },
         {
           "discount": "0.50",
-          "price": "24.88",
-          "margin_per_unit": "0.01",
-          "clears_cost": true
+          "price": "125.00",
+          "margin_per_unit": "-39.99",
+          "clears_cost": false
         }
       ]
     },
     {
-      "variant_id": "f805f15c-ef78-4fdb-a363-81949db4f0cb",
-      "label": "Tidewalker Sage (AC03) — NM",
-      "sku": "SGL-AC03-TIDE-NM-00047",
-      "category": "Singles",
+      "variant_id": "d400d273-c241-45ad-9ef0-f5779cfe0ff6",
+      "label": "One Piece Card Game: Royal Blood Booster Box",
+      "sku": "SLD-OP10-BOO-00040",
+      "category": "Sealed Product",
       "kind": "slowing",
-      "units_on_hand": "12.0000",
-      "days_since_last_sale": 32,
+      "units_on_hand": "8.0000",
+      "days_since_last_sale": 40,
       "never_sold": false,
-      "cash_tied_up": "298.44",
-      "cash_at_cost": "298.44",
-      "price": "49.7500",
-      "cost": "24.8700",
-      "play": "bundle",
-      "headline": "Bundle it with Perfect Fit Sleeves, 100ct",
-      "why": "6 customers bought both in the last year, and Perfect Fit Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "cash_tied_up": "656.56",
+      "cash_at_cost": "656.56",
+      "price": "107.9900",
+      "cost": "82.0700",
+      "play": "move",
+      "headline": "Move it to Animanga Knox - Market Square",
+      "why": "96% of this category's sales happen at Animanga Knox - Market Square. The stock is in the wrong room, not the wrong shop.",
       "detail": {
-        "partner_variant_id": "15dac2c8-d35e-47db-a056-f26ac6c13db3",
-        "partner_label": "Perfect Fit Sleeves, 100ct",
-        "baskets": 6,
-        "suggested_bundle_price": "48.99"
+        "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+        "location_name": "Animanga Knox - Market Square",
+        "category_share": "0.96",
+        "units": "8.0000"
       },
       "ladder": [
         {
           "discount": "0.15",
-          "price": "42.29",
-          "margin_per_unit": "17.42",
+          "price": "91.79",
+          "margin_per_unit": "9.72",
           "clears_cost": true
         },
         {
           "discount": "0.30",
-          "price": "34.83",
-          "margin_per_unit": "9.96",
-          "clears_cost": true
+          "price": "75.59",
+          "margin_per_unit": "-6.48",
+          "clears_cost": false
         },
         {
           "discount": "0.50",
-          "price": "24.88",
-          "margin_per_unit": "0.01",
-          "clears_cost": true
+          "price": "54.00",
+          "margin_per_unit": "-28.07",
+          "clears_cost": false
         }
       ]
     },
     {
-      "variant_id": "c2f9e4cc-aa7b-49ae-a7a4-45466b124a5c",
-      "label": "Tsundoku & Tabletop House Tee — S",
-      "sku": "APP-TSUN-S-00288",
-      "category": "Apparel",
-      "kind": "stale",
-      "units_on_hand": "26.0000",
-      "days_since_last_sale": 76,
+      "variant_id": "2dd4404e-8742-4d1a-b87f-47cdd1dec7ce",
+      "label": "One Piece Card Game: Emperors in the New World Booster Box",
+      "sku": "SLD-OP09-BOO-00142",
+      "category": "Sealed Product",
+      "kind": "slowing",
+      "units_on_hand": "8.0000",
+      "days_since_last_sale": 33,
       "never_sold": false,
-      "cash_tied_up": "268.84",
-      "cash_at_cost": "268.84",
-      "price": "22.9900",
-      "cost": "10.3400",
-      "play": "bundle",
-      "headline": "Bundle it with Matte Card Sleeves, 100ct",
-      "why": "4 customers bought both in the last year, and Matte Card Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "cash_tied_up": "656.56",
+      "cash_at_cost": "656.56",
+      "price": "107.9900",
+      "cost": "82.0700",
+      "play": "markdown",
+      "headline": "Mark it down 15% to $91.79",
+      "why": "8 copies on the shelf, nothing sold in 33 days. At $91.79 that is still $9.72 a copy over cost.",
       "detail": {
-        "partner_variant_id": "47f4c884-8221-4617-ad4b-538a5f7beefc",
-        "partner_label": "Matte Card Sleeves, 100ct",
-        "baskets": 4,
+        "discount": "0.15",
+        "new_price": "91.79",
+        "margin_per_unit": "9.72",
+        "break_even_price": "82.0700",
+        "units": "8.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "91.79",
+          "margin_per_unit": "9.72",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "75.59",
+          "margin_per_unit": "-6.48",
+          "clears_cost": false
+        },
+        {
+          "discount": "0.50",
+          "price": "54.00",
+          "margin_per_unit": "-28.07",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "1dc95160-c55c-4723-93ab-a0b9eec1aa18",
+      "label": "One Piece Card Game: A Fist of Divine Speed Booster Box",
+      "sku": "SLD-OP11-BOO-00360",
+      "category": "Sealed Product",
+      "kind": "slowing",
+      "units_on_hand": "8.0000",
+      "days_since_last_sale": 41,
+      "never_sold": false,
+      "cash_tied_up": "656.56",
+      "cash_at_cost": "656.56",
+      "price": "107.9900",
+      "cost": "82.0700",
+      "play": "markdown",
+      "headline": "Mark it down 15% to $91.79",
+      "why": "8 copies on the shelf, nothing sold in 41 days. At $91.79 that is still $9.72 a copy over cost.",
+      "detail": {
+        "discount": "0.15",
+        "new_price": "91.79",
+        "margin_per_unit": "9.72",
+        "break_even_price": "82.0700",
+        "units": "8.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "91.79",
+          "margin_per_unit": "9.72",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "75.59",
+          "margin_per_unit": "-6.48",
+          "clears_cost": false
+        },
+        {
+          "discount": "0.50",
+          "price": "54.00",
+          "margin_per_unit": "-28.07",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "f1c633cb-6f2f-49d7-98ab-fd194ae2ae3a",
+      "label": "Pokemon TCG: Destined Rivals Booster Bundle",
+      "sku": "SLD-SV10-BOO-00112",
+      "category": "Sealed Product",
+      "kind": "slowing",
+      "units_on_hand": "32.0000",
+      "days_since_last_sale": 37,
+      "never_sold": false,
+      "cash_tied_up": "656.32",
+      "cash_at_cost": "656.32",
+      "price": "26.9900",
+      "cost": "20.5100",
+      "play": "bundle",
+      "headline": "Bundle it with Pokemon TCG: Destined Rivals Booster Pack",
+      "why": "3 customers bought both in the last year, and Pokemon TCG: Destined Rivals Booster Pack is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "detail": {
+        "partner_variant_id": "ea15da32-6daa-4ab8-bc75-1ef64fa0fa3f",
+        "partner_label": "Pokemon TCG: Destined Rivals Booster Pack",
+        "baskets": 3,
         "suggested_bundle_price": "27.99"
       },
       "ladder": [
         {
           "discount": "0.15",
-          "price": "19.54",
-          "margin_per_unit": "9.20",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.30",
-          "price": "16.09",
-          "margin_per_unit": "5.75",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.50",
-          "price": "11.50",
-          "margin_per_unit": "1.16",
-          "clears_cost": true
-        }
-      ]
-    },
-    {
-      "variant_id": "8bf24849-2164-4e22-a3e7-00c7b8db3149",
-      "label": "Vending Oracle (AC03) — MP",
-      "sku": "SGL-AC03-VEND-MP-00318",
-      "category": "Singles",
-      "kind": "slowing",
-      "units_on_hand": "10.0000",
-      "days_since_last_sale": 59,
-      "never_sold": false,
-      "cash_tied_up": "268.70",
-      "cash_at_cost": "268.70",
-      "price": "53.7500",
-      "cost": "26.8700",
-      "play": "bundle",
-      "headline": "Bundle it with Matte Card Sleeves, 100ct",
-      "why": "3 customers bought both in the last year, and Matte Card Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
-      "detail": {
-        "partner_variant_id": "47f4c884-8221-4617-ad4b-538a5f7beefc",
-        "partner_label": "Matte Card Sleeves, 100ct",
-        "baskets": 3,
-        "suggested_bundle_price": "55.99"
-      },
-      "ladder": [
-        {
-          "discount": "0.15",
-          "price": "45.69",
-          "margin_per_unit": "18.82",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.30",
-          "price": "37.63",
-          "margin_per_unit": "10.76",
-          "clears_cost": true
-        },
-        {
-          "discount": "0.50",
-          "price": "26.88",
-          "margin_per_unit": "0.01",
-          "clears_cost": true
-        }
-      ]
-    },
-    {
-      "variant_id": "22cfa25f-7204-401d-9dd4-058f8009cc4d",
-      "label": "Loomkeeper Hana Prize Figure — Standard",
-      "sku": "FIG-LOOM-09-00248",
-      "category": "Prize Figures",
-      "kind": "slowing",
-      "units_on_hand": "16.0000",
-      "days_since_last_sale": 41,
-      "never_sold": false,
-      "cash_tied_up": "267.68",
-      "cash_at_cost": "267.68",
-      "price": "26.9900",
-      "cost": "16.7300",
-      "play": "move",
-      "headline": "Move it to Tsundoku & Tabletop — Gay St",
-      "why": "88% of this category's sales happen at Tsundoku & Tabletop — Gay St. The stock is in the wrong room, not the wrong shop.",
-      "detail": {
-        "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-        "location_name": "Tsundoku & Tabletop — Gay St",
-        "category_share": "0.88",
-        "units": "16.0000"
-      },
-      "ladder": [
-        {
-          "discount": "0.15",
           "price": "22.94",
-          "margin_per_unit": "6.21",
+          "margin_per_unit": "2.43",
           "clears_cost": true
         },
         {
           "discount": "0.30",
           "price": "18.89",
-          "margin_per_unit": "2.16",
-          "clears_cost": true
+          "margin_per_unit": "-1.62",
+          "clears_cost": false
         },
         {
           "discount": "0.50",
           "price": "13.50",
-          "margin_per_unit": "-3.23",
+          "margin_per_unit": "-7.01",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "a171e7de-ec65-4d43-be99-ca902048a901",
+      "label": "Espeon ex (SIR) - Prismatic Evolutions — LP",
+      "sku": "SGL-PTCG-01-LP-00089",
+      "category": "Singles",
+      "kind": "dead",
+      "units_on_hand": "10.0000",
+      "days_since_last_sale": 183,
+      "never_sold": false,
+      "cash_tied_up": "506.00",
+      "cash_at_cost": "506.00",
+      "price": "92.0000",
+      "cost": "50.6000",
+      "play": "move",
+      "headline": "Move it to Animanga Knox - Market Square",
+      "why": "98% of this category's sales happen at Animanga Knox - Market Square. The stock is in the wrong room, not the wrong shop.",
+      "detail": {
+        "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+        "location_name": "Animanga Knox - Market Square",
+        "category_share": "0.98",
+        "units": "10.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "78.20",
+          "margin_per_unit": "27.60",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "64.40",
+          "margin_per_unit": "13.80",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "46.00",
+          "margin_per_unit": "-4.60",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "0f211a12-d65f-4681-a7f0-44222847afde",
+      "label": "One Piece Straw Hat Crew Hoodie — 2XL",
+      "sku": "APP-ONEPIE-06-2XL-00207",
+      "category": "Apparel",
+      "kind": "dead",
+      "units_on_hand": "9.0000",
+      "days_since_last_sale": 188,
+      "never_sold": false,
+      "cash_tied_up": "494.91",
+      "cash_at_cost": null,
+      "price": "54.9900",
+      "cost": null,
+      "play": "markdown",
+      "headline": "Mark it down 15% to $46.74",
+      "why": "9 copies on the shelf, nothing sold in 188 days. No cost on file, so what this leaves per copy is not knowable here.",
+      "detail": {
+        "discount": "0.15",
+        "new_price": "46.74",
+        "margin_per_unit": null,
+        "break_even_price": null,
+        "units": "9.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "46.74",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "38.49",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "27.50",
+          "margin_per_unit": null,
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "89b8eed8-38e2-4f91-bfe6-da8ad09583b9",
+      "label": "Weiss Schwarz: Attack on Titan Trial Deck",
+      "sku": "SLD-WS-AOT-TRI-00184",
+      "category": "Sealed Product",
+      "kind": "dead",
+      "units_on_hand": "26.0000",
+      "days_since_last_sale": 131,
+      "never_sold": false,
+      "cash_tied_up": "493.74",
+      "cash_at_cost": "493.74",
+      "price": "24.9900",
+      "cost": "18.9900",
+      "play": "move",
+      "headline": "Move it to Animanga Knox - Market Square",
+      "why": "96% of this category's sales happen at Animanga Knox - Market Square. The stock is in the wrong room, not the wrong shop.",
+      "detail": {
+        "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+        "location_name": "Animanga Knox - Market Square",
+        "category_share": "0.96",
+        "units": "26.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "21.24",
+          "margin_per_unit": "2.25",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "17.49",
+          "margin_per_unit": "-1.50",
+          "clears_cost": false
+        },
+        {
+          "discount": "0.50",
+          "price": "12.50",
+          "margin_per_unit": "-6.49",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "5dc01642-ea61-4f49-a61e-233d834be259",
+      "label": "Pokemon TCG: Journey Together Booster Bundle",
+      "sku": "SLD-SV09-BOO-00114",
+      "category": "Sealed Product",
+      "kind": "slowing",
+      "units_on_hand": "24.0000",
+      "days_since_last_sale": 4,
+      "never_sold": false,
+      "cash_tied_up": "492.24",
+      "cash_at_cost": "492.24",
+      "price": "26.9900",
+      "cost": "20.5100",
+      "play": "move",
+      "headline": "Move it to Animanga Knox - Market Square",
+      "why": "96% of this category's sales happen at Animanga Knox - Market Square. The stock is in the wrong room, not the wrong shop.",
+      "detail": {
+        "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+        "location_name": "Animanga Knox - Market Square",
+        "category_share": "0.96",
+        "units": "24.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "22.94",
+          "margin_per_unit": "2.43",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "18.89",
+          "margin_per_unit": "-1.62",
+          "clears_cost": false
+        },
+        {
+          "discount": "0.50",
+          "price": "13.50",
+          "margin_per_unit": "-7.01",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "4492ed96-5a50-4840-b64f-6031ddeb3a1e",
+      "label": "Lillie's Clefairy ex (SIR) - Journey Together — NM",
+      "sku": "SGL-PTCG-11-NM-00218",
+      "category": "Singles",
+      "kind": "slowing",
+      "units_on_hand": "10.0000",
+      "days_since_last_sale": 37,
+      "never_sold": false,
+      "cash_tied_up": "484.00",
+      "cash_at_cost": "484.00",
+      "price": "88.0000",
+      "cost": "48.4000",
+      "play": "move",
+      "headline": "Move it to Animanga Knox - Market Square",
+      "why": "98% of this category's sales happen at Animanga Knox - Market Square. The stock is in the wrong room, not the wrong shop.",
+      "detail": {
+        "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+        "location_name": "Animanga Knox - Market Square",
+        "category_share": "0.98",
+        "units": "10.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "74.80",
+          "margin_per_unit": "26.40",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "61.60",
+          "margin_per_unit": "13.20",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "44.00",
+          "margin_per_unit": "-4.40",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "ecd9c4e7-705d-4ede-a67c-9d9a35900412",
+      "label": "Snorlax Plush 14in",
+      "sku": "PLU-SNORLA-08-00299",
+      "category": "Plush",
+      "kind": "slowing",
+      "units_on_hand": "12.0000",
+      "days_since_last_sale": 39,
+      "never_sold": false,
+      "cash_tied_up": "479.88",
+      "cash_at_cost": null,
+      "price": "39.9900",
+      "cost": null,
+      "play": "markdown",
+      "headline": "Mark it down 15% to $33.99",
+      "why": "12 copies on the shelf, nothing sold in 39 days. No cost on file, so what this leaves per copy is not knowable here.",
+      "detail": {
+        "discount": "0.15",
+        "new_price": "33.99",
+        "margin_per_unit": null,
+        "break_even_price": null,
+        "units": "12.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "33.99",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "27.99",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "20.00",
+          "margin_per_unit": null,
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "c7ee977f-85e2-45df-8a7f-766c60341f7f",
+      "label": "Kotobukiya Bishoujo 1/7 Scale - Mikasa Ackerman",
+      "sku": "FIG-KOTOBU-03-00238",
+      "category": "Scale Figures",
+      "kind": "slowing",
+      "units_on_hand": "4.0000",
+      "days_since_last_sale": 35,
+      "never_sold": false,
+      "cash_tied_up": "475.16",
+      "cash_at_cost": "475.16",
+      "price": "179.9900",
+      "cost": "118.7900",
+      "play": "move",
+      "headline": "Move it to Animanga Knox - Market Square",
+      "why": "89% of this category's sales happen at Animanga Knox - Market Square. The stock is in the wrong room, not the wrong shop.",
+      "detail": {
+        "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+        "location_name": "Animanga Knox - Market Square",
+        "category_share": "0.89",
+        "units": "4.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "152.99",
+          "margin_per_unit": "34.20",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "125.99",
+          "margin_per_unit": "7.20",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "90.00",
+          "margin_per_unit": "-28.79",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "e8189821-c666-4b34-9ea9-3cdd151ccae4",
+      "label": "One Piece Card Game: A Fist of Divine Speed Starter Deck",
+      "sku": "SLD-OP11-STA-00466",
+      "category": "Sealed Product",
+      "kind": "stale",
+      "units_on_hand": "28.0000",
+      "days_since_last_sale": 61,
+      "never_sold": false,
+      "cash_tied_up": "447.72",
+      "cash_at_cost": null,
+      "price": "15.9900",
+      "cost": null,
+      "play": "move",
+      "headline": "Move it to Animanga Knox - Market Square",
+      "why": "96% of this category's sales happen at Animanga Knox - Market Square. The stock is in the wrong room, not the wrong shop.",
+      "detail": {
+        "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+        "location_name": "Animanga Knox - Market Square",
+        "category_share": "0.96",
+        "units": "28.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "13.59",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "11.19",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "8.00",
+          "margin_per_unit": null,
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "9c31365e-7309-4a35-a57b-496ba3955eb3",
+      "label": "Aniplex+ 1/7 Scale - Satoru Gojo",
+      "sku": "FIG-ANIPLE-07-00519",
+      "category": "Scale Figures",
+      "kind": "slowing",
+      "units_on_hand": "2.0000",
+      "days_since_last_sale": 39,
+      "never_sold": false,
+      "cash_tied_up": "422.38",
+      "cash_at_cost": "422.38",
+      "price": "319.9900",
+      "cost": "211.1900",
+      "play": "move",
+      "headline": "Move it to Animanga Knox - Market Square",
+      "why": "89% of this category's sales happen at Animanga Knox - Market Square. The stock is in the wrong room, not the wrong shop.",
+      "detail": {
+        "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+        "location_name": "Animanga Knox - Market Square",
+        "category_share": "0.89",
+        "units": "2.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "271.99",
+          "margin_per_unit": "60.80",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "223.99",
+          "margin_per_unit": "12.80",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "160.00",
+          "margin_per_unit": "-51.19",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "bcfe7a8d-8399-4ad2-8e53-b0292fc7202a",
+      "label": "Banpresto DXF Grandline Men - Roronoa Zoro",
+      "sku": "FIG-BANPRE-04-00418",
+      "category": "Prize Figures",
+      "kind": "slowing",
+      "units_on_hand": "26.0000",
+      "days_since_last_sale": 37,
+      "never_sold": false,
+      "cash_tied_up": "402.74",
+      "cash_at_cost": "402.74",
+      "price": "24.9900",
+      "cost": "15.4900",
+      "play": "markdown",
+      "headline": "Mark it down 15% to $21.24",
+      "why": "26 copies on the shelf, nothing sold in 37 days. At $21.24 that is still $5.75 a copy over cost.",
+      "detail": {
+        "discount": "0.15",
+        "new_price": "21.24",
+        "margin_per_unit": "5.75",
+        "break_even_price": "15.4900",
+        "units": "26.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "21.24",
+          "margin_per_unit": "5.75",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "17.49",
+          "margin_per_unit": "2.00",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "12.50",
+          "margin_per_unit": "-2.99",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "6daa7578-36fd-445c-b687-bf378f2694cf",
+      "label": "Megahouse Portrait.Of.Pirates - Monkey D. Luffy Gear 5",
+      "sku": "FIG-MEGAHO-05-00347",
+      "category": "Scale Figures",
+      "kind": "stale",
+      "units_on_hand": "2.0000",
+      "days_since_last_sale": 60,
+      "never_sold": false,
+      "cash_tied_up": "395.98",
+      "cash_at_cost": "395.98",
+      "price": "299.9900",
+      "cost": "197.9900",
+      "play": "move",
+      "headline": "Move it to Animanga Knox - Market Square",
+      "why": "89% of this category's sales happen at Animanga Knox - Market Square. The stock is in the wrong room, not the wrong shop.",
+      "detail": {
+        "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+        "location_name": "Animanga Knox - Market Square",
+        "category_share": "0.89",
+        "units": "2.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "254.99",
+          "margin_per_unit": "57.00",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "209.99",
+          "margin_per_unit": "12.00",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "150.00",
+          "margin_per_unit": "-47.99",
           "clears_cost": false
         }
       ]

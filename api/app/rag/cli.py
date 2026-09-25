@@ -1,8 +1,8 @@
 """Embed a tenant's catalogue and documents from the command line.
 
-    python -m app.rag.cli --tenant tsundoku
-    python -m app.rag.cli --tenant tsundoku --load sources/documents/tsundoku
-    python -m app.rag.cli --tenant tsundoku --force
+    python -m app.rag.cli --tenant animanga_knox
+    python -m app.rag.cli --tenant animanga_knox --load sources/documents/animanga_knox
+    python -m app.rag.cli --tenant animanga_knox --force
 
 Ordinary runs only embed what changed, so this is cheap to repeat. `--force`
 re-embeds everything and is what `app.rag.reembed` is.
@@ -41,7 +41,7 @@ def print_report(report: IngestReport) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Embed a tenant's catalogue and documents.")
-    parser.add_argument("--tenant", required=True, help="tenant slug, e.g. tsundoku")
+    parser.add_argument("--tenant", required=True, help="tenant slug, e.g. animanga_knox")
     parser.add_argument("--load", help="a folder of .md/.txt/.pdf files to upload first")
     parser.add_argument("--force", action="store_true", help="re-embed everything")
     parser.add_argument("-v", "--verbose", action="store_true")

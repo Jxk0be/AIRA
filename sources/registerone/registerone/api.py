@@ -30,7 +30,7 @@ from pydantic import BaseModel
 
 from registerone.db import dsn
 
-TOKEN = os.environ.get("REGISTERONE_TOKEN", "ro_test_tsundoku_2f8a41")
+TOKEN = os.environ.get("REGISTERONE_TOKEN", "ro_test_animanga_knox_2f8a41")
 ADMIN_TOKEN = os.environ.get("REGISTERONE_ADMIN_TOKEN", "ro_admin_9c3e77")
 RATE_LIMIT = int(os.environ.get("REGISTERONE_RATE_LIMIT", "10"))
 FAULT_RATE = float(os.environ.get("REGISTERONE_FAULT_RATE", "0.01"))

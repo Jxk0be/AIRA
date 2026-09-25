@@ -22,7 +22,7 @@ from app.canonical import tables as t
 from app.rag.ingest import build_product_chunks, ingest_tenant, product_text
 from tests.fake_embedder import FakeEmbedder
 
-TENANTS = ("tsundoku", "panel_and_pawn")
+TENANTS = ("animanga_knox", "panel_and_pawn")
 
 
 async def tenant_named(db: AsyncSession, slug: str) -> t.Tenant:
@@ -71,16 +71,16 @@ def test_a_chunk_carries_the_sku_for_the_text_side_to_find() -> None:
     """An embedding turns a part number into mush; full-text does not."""
     rich = product_text(
         {
-            "name": "Saltwater Samurai Vol. 4",
+            "name": "Jujutsu Kaisen Vol. 4",
             "category": "Manga",
             "description": "Volume 4, paperback.",
             "vendor_name": None,
         },
-        [{"name": "Paperback", "sku": "MNG-SS-04", "price": 12.99}],
+        [{"name": "Paperback", "sku": "MNG-JJK-04", "price": 12.99}],
         [],
     )
 
-    assert "MNG-SS-04" in rich
+    assert "MNG-JJK-04" in rich
     assert "$12.99" in rich
 
 
@@ -94,9 +94,9 @@ def test_stock_reads_like_a_person_wrote_it() -> None:
             "vendor_name": None,
         },
         [{"name": None, "sku": None, "price": None}],
-        [{"location": "Gay St", "on_hand": Decimal("17.0000")}],
+        [{"location": "Market Square", "on_hand": Decimal("17.0000")}],
     )
-    assert "17 at Gay St" in line
+    assert "17 at Market Square" in line
     assert "17.0000" not in line
 
 
@@ -262,7 +262,7 @@ async def test_documents_become_several_chunks_that_keep_their_title(
 
 async def test_one_tenant_ingest_leaves_the_other_alone(db: AsyncSession) -> None:
     """Rule 3, on the one table both shops' text ends up in."""
-    mine = await tenant_named(db, "tsundoku")
+    mine = await tenant_named(db, "animanga_knox")
     theirs = await tenant_named(db, "panel_and_pawn")
 
     before = (

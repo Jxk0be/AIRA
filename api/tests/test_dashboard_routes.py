@@ -26,7 +26,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.analytics import inventory_value, load_context, sales_summary
 from app.canonical import tables as t
 
-POS_SHOP = "tsundoku"
+POS_SHOP = "animanga_knox"
 SPREADSHEET_SHOP = "panel_and_pawn"
 
 

@@ -1,86 +1,81 @@
 {
-  "tenant": "tsundoku",
-  "subject": "Tsundoku & Tabletop: up 19.1% week-on-week",
-  "text": "Tsundoku & Tabletop: up 19.1% week-on-week\n==========================================\n\nNet sales came to $1,483.17, up $238.15 from last week. You moved 87 units across 29 orders, averaging $51.43 per order.\n\nWORTH DOING THIS WEEK\n  1. $20 of stock left without a sale ($20)\n     Astral Clash: Veil of Nine Booster Pack (6) shows $20.34 at cost leaving without a recorded sale, refund or adjustment—worth a physical count to rule out a data entry error.\n\n  2. $27,102 tied up in 178 items ($27,102)\n     You have $27,102 tied up in 178 items that have stopped moving. Start with the five flagged: bundle three card items with Matte Card Sleeves, mark down the Gilded Static Collector Bundle 15% to $46.74, or move Loomkeeper Hana to Gay St.\n\n  3. Thursday was $158 below a normal Thursday at Tsundoku & Tabletop — Gay St ($158)\n     Thursday hit $60.48 against a usual $218.18, down $157.70 from the four orders you took versus your normal five.\n\nWHAT SOLD\n  Yuzuha 1/7 Scale Figure — $129.99 (1 units)\n  Astral Clash: Tidebreak Booster Box — $129.99 (1 units)\n  Vending Oracle (AC02) — $94.00 (4 units)\n  Vending Oracle (AC03) — $89.75 (1 units)\n  Saltwater Samurai Vol. 2 — $47.96 (4 units)\n\n  Yuzuha 1/7 Scale Figure and Astral Clash: Tidebreak Booster Box tied for the week at $129.99 each, with Vending Oracle (AC02) pulling $94.00 across four units.\n\nVALUE THIS MONTH\n  1 things acted on\n\nWORTH KNOWING\n  3.8% of these sales ($56.00) were rung up as a custom amount with no product attached, so they count toward the total but not toward any one product.\n\nSee everything: http://localhost:5173/tsundoku/dashboard\n\nStop these emails: (a link unique to each recipient)",
-  "html": "<!doctype html>\n<html><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Tsundoku &amp; Tabletop: up 19.1% week-on-week</title></head>\n<body style=\"margin:0;padding:0;background:#f2f3f6\">\n<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\"\n       style=\"background:#f2f3f6;padding:24px 12px\">\n<tr><td align=\"center\">\n  <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\"\n         style=\"max-width:560px;background:#ffffff;border-radius:10px;padding:28px 26px;\n                font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif\">\n    <tr><td style=\"padding-bottom:4px\">\n      <div style=\"font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#7a7f99\">\n        14 Sep –\n        20 Sep 2026\n      </div>\n    </td></tr>\n    <tr><td style=\"padding-bottom:14px\">\n      <div style=\"font-size:30px;font-weight:700;color:#161a33;line-height:1.15\">\n        $1,483.17 <span style=\"color:#1c7c4a;font-size:15px;font-weight:600\">&uarr; 19%</span>\n      </div>\n      <div style=\"font-size:15px;line-height:1.55;color:#474c66;margin-top:8px\">\n        Net sales came to $1,483.17, up $238.15 from last week. You moved 87 units across 29 orders, averaging $51.43 per order.\n      </div>\n    </td></tr>\n    <tr><td style=\"padding:16px 0 10px;border-top:1px solid #e3e5ef\"><div style=\"font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#7a7f99\">Worth doing this week</div></td></tr>\n        <tr><td style=\"padding:0 0 18px\">\n          <div style=\"font-weight:600;font-size:15px;color:#161a33\">\n            $20 of stock left without a sale<span style=\"color:#7a7f99;font-weight:400\"> · $20</span>\n          </div>\n          <div style=\"font-size:14px;line-height:1.5;color:#474c66;margin-top:3px\">\n            Astral Clash: Veil of Nine Booster Pack (6) shows $20.34 at cost leaving without a recorded sale, refund or adjustment—worth a physical count to rule out a data entry error.\n          </div>\n          <a href=\"http://localhost:5173/tsundoku/inventory\"\n             style=\"display:inline-block;margin-top:7px;font-size:13px;color:#2b50e8;\n                    text-decoration:none\">\n            Count these items &rarr;\n          </a>\n        </td></tr>\n        <tr><td style=\"padding:0 0 18px\">\n          <div style=\"font-weight:600;font-size:15px;color:#161a33\">\n            $27,102 tied up in 178 items<span style=\"color:#7a7f99;font-weight:400\"> · $27,102</span>\n          </div>\n          <div style=\"font-size:14px;line-height:1.5;color:#474c66;margin-top:3px\">\n            You have $27,102 tied up in 178 items that have stopped moving. Start with the five flagged: bundle three card items with Matte Card Sleeves, mark down the Gilded Static Collector Bundle 15% to $46.74, or move Loomkeeper Hana to Gay St.\n          </div>\n          <a href=\"http://localhost:5173/tsundoku/dead-stock\"\n             style=\"display:inline-block;margin-top:7px;font-size:13px;color:#2b50e8;\n                    text-decoration:none\">\n            See the plan for each &rarr;\n          </a>\n        </td></tr>\n        <tr><td style=\"padding:0 0 18px\">\n          <div style=\"font-weight:600;font-size:15px;color:#161a33\">\n            Thursday was $158 below a normal Thursday at Tsundoku &amp; Tabletop — Gay St<span style=\"color:#7a7f99;font-weight:400\"> · $158</span>\n          </div>\n          <div style=\"font-size:14px;line-height:1.5;color:#474c66;margin-top:3px\">\n            Thursday hit $60.48 against a usual $218.18, down $157.70 from the four orders you took versus your normal five.\n          </div>\n          <a href=\"http://localhost:5173/tsundoku/dashboard?day=2026-09-17\"\n             style=\"display:inline-block;margin-top:7px;font-size:13px;color:#2b50e8;\n                    text-decoration:none\">\n            Look at that day &rarr;\n          </a>\n        </td></tr>\n    <tr><td style=\"padding:16px 0 6px;border-top:1px solid #e3e5ef\"><div style=\"font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#7a7f99\">What sold</div></td></tr><tr><td><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n        <tr>\n          <td style=\"padding:5px 0;font-size:14px;color:#161a33\">Yuzuha 1/7 Scale Figure</td>\n          <td style=\"padding:5px 0;font-size:14px;color:#474c66;text-align:right;\n                     white-space:nowrap\">$129.99</td>\n        </tr>\n        <tr>\n          <td style=\"padding:5px 0;font-size:14px;color:#161a33\">Astral Clash: Tidebreak Booster Box</td>\n          <td style=\"padding:5px 0;font-size:14px;color:#474c66;text-align:right;\n                     white-space:nowrap\">$129.99</td>\n        </tr>\n        <tr>\n          <td style=\"padding:5px 0;font-size:14px;color:#161a33\">Vending Oracle (AC02)</td>\n          <td style=\"padding:5px 0;font-size:14px;color:#474c66;text-align:right;\n                     white-space:nowrap\">$94.00</td>\n        </tr>\n        <tr>\n          <td style=\"padding:5px 0;font-size:14px;color:#161a33\">Vending Oracle (AC03)</td>\n          <td style=\"padding:5px 0;font-size:14px;color:#474c66;text-align:right;\n                     white-space:nowrap\">$89.75</td>\n        </tr>\n        <tr>\n          <td style=\"padding:5px 0;font-size:14px;color:#161a33\">Saltwater Samurai Vol. 2</td>\n          <td style=\"padding:5px 0;font-size:14px;color:#474c66;text-align:right;\n                     white-space:nowrap\">$47.96</td>\n        </tr></table><div style=\"font-size:14px;color:#474c66;margin-top:10px\">Yuzuha 1/7 Scale Figure and Astral Clash: Tidebreak Booster Box tied for the week at $129.99 each, with Vending Oracle (AC02) pulling $94.00 across four units.</div></td></tr>\n    \n        <tr><td style=\"padding:22px 0 0;border-top:1px solid #e3e5ef\">\n          <div style=\"font-size:11px;letter-spacing:.09em;text-transform:uppercase;\n                      color:#7a7f99;margin-bottom:6px\">This month so far</div>\n          <div style=\"font-size:14px;color:#474c66\">1 things acted on</div>\n        </td></tr>\n    \n        <tr><td style=\"padding:18px 0 0\">\n          <div style=\"font-size:12px;color:#7a7f99\">\n            <ul style=\"margin:0;padding-left:18px\"><li style=\"margin:3px 0\">3.8% of these sales ($56.00) were rung up as a custom amount with no product attached, so they count toward the total but not toward any one product.</li></ul>\n          </div>\n        </td></tr>\n    <tr><td style=\"padding:24px 0 0;border-top:1px solid #e3e5ef;margin-top:20px\">\n      <a href=\"http://localhost:5173/tsundoku/dashboard\"\n         style=\"display:inline-block;background:#2b50e8;color:#ffffff;font-size:14px;\n                font-weight:600;text-decoration:none;padding:10px 18px;border-radius:6px\">\n        See everything\n      </a>\n    </td></tr>\n    <tr><td style=\"padding:18px 0 0\">\n      <div style=\"font-size:11px;color:#9a9eb5\">\n        Sent to you because you run Tsundoku &amp; Tabletop.\n        <a href=\"#\" style=\"color:#9a9eb5\">Stop these emails</a>.\n      </div>\n    </td></tr>\n  </table>\n</td></tr>\n</table>\n</body></html>",
+  "tenant": "animanga_knox",
+  "subject": "Animanga Knox week of 9/14: up 40.1%",
+  "text": "Animanga Knox week of 9/14: up 40.1%\n====================================\n\nSales came to $2,242.02 this week, up $642.01 from $1,600.01 last week. You moved 174 units across 47 orders.\n\nWORTH DOING THIS WEEK\n  1. $9 of stock left without a sale ($9)\n     Count the Sangaria Ramu Cola (Can) (6) stock. $8.64 at cost walked out with no sale or adjustment recorded.\n\n  2. $43,199 tied up in 318 items ($43,199)\n     Start with five items from the $43,199 in dead and slowing stock: mark Weiss Schwarz: Attack on Titan Booster Box down 15% to $84.99, bundle Pokemon TCG: Journey Together Elite Trainer Box with Glico Pocky - Chocolate, move Pokemon TCG: Destined Rivals Booster Box and Pokemon TCG: Journey Together Booster Box to Animanga Knox - Market Square, and mark Pokemon TCG: Prismatic Evolutions Booster Box down 15% to $137.39.\n\n  3. Refunds were 15% of sales in the week of 2026-08-20 at Animanga Knox - Market Square ($347)\n     Check what happened with refunds at Animanga Knox - Market Square during the week of 8/20. They hit 15% of sales at $425.60 against your usual 2.8% for the last three months, costing you $347.06.\n\nWHAT SOLD\n  Pokemon TCG: Surging Sparks Booster Box — $161.64 (1 units)\n  Pokemon TCG: Surging Sparks Elite Trainer Box — $99.98 (2 units)\n  POP UP PARADE Frieren — $99.98 (2 units)\n  Frieren: Beyond Journey's End Vol. 1 — $63.96 (4 units)\n  Demon Slayer: Kimetsu no Yaiba Vol. 1 — $57.95 (5 units)\n\n  Pokemon TCG: Surging Sparks Booster Box led at $161.64, followed by Pokemon TCG: Surging Sparks Elite Trainer Box and POP UP PARADE Frieren at $99.98 each.\n\nWORTH KNOWING\n  3.1% of these sales ($69.50) were rung up as a custom amount with no product attached, so they count toward the total but not toward any one product.\n\nSee everything: http://localhost:5173/animanga_knox/dashboard\n\nStop these emails: (a link unique to each recipient)",
+  "html": "<!doctype html>\n<html><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Animanga Knox week of 9/14: up 40.1%</title></head>\n<body style=\"margin:0;padding:0;background:#f2f3f6\">\n<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\"\n       style=\"background:#f2f3f6;padding:24px 12px\">\n<tr><td align=\"center\">\n  <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\"\n         style=\"max-width:560px;background:#ffffff;border-radius:10px;padding:28px 26px;\n                font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif\">\n    <tr><td style=\"padding-bottom:4px\">\n      <div style=\"font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#7a7f99\">\n        14 Sep –\n        20 Sep 2026\n      </div>\n    </td></tr>\n    <tr><td style=\"padding-bottom:14px\">\n      <div style=\"font-size:30px;font-weight:700;color:#161a33;line-height:1.15\">\n        $2,242.02 <span style=\"color:#1c7c4a;font-size:15px;font-weight:600\">&uarr; 40%</span>\n      </div>\n      <div style=\"font-size:15px;line-height:1.55;color:#474c66;margin-top:8px\">\n        Sales came to $2,242.02 this week, up $642.01 from $1,600.01 last week. You moved 174 units across 47 orders.\n      </div>\n    </td></tr>\n    <tr><td style=\"padding:16px 0 10px;border-top:1px solid #e3e5ef\"><div style=\"font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#7a7f99\">Worth doing this week</div></td></tr>\n        <tr><td style=\"padding:0 0 18px\">\n          <div style=\"font-weight:600;font-size:15px;color:#161a33\">\n            $9 of stock left without a sale<span style=\"color:#7a7f99;font-weight:400\"> · $9</span>\n          </div>\n          <div style=\"font-size:14px;line-height:1.5;color:#474c66;margin-top:3px\">\n            Count the Sangaria Ramu Cola (Can) (6) stock. $8.64 at cost walked out with no sale or adjustment recorded.\n          </div>\n          <a href=\"http://localhost:5173/animanga_knox/inventory\"\n             style=\"display:inline-block;margin-top:7px;font-size:13px;color:#2b50e8;\n                    text-decoration:none\">\n            Count these items &rarr;\n          </a>\n        </td></tr>\n        <tr><td style=\"padding:0 0 18px\">\n          <div style=\"font-weight:600;font-size:15px;color:#161a33\">\n            $43,199 tied up in 318 items<span style=\"color:#7a7f99;font-weight:400\"> · $43,199</span>\n          </div>\n          <div style=\"font-size:14px;line-height:1.5;color:#474c66;margin-top:3px\">\n            Start with five items from the $43,199 in dead and slowing stock: mark Weiss Schwarz: Attack on Titan Booster Box down 15% to $84.99, bundle Pokemon TCG: Journey Together Elite Trainer Box with Glico Pocky - Chocolate, move Pokemon TCG: Destined Rivals Booster Box and Pokemon TCG: Journey Together Booster Box to Animanga Knox - Market Square, and mark Pokemon TCG: Prismatic Evolutions Booster Box down 15% to $137.39.\n          </div>\n          <a href=\"http://localhost:5173/animanga_knox/dead-stock\"\n             style=\"display:inline-block;margin-top:7px;font-size:13px;color:#2b50e8;\n                    text-decoration:none\">\n            See the plan for each &rarr;\n          </a>\n        </td></tr>\n        <tr><td style=\"padding:0 0 18px\">\n          <div style=\"font-weight:600;font-size:15px;color:#161a33\">\n            Refunds were 15% of sales in the week of 2026-08-20 at Animanga Knox - Market Square<span style=\"color:#7a7f99;font-weight:400\"> · $347</span>\n          </div>\n          <div style=\"font-size:14px;line-height:1.5;color:#474c66;margin-top:3px\">\n            Check what happened with refunds at Animanga Knox - Market Square during the week of 8/20. They hit 15% of sales at $425.60 against your usual 2.8% for the last three months, costing you $347.06.\n          </div>\n          <a href=\"http://localhost:5173/animanga_knox/dashboard\"\n             style=\"display:inline-block;margin-top:7px;font-size:13px;color:#2b50e8;\n                    text-decoration:none\">\n            Look at that week &rarr;\n          </a>\n        </td></tr>\n    <tr><td style=\"padding:16px 0 6px;border-top:1px solid #e3e5ef\"><div style=\"font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#7a7f99\">What sold</div></td></tr><tr><td><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n        <tr>\n          <td style=\"padding:5px 0;font-size:14px;color:#161a33\">Pokemon TCG: Surging Sparks Booster Box</td>\n          <td style=\"padding:5px 0;font-size:14px;color:#474c66;text-align:right;\n                     white-space:nowrap\">$161.64</td>\n        </tr>\n        <tr>\n          <td style=\"padding:5px 0;font-size:14px;color:#161a33\">Pokemon TCG: Surging Sparks Elite Trainer Box</td>\n          <td style=\"padding:5px 0;font-size:14px;color:#474c66;text-align:right;\n                     white-space:nowrap\">$99.98</td>\n        </tr>\n        <tr>\n          <td style=\"padding:5px 0;font-size:14px;color:#161a33\">POP UP PARADE Frieren</td>\n          <td style=\"padding:5px 0;font-size:14px;color:#474c66;text-align:right;\n                     white-space:nowrap\">$99.98</td>\n        </tr>\n        <tr>\n          <td style=\"padding:5px 0;font-size:14px;color:#161a33\">Frieren: Beyond Journey's End Vol. 1</td>\n          <td style=\"padding:5px 0;font-size:14px;color:#474c66;text-align:right;\n                     white-space:nowrap\">$63.96</td>\n        </tr>\n        <tr>\n          <td style=\"padding:5px 0;font-size:14px;color:#161a33\">Demon Slayer: Kimetsu no Yaiba Vol. 1</td>\n          <td style=\"padding:5px 0;font-size:14px;color:#474c66;text-align:right;\n                     white-space:nowrap\">$57.95</td>\n        </tr></table><div style=\"font-size:14px;color:#474c66;margin-top:10px\">Pokemon TCG: Surging Sparks Booster Box led at $161.64, followed by Pokemon TCG: Surging Sparks Elite Trainer Box and POP UP PARADE Frieren at $99.98 each.</div></td></tr>\n    \n    \n        <tr><td style=\"padding:18px 0 0\">\n          <div style=\"font-size:12px;color:#7a7f99\">\n            <ul style=\"margin:0;padding-left:18px\"><li style=\"margin:3px 0\">3.1% of these sales ($69.50) were rung up as a custom amount with no product attached, so they count toward the total but not toward any one product.</li></ul>\n          </div>\n        </td></tr>\n    <tr><td style=\"padding:24px 0 0;border-top:1px solid #e3e5ef;margin-top:20px\">\n      <a href=\"http://localhost:5173/animanga_knox/dashboard\"\n         style=\"display:inline-block;background:#2b50e8;color:#ffffff;font-size:14px;\n                font-weight:600;text-decoration:none;padding:10px 18px;border-radius:6px\">\n        See everything\n      </a>\n    </td></tr>\n    <tr><td style=\"padding:18px 0 0\">\n      <div style=\"font-size:11px;color:#9a9eb5\">\n        Sent to you because you run Animanga Knox.\n        <a href=\"#\" style=\"color:#9a9eb5\">Stop these emails</a>.\n      </div>\n    </td></tr>\n  </table>\n</td></tr>\n</table>\n</body></html>",
   "copy_source": "model",
   "week_start": "2026-09-14",
   "week_end": "2026-09-20",
-  "net_sales": "1483.17",
-  "net_sales_previous": "1245.02",
+  "net_sales": "2242.02",
+  "net_sales_previous": "1600.01",
   "actions": 3,
   "payload": {
-    "shop": "Tsundoku & Tabletop",
+    "shop": "Animanga Knox",
     "week_start": "2026-09-14",
     "week_end": "2026-09-20",
-    "net_sales": "1483.17",
-    "net_sales_last_week": "1245.02",
-    "net_sales_change": "238.15",
-    "net_sales_change_percent": "19.1",
-    "net_sales_year_ago": "1416.47",
-    "orders": "29",
-    "orders_last_week": "32",
-    "average_order_value": "51.43",
-    "units": "87",
+    "net_sales": "2242.02",
+    "net_sales_last_week": "1600.01",
+    "net_sales_change": "642.01",
+    "net_sales_change_percent": "40.1",
+    "net_sales_year_ago": "2928.32",
+    "orders": "47",
+    "orders_last_week": "45",
+    "average_order_value": "47.91",
+    "units": "174",
     "actions": [
       {
-        "title": "$20 of stock left without a sale",
-        "summary": "Over the last 14 days, 1 item shows stock leaving with no sale, refund or recorded adjustment behind it: Astral Clash: Veil of Nine Booster Pack (6). That is $20.34 at cost. Worth a count before assuming anything — a miskeyed adjustment looks identical.",
-        "dollar_impact": "20.3400",
+        "title": "$9 of stock left without a sale",
+        "summary": "Over the last 14 days, 1 item shows stock leaving with no sale, refund or recorded adjustment behind it: Sangaria Ramu Cola (Can) (6). That is $8.64 at cost. Worth a count before assuming anything — a miskeyed adjustment looks identical.",
+        "dollar_impact": "8.6400",
         "kind": "possible_shrink"
       },
       {
-        "title": "$27,102 tied up in 178 items",
-        "summary": "$27,102 is sitting in 178 items that have stopped moving (40 dead, 44 stale, 94 slowing), at cost. The five worth starting on: Astral Clash: Gilded Static Booster Box (Bundle it with Matte Card Sleeves, 100ct); Astral Clash: Gilded Static Collector Bundle (Mark it down 15% to $46.74); Clockwork Vandal (AC03) — NM (Bundle it with Matte Card Sleeves, 100ct); Loomkeeper Hana 1/7 Scale Figure — Standard (Move it to Tsundoku & Tabletop — Gay St); Saltwind Duelist (AC01) — LP (Bundle it with Matte Card Sleeves, 100ct).",
-        "dollar_impact": "27101.7700",
+        "title": "$43,199 tied up in 318 items",
+        "summary": "$43,199 is sitting in 318 items that have stopped moving (77 dead, 84 stale, 157 slowing), at cost. The five worth starting on: Weiss Schwarz: Attack on Titan Booster Box (Mark it down 15% to $84.99); Pokemon TCG: Journey Together Elite Trainer Box (Bundle it with Glico Pocky - Chocolate); Pokemon TCG: Destined Rivals Booster Box (Move it to Animanga Knox - Market Square); Pokemon TCG: Prismatic Evolutions Booster Box (Mark it down 15% to $137.39); Pokemon TCG: Journey Together Booster Box (Move it to Animanga Knox - Market Square).",
+        "dollar_impact": "43199.3400",
         "kind": "dead_stock"
       },
       {
-        "title": "Thursday was $158 below a normal Thursday at Tsundoku & Tabletop — Gay St",
-        "summary": "2026-09-17 took $60.48 against a usual $218.18 for a Thursday at Tsundoku & Tabletop — Gay St — $157.70 below, from 4 orders against a usual 5.",
-        "dollar_impact": "157.7000",
-        "kind": "sales_anomaly"
+        "title": "Refunds were 15% of sales in the week of 2026-08-20 at Animanga Knox - Market Square",
+        "summary": "$425.60 of refunds against $2,845.82 of sales at Animanga Knox - Market Square in the week of 2026-08-20 — 15.0%, where the last three months ran at 2.8%. At the usual rate that would have been about $78.54.",
+        "dollar_impact": "347.0600",
+        "kind": "refund_spike"
       }
     ],
     "top_products": [
       {
-        "name": "Yuzuha 1/7 Scale Figure",
-        "net_sales": "129.99",
+        "name": "Pokemon TCG: Surging Sparks Booster Box",
+        "net_sales": "161.64",
         "units": "1"
       },
       {
-        "name": "Astral Clash: Tidebreak Booster Box",
-        "net_sales": "129.99",
-        "units": "1"
+        "name": "Pokemon TCG: Surging Sparks Elite Trainer Box",
+        "net_sales": "99.98",
+        "units": "2"
       },
       {
-        "name": "Vending Oracle (AC02)",
-        "net_sales": "94.00",
+        "name": "POP UP PARADE Frieren",
+        "net_sales": "99.98",
+        "units": "2"
+      },
+      {
+        "name": "Frieren: Beyond Journey's End Vol. 1",
+        "net_sales": "63.96",
         "units": "4"
       },
       {
-        "name": "Vending Oracle (AC03)",
-        "net_sales": "89.75",
-        "units": "1"
-      },
-      {
-        "name": "Saltwater Samurai Vol. 2",
-        "net_sales": "47.96",
-        "units": "4"
+        "name": "Demon Slayer: Kimetsu no Yaiba Vol. 1",
+        "net_sales": "57.95",
+        "units": "5"
       }
     ],
     "notable": [
-      "Yuzuha 1/7 Scale Figure led the week at $129.99.",
-      "Refunds came to $8.26, more than double the week before."
+      "Pokemon TCG: Surging Sparks Booster Box led the week at $161.64.",
+      "Refunds came to $9.67, more than double the week before."
     ],
-    "value_this_month": {
-      "attributed_revenue": "0",
-      "cash_recovered": "0",
-      "flagged": "27333.3100",
-      "acted_on": 1
-    },
+    "value_this_month": null,
     "caveats": [
-      "3.8% of these sales ($56.00) were rung up as a custom amount with no product attached, so they count toward the total but not toward any one product."
+      "3.1% of these sales ($69.50) were rung up as a custom amount with no product attached, so they count toward the total but not toward any one product."
     ]
   }
 }

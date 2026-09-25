@@ -27,7 +27,7 @@ from app.canonical import tables as t
 from app.db import get_sessionmaker
 from app.reorder.tables import PurchaseOrder, PurchaseOrderLine
 
-TENANT = "tsundoku"
+TENANT = "animanga_knox"
 SETUP = "python tasks.py sources && python tasks.py seed && python tasks.py backfill"
 
 # What the first bytes of a real one of these looks like. A PDF reader and

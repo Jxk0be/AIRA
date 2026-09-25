@@ -32,7 +32,7 @@ def row(**overrides: object) -> DemandRow:
     base: dict[str, object] = {
         "variant_id": uuid.uuid4(),
         "location_id": None,
-        "location_name": "Gay St",
+        "location_name": "Market Square",
         "product_name": "Crimson Ronin Vol. 7",
         "variant_name": None,
         "sku": "MNG-CR-07",

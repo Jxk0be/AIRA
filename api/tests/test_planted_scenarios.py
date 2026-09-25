@@ -40,9 +40,9 @@ SETUP = "python tasks.py sources && python tasks.py seed && python tasks.py back
 @pytest.fixture
 async def shop(db: AsyncSession) -> AnalyticsContext:
     try:
-        ctx = await load_context(db, "tsundoku")
+        ctx = await load_context(db, "animanga_knox")
     except TenantNotFound:
-        pytest.skip(f"tsundoku has not been set up; run: {SETUP}")
+        pytest.skip(f"animanga_knox has not been set up; run: {SETUP}")
 
     orders = (
         await db.execute(
@@ -50,7 +50,7 @@ async def shop(db: AsyncSession) -> AnalyticsContext:
         )
     ).scalar_one()
     if not orders:
-        pytest.skip(f"tsundoku has no sales synced; run: {SETUP}")
+        pytest.skip(f"animanga_knox has no sales synced; run: {SETUP}")
     return ctx
 
 
@@ -236,7 +236,7 @@ async def planted_quiet_saturday(
 
     The detector only judges the seven days before the `as_of` it is given, so
     each candidate Saturday has to be judged from its own week. The planted one
-    is around two thirds down; an ordinary one is not flagged at all, which is
+    is around four fifths down; an ordinary one is not flagged at all, which is
     what `test_an_ordinary_stretch_is_quiet` holds the detector to.
     """
     end = await last_sale_day(db, ctx)
@@ -265,7 +265,7 @@ async def planted_quiet_saturday(
     depth, saturday, draft = max(found, key=lambda row: row[0])
     assert depth > Decimal("0.5"), (
         f"the deepest Saturday found was only {depth:.0%} down; the planted one is around "
-        "two thirds, so this is probably an ordinary day and the planted one was missed"
+        "four fifths, so this is probably an ordinary day and the planted one was missed"
     )
     return saturday, draft
 
@@ -273,7 +273,7 @@ async def planted_quiet_saturday(
 async def test_the_planted_quiet_saturday_is_found(
     db: AsyncSession, shop: AnalyticsContext
 ) -> None:
-    """One Saturday in the fixture keeps about a third of its takings. Judged
+    """One Saturday in the fixture keeps about a fifth of its takings. Judged
     two days later, it has to show up as a drop."""
     saturday, draft = await planted_quiet_saturday(db, shop)
     assert draft.evidence["day"] == saturday.isoformat()

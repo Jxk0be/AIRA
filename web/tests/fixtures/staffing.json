@@ -1,9 +1,9 @@
 {
-  "tenant": "tsundoku",
+  "tenant": "animanga_knox",
   "heatmaps": [
     {
-      "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-      "location_name": "Tsundoku & Tabletop — Gay St",
+      "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+      "location_name": "Animanga Knox - Market Square",
       "weeks": 8,
       "period_start": "2026-07-30",
       "period_end": "2026-09-23",
@@ -20,429 +20,443 @@
         {
           "weekday": 0,
           "hour": 11,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "12.99",
+          "orders_per_week": "1.50",
+          "net_sales_per_week": "42.10",
           "weeks_observed": 2
         },
         {
           "weekday": 0,
           "hour": 12,
-          "orders_per_week": "1.50",
-          "net_sales_per_week": "57.90",
-          "weeks_observed": 2
-        },
-        {
-          "weekday": 0,
-          "hour": 13,
-          "orders_per_week": "1.20",
-          "net_sales_per_week": "39.93",
-          "weeks_observed": 5
-        },
-        {
-          "weekday": 0,
-          "hour": 14,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "169.74",
-          "weeks_observed": 1
-        },
-        {
-          "weekday": 0,
-          "hour": 15,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "14.37",
-          "weeks_observed": 2
-        },
-        {
-          "weekday": 0,
-          "hour": 16,
-          "orders_per_week": "1.50",
-          "net_sales_per_week": "101.47",
-          "weeks_observed": 2
-        },
-        {
-          "weekday": 0,
-          "hour": 17,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "43.31",
-          "weeks_observed": 3
-        },
-        {
-          "weekday": 0,
-          "hour": 18,
-          "orders_per_week": "2.00",
-          "net_sales_per_week": "120.00",
-          "weeks_observed": 2
-        },
-        {
-          "weekday": 1,
-          "hour": 11,
-          "orders_per_week": "2.00",
-          "net_sales_per_week": "41.72",
-          "weeks_observed": 1
-        },
-        {
-          "weekday": 1,
-          "hour": 12,
-          "orders_per_week": "2.00",
-          "net_sales_per_week": "78.08",
-          "weeks_observed": 2
-        },
-        {
-          "weekday": 1,
-          "hour": 13,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "42.32",
-          "weeks_observed": 3
-        },
-        {
-          "weekday": 1,
-          "hour": 15,
-          "orders_per_week": "1.50",
-          "net_sales_per_week": "27.67",
-          "weeks_observed": 2
-        },
-        {
-          "weekday": 1,
-          "hour": 16,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "28.97",
-          "weeks_observed": 1
-        },
-        {
-          "weekday": 1,
-          "hour": 17,
-          "orders_per_week": "1.50",
-          "net_sales_per_week": "61.77",
-          "weeks_observed": 2
-        },
-        {
-          "weekday": 1,
-          "hour": 18,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "193.20",
-          "weeks_observed": 1
-        },
-        {
-          "weekday": 1,
-          "hour": 19,
-          "orders_per_week": "1.50",
-          "net_sales_per_week": "41.38",
-          "weeks_observed": 2
-        },
-        {
-          "weekday": 2,
-          "hour": 11,
-          "orders_per_week": "1.25",
-          "net_sales_per_week": "123.48",
-          "weeks_observed": 4
-        },
-        {
-          "weekday": 2,
-          "hour": 12,
-          "orders_per_week": "1.33",
-          "net_sales_per_week": "40.43",
-          "weeks_observed": 3
-        },
-        {
-          "weekday": 2,
-          "hour": 13,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "22.99",
-          "weeks_observed": 1
-        },
-        {
-          "weekday": 2,
-          "hour": 14,
-          "orders_per_week": "3.00",
-          "net_sales_per_week": "118.18",
-          "weeks_observed": 2
-        },
-        {
-          "weekday": 2,
-          "hour": 15,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "17.99",
-          "weeks_observed": 2
-        },
-        {
-          "weekday": 2,
-          "hour": 16,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "50.60",
-          "weeks_observed": 2
-        },
-        {
-          "weekday": 2,
-          "hour": 17,
-          "orders_per_week": "1.25",
-          "net_sales_per_week": "54.67",
-          "weeks_observed": 4
-        },
-        {
-          "weekday": 2,
-          "hour": 18,
-          "orders_per_week": "1.50",
-          "net_sales_per_week": "134.86",
-          "weeks_observed": 2
-        },
-        {
-          "weekday": 2,
-          "hour": 19,
-          "orders_per_week": "1.60",
-          "net_sales_per_week": "51.14",
-          "weeks_observed": 5
-        },
-        {
-          "weekday": 3,
-          "hour": 11,
           "orders_per_week": "1.67",
-          "net_sales_per_week": "62.10",
+          "net_sales_per_week": "210.27",
           "weeks_observed": 3
         },
         {
-          "weekday": 3,
+          "weekday": 0,
+          "hour": 13,
+          "orders_per_week": "1.20",
+          "net_sales_per_week": "45.51",
+          "weeks_observed": 5
+        },
+        {
+          "weekday": 0,
+          "hour": 14,
+          "orders_per_week": "1.50",
+          "net_sales_per_week": "93.37",
+          "weeks_observed": 4
+        },
+        {
+          "weekday": 0,
+          "hour": 15,
+          "orders_per_week": "1.20",
+          "net_sales_per_week": "59.86",
+          "weeks_observed": 5
+        },
+        {
+          "weekday": 0,
+          "hour": 16,
+          "orders_per_week": "1.00",
+          "net_sales_per_week": "2.99",
+          "weeks_observed": 1
+        },
+        {
+          "weekday": 0,
+          "hour": 17,
+          "orders_per_week": "1.00",
+          "net_sales_per_week": "22.48",
+          "weeks_observed": 2
+        },
+        {
+          "weekday": 0,
+          "hour": 18,
+          "orders_per_week": "1.50",
+          "net_sales_per_week": "128.96",
+          "weeks_observed": 2
+        },
+        {
+          "weekday": 0,
+          "hour": 19,
+          "orders_per_week": "1.00",
+          "net_sales_per_week": "41.80",
+          "weeks_observed": 3
+        },
+        {
+          "weekday": 1,
+          "hour": 11,
+          "orders_per_week": "1.00",
+          "net_sales_per_week": "24.64",
+          "weeks_observed": 3
+        },
+        {
+          "weekday": 1,
           "hour": 12,
+          "orders_per_week": "2.00",
+          "net_sales_per_week": "44.90",
+          "weeks_observed": 2
+        },
+        {
+          "weekday": 1,
+          "hour": 13,
+          "orders_per_week": "1.00",
+          "net_sales_per_week": "23.14",
+          "weeks_observed": 3
+        },
+        {
+          "weekday": 1,
+          "hour": 14,
+          "orders_per_week": "1.00",
+          "net_sales_per_week": "14.97",
+          "weeks_observed": 3
+        },
+        {
+          "weekday": 1,
+          "hour": 15,
+          "orders_per_week": "1.00",
+          "net_sales_per_week": "73.24",
+          "weeks_observed": 6
+        },
+        {
+          "weekday": 1,
+          "hour": 16,
+          "orders_per_week": "1.50",
+          "net_sales_per_week": "77.20",
+          "weeks_observed": 2
+        },
+        {
+          "weekday": 1,
+          "hour": 17,
+          "orders_per_week": "1.60",
+          "net_sales_per_week": "75.39",
+          "weeks_observed": 5
+        },
+        {
+          "weekday": 1,
+          "hour": 18,
+          "orders_per_week": "1.50",
+          "net_sales_per_week": "87.37",
+          "weeks_observed": 4
+        },
+        {
+          "weekday": 1,
+          "hour": 19,
+          "orders_per_week": "1.33",
+          "net_sales_per_week": "63.33",
+          "weeks_observed": 3
+        },
+        {
+          "weekday": 2,
+          "hour": 11,
+          "orders_per_week": "1.00",
+          "net_sales_per_week": "55.65",
+          "weeks_observed": 4
+        },
+        {
+          "weekday": 2,
+          "hour": 12,
+          "orders_per_week": "1.00",
+          "net_sales_per_week": "32.39",
+          "weeks_observed": 4
+        },
+        {
+          "weekday": 2,
+          "hour": 13,
+          "orders_per_week": "1.50",
+          "net_sales_per_week": "24.22",
+          "weeks_observed": 2
+        },
+        {
+          "weekday": 2,
+          "hour": 14,
+          "orders_per_week": "1.00",
+          "net_sales_per_week": "29.30",
+          "weeks_observed": 3
+        },
+        {
+          "weekday": 2,
+          "hour": 15,
+          "orders_per_week": "1.57",
+          "net_sales_per_week": "68.80",
+          "weeks_observed": 7
+        },
+        {
+          "weekday": 2,
+          "hour": 16,
+          "orders_per_week": "1.50",
+          "net_sales_per_week": "57.51",
+          "weeks_observed": 4
+        },
+        {
+          "weekday": 2,
+          "hour": 17,
+          "orders_per_week": "1.50",
+          "net_sales_per_week": "67.97",
+          "weeks_observed": 2
+        },
+        {
+          "weekday": 2,
+          "hour": 18,
+          "orders_per_week": "1.33",
+          "net_sales_per_week": "23.14",
+          "weeks_observed": 3
+        },
+        {
+          "weekday": 2,
+          "hour": 19,
           "orders_per_week": "1.25",
-          "net_sales_per_week": "46.02",
+          "net_sales_per_week": "45.90",
           "weeks_observed": 4
         },
         {
           "weekday": 3,
+          "hour": 11,
+          "orders_per_week": "4.00",
+          "net_sales_per_week": "351.30",
+          "weeks_observed": 1
+        },
+        {
+          "weekday": 3,
+          "hour": 12,
+          "orders_per_week": "1.60",
+          "net_sales_per_week": "47.66",
+          "weeks_observed": 5
+        },
+        {
+          "weekday": 3,
           "hour": 13,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "49.49",
+          "orders_per_week": "1.33",
+          "net_sales_per_week": "44.30",
           "weeks_observed": 3
         },
         {
           "weekday": 3,
           "hour": 14,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "108.03",
-          "weeks_observed": 3
+          "orders_per_week": "1.50",
+          "net_sales_per_week": "54.74",
+          "weeks_observed": 4
         },
         {
           "weekday": 3,
           "hour": 15,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "13.31",
-          "weeks_observed": 4
+          "orders_per_week": "1.67",
+          "net_sales_per_week": "78.04",
+          "weeks_observed": 3
         },
         {
           "weekday": 3,
           "hour": 16,
-          "orders_per_week": "1.50",
-          "net_sales_per_week": "57.10",
-          "weeks_observed": 2
+          "orders_per_week": "1.33",
+          "net_sales_per_week": "55.13",
+          "weeks_observed": 3
         },
         {
           "weekday": 3,
           "hour": 17,
-          "orders_per_week": "1.50",
-          "net_sales_per_week": "122.09",
-          "weeks_observed": 2
-        },
-        {
-          "weekday": 3,
-          "hour": 18,
-          "orders_per_week": "1.20",
-          "net_sales_per_week": "65.66",
+          "orders_per_week": "1.40",
+          "net_sales_per_week": "52.55",
           "weeks_observed": 5
         },
         {
           "weekday": 3,
-          "hour": 19,
-          "orders_per_week": "1.25",
-          "net_sales_per_week": "23.55",
+          "hour": 18,
+          "orders_per_week": "1.50",
+          "net_sales_per_week": "86.47",
           "weeks_observed": 4
         },
         {
-          "weekday": 4,
-          "hour": 11,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "13.02",
+          "weekday": 3,
+          "hour": 19,
+          "orders_per_week": "2.00",
+          "net_sales_per_week": "156.96",
           "weeks_observed": 2
         },
         {
           "weekday": 4,
+          "hour": 11,
+          "orders_per_week": "1.25",
+          "net_sales_per_week": "44.70",
+          "weeks_observed": 4
+        },
+        {
+          "weekday": 4,
           "hour": 12,
-          "orders_per_week": "1.50",
-          "net_sales_per_week": "70.29",
+          "orders_per_week": "1.20",
+          "net_sales_per_week": "52.83",
+          "weeks_observed": 5
+        },
+        {
+          "weekday": 4,
+          "hour": 13,
+          "orders_per_week": "1.60",
+          "net_sales_per_week": "73.09",
+          "weeks_observed": 5
+        },
+        {
+          "weekday": 4,
+          "hour": 14,
+          "orders_per_week": "1.83",
+          "net_sales_per_week": "191.48",
           "weeks_observed": 6
         },
         {
           "weekday": 4,
-          "hour": 13,
-          "orders_per_week": "1.20",
-          "net_sales_per_week": "91.24",
-          "weeks_observed": 5
-        },
-        {
-          "weekday": 4,
-          "hour": 14,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "28.98",
-          "weeks_observed": 2
-        },
-        {
-          "weekday": 4,
           "hour": 15,
-          "orders_per_week": "1.50",
-          "net_sales_per_week": "61.59",
-          "weeks_observed": 4
+          "orders_per_week": "1.00",
+          "net_sales_per_week": "46.94",
+          "weeks_observed": 1
         },
         {
           "weekday": 4,
           "hour": 16,
-          "orders_per_week": "1.25",
-          "net_sales_per_week": "73.29",
+          "orders_per_week": "2.00",
+          "net_sales_per_week": "73.20",
           "weeks_observed": 4
         },
         {
           "weekday": 4,
           "hour": 17,
-          "orders_per_week": "2.33",
-          "net_sales_per_week": "168.09",
-          "weeks_observed": 3
+          "orders_per_week": "1.00",
+          "net_sales_per_week": "20.10",
+          "weeks_observed": 6
         },
         {
           "weekday": 4,
           "hour": 18,
-          "orders_per_week": "1.20",
-          "net_sales_per_week": "63.53",
-          "weeks_observed": 5
+          "orders_per_week": "2.50",
+          "net_sales_per_week": "132.50",
+          "weeks_observed": 6
         },
         {
           "weekday": 4,
           "hour": 19,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "28.64",
-          "weeks_observed": 5
+          "orders_per_week": "1.50",
+          "net_sales_per_week": "62.73",
+          "weeks_observed": 8
         },
         {
           "weekday": 4,
           "hour": 20,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "70.76",
+          "orders_per_week": "1.50",
+          "net_sales_per_week": "88.58",
           "weeks_observed": 4
         },
         {
           "weekday": 5,
           "hour": 10,
           "orders_per_week": "1.33",
-          "net_sales_per_week": "50.54",
-          "weeks_observed": 3
+          "net_sales_per_week": "54.67",
+          "weeks_observed": 6
         },
         {
           "weekday": 5,
           "hour": 11,
-          "orders_per_week": "1.20",
-          "net_sales_per_week": "44.29",
-          "weeks_observed": 5
+          "orders_per_week": "1.50",
+          "net_sales_per_week": "56.56",
+          "weeks_observed": 4
         },
         {
           "weekday": 5,
           "hour": 12,
-          "orders_per_week": "1.50",
-          "net_sales_per_week": "92.22",
-          "weeks_observed": 2
+          "orders_per_week": "1.88",
+          "net_sales_per_week": "128.74",
+          "weeks_observed": 8
         },
         {
           "weekday": 5,
           "hour": 13,
-          "orders_per_week": "1.25",
-          "net_sales_per_week": "64.80",
-          "weeks_observed": 4
+          "orders_per_week": "1.50",
+          "net_sales_per_week": "53.45",
+          "weeks_observed": 6
         },
         {
           "weekday": 5,
           "hour": 14,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "46.13",
-          "weeks_observed": 5
+          "orders_per_week": "3.00",
+          "net_sales_per_week": "244.90",
+          "weeks_observed": 1
         },
         {
           "weekday": 5,
           "hour": 15,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "77.98",
-          "weeks_observed": 2
+          "orders_per_week": "1.75",
+          "net_sales_per_week": "213.18",
+          "weeks_observed": 4
         },
         {
           "weekday": 5,
           "hour": 16,
-          "orders_per_week": "1.25",
-          "net_sales_per_week": "31.24",
-          "weeks_observed": 4
+          "orders_per_week": "2.00",
+          "net_sales_per_week": "111.98",
+          "weeks_observed": 3
         },
         {
           "weekday": 5,
           "hour": 17,
           "orders_per_week": "1.00",
-          "net_sales_per_week": "34.74",
+          "net_sales_per_week": "19.76",
           "weeks_observed": 4
         },
         {
           "weekday": 5,
           "hour": 18,
-          "orders_per_week": "1.40",
-          "net_sales_per_week": "72.91",
+          "orders_per_week": "2.40",
+          "net_sales_per_week": "120.06",
           "weeks_observed": 5
         },
         {
           "weekday": 5,
           "hour": 19,
-          "orders_per_week": "1.33",
-          "net_sales_per_week": "34.74",
-          "weeks_observed": 3
+          "orders_per_week": "1.20",
+          "net_sales_per_week": "69.90",
+          "weeks_observed": 5
         },
         {
           "weekday": 5,
           "hour": 20,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "87.91",
-          "weeks_observed": 3
+          "orders_per_week": "2.00",
+          "net_sales_per_week": "53.79",
+          "weeks_observed": 5
         },
         {
           "weekday": 6,
           "hour": 12,
-          "orders_per_week": "1.00",
-          "net_sales_per_week": "139.98",
-          "weeks_observed": 2
+          "orders_per_week": "1.60",
+          "net_sales_per_week": "86.02",
+          "weeks_observed": 5
         },
         {
           "weekday": 6,
           "hour": 13,
-          "orders_per_week": "1.40",
-          "net_sales_per_week": "95.25",
-          "weeks_observed": 5
+          "orders_per_week": "2.33",
+          "net_sales_per_week": "145.94",
+          "weeks_observed": 6
         },
         {
           "weekday": 6,
           "hour": 14,
-          "orders_per_week": "1.43",
-          "net_sales_per_week": "122.21",
-          "weeks_observed": 7
+          "orders_per_week": "1.00",
+          "net_sales_per_week": "49.89",
+          "weeks_observed": 5
         },
         {
           "weekday": 6,
           "hour": 15,
-          "orders_per_week": "1.17",
-          "net_sales_per_week": "77.31",
-          "weeks_observed": 6
+          "orders_per_week": "2.25",
+          "net_sales_per_week": "132.00",
+          "weeks_observed": 4
         },
         {
           "weekday": 6,
           "hour": 16,
-          "orders_per_week": "1.50",
-          "net_sales_per_week": "89.74",
-          "weeks_observed": 6
+          "orders_per_week": "2.40",
+          "net_sales_per_week": "109.55",
+          "weeks_observed": 5
         },
         {
           "weekday": 6,
           "hour": 17,
-          "orders_per_week": "1.60",
-          "net_sales_per_week": "97.79",
-          "weeks_observed": 5
+          "orders_per_week": "1.86",
+          "net_sales_per_week": "95.05",
+          "weeks_observed": 7
         }
       ],
       "event_cells": [],

@@ -12,7 +12,7 @@ import type { Page, TestInfo } from '@playwright/test'
 const HERE = dirname(fileURLToPath(import.meta.url))
 const FIXTURES = resolve(HERE, '../fixtures')
 
-export const TENANT = 'tsundoku'
+export const TENANT = 'animanga_knox'
 
 /**
  * Every screen, by the name the reports and screenshots use.
@@ -38,6 +38,15 @@ export const ROUTES = [
   { name: 'settings-appearance', path: `/${TENANT}/settings?tab=appearance`, shell: true },
   { name: 'styleguide', path: '/styleguide', shell: false },
 ] as const
+
+/** Every write the API declares `status_code=204`, by the path it answers on. */
+const NO_CONTENT = [
+  /\/charts\/[^/]+$/,
+  /\/conversations\/[^/]+$/,
+  /\/insights\/[^/]+\/feedback$/,
+  /\/purchase-orders\/lines\/[^/]+$/,
+  /\/staffing\/shifts\/[^/]+$/,
+]
 
 const cache = new Map<string, string>()
 
@@ -124,6 +133,14 @@ export async function mockApi(page: Page): Promise<string[]> {
             contentType: 'application/json',
             body: JSON.stringify({ tenant: TENANT, brand_color: sent.brand_color ?? null }),
           })
+          return
+        }
+        // The writes the API answers with 204 answer with 204 here too. A mock
+        // that is kinder than the API hides the bugs that only 204 causes:
+        // `{}` is truthy, so every "did that work?" check passed under test
+        // and failed in the browser.
+        if (NO_CONTENT.some((pattern) => pattern.test(url.pathname))) {
+          await route.fulfill({ status: 204 })
           return
         }
         await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' })

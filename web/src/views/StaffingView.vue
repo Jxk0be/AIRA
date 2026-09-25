@@ -34,7 +34,7 @@ import SectionCard from '../components/SectionCard.vue'
 import { money, quantity } from '../lib/format'
 import { useTenantStore } from '../stores/tenant'
 import UiButton from '../ui/UiButton.vue'
-import { withToast } from '../ui/toast'
+import { withToast, worked } from '../ui/toast'
 
 const route = useRoute()
 const shop = useTenantStore()
@@ -118,11 +118,11 @@ async function addShift() {
 
 async function removeShift(id: string | null) {
   if (!id) return
-  const done = await withToast(() => api.deleteShift(slug.value, id), {
+  const done = await worked(() => api.deleteShift(slug.value, id), {
     success: 'Shift removed',
     failure: 'Could not remove that shift',
   })
-  if (done !== undefined) await load()
+  if (done) await load()
 }
 
 onMounted(load)

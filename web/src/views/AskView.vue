@@ -58,7 +58,7 @@ import UiButton from '../ui/UiButton.vue'
 import UiDialog from '../ui/UiDialog.vue'
 import UiSheet from '../ui/UiSheet.vue'
 import UiSkeleton from '../ui/UiSkeleton.vue'
-import { toast, withToast } from '../ui/toast'
+import { toast, withToast, worked } from '../ui/toast'
 
 interface Turn {
   id: string
@@ -291,11 +291,11 @@ async function confirmDelete() {
   const target = deleting.value
   if (!target) return
   deleting.value = null
-  const done = await withToast(() => api.deleteConversation(slug.value, target.id), {
+  const done = await worked(() => api.deleteConversation(slug.value, target.id), {
     success: 'Conversation deleted',
     failure: 'Could not delete that',
   })
-  if (done !== undefined) {
+  if (done) {
     conversations.value = conversations.value.filter((row) => row.id !== target.id)
     if (conversationId.value === target.id) startNew()
   }

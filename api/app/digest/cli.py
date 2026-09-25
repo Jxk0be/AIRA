@@ -1,8 +1,8 @@
 """Print the digest a shop would get on Monday, without sending it.
 
-    python -m app.digest.cli --tenant tsundoku
-    python -m app.digest.cli --tenant tsundoku --as-of 2026-09-23 --html out.html
-    python -m app.digest.cli --tenant tsundoku --send
+    python -m app.digest.cli --tenant animanga_knox
+    python -m app.digest.cli --tenant animanga_knox --as-of 2026-09-23 --html out.html
+    python -m app.digest.cli --tenant animanga_knox --send
 
 `--send` goes through the real pipeline — prefs, quiet hours, the daily
 ceiling, the log — and still sends nothing anywhere unless `NOTIFY_TRANSPORT`
@@ -28,7 +28,7 @@ from app.digest import send as send_digest
 
 async def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--tenant", required=True, help="tenant slug, e.g. tsundoku")
+    parser.add_argument("--tenant", required=True, help="tenant slug, e.g. animanga_knox")
     parser.add_argument(
         "--as-of", type=date.fromisoformat, default=None, help="pretend today is this date"
     )

@@ -323,7 +323,7 @@ async def freshness(session: AsyncSession, slug: str) -> str | None:
     questions are asked of the present tense, so an unsynced day turns a correct
     answer into a wrong one for a reason that has nothing to do with the agent.
     """
-    if slug != "tsundoku":
+    if slug != "animanga_knox":
         return None
     engine = create_async_engine(REGISTERONE_DSN, poolclass=NullPool)
     try:

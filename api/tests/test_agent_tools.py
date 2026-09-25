@@ -36,7 +36,7 @@ from app.analytics import CapabilityUnavailable
 from app.canonical import tables as t
 from tests.fake_embedder import FakeEmbedder
 
-POS_SHOP = "tsundoku"
+POS_SHOP = "animanga_knox"
 SPREADSHEET_SHOP = "panel_and_pawn"
 
 # The tools that return no shop data, so the sweeps below have nothing to look
@@ -121,7 +121,7 @@ def strings_in(value: object) -> set[str]:
 async def test_the_briefing_is_built_from_the_shop_not_from_a_constant(
     pos: ShopContext, spreadsheet: ShopContext
 ) -> None:
-    assert pos.name == "Tsundoku & Tabletop"
+    assert pos.name == "Animanga Knox"
     assert len(pos.locations) > 1
     assert pos.first_sale is not None and pos.last_sale is not None
     assert pos.first_sale < pos.last_sale

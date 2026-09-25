@@ -1,4 +1,4 @@
-"""Fill RegisterOne with eighteen months of Tsundoku & Tabletop history.
+"""Fill RegisterOne with eighteen months of Animanga Knox history.
 
     uv run python -m registerone.seed --reset
 

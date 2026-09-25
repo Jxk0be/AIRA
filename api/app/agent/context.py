@@ -72,8 +72,8 @@ class ShopContext:
         for location in self.locations:
             if location.name.lower() == wanted:
                 return location
-        # A shop with one location called "Tsundoku & Tabletop — Gay St" gets
-        # asked about "Gay St", and refusing that would be pedantry.
+        # A shop with one location called "Animanga Knox - Market Square" gets
+        # asked about "Market Square", and refusing that would be pedantry.
         matches = [loc for loc in self.locations if wanted in loc.name.lower()]
         return matches[0] if len(matches) == 1 else None
 

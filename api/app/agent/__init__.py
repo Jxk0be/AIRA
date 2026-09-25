@@ -1,6 +1,6 @@
 """The assistant.
 
-    shop = await build_context(session, "tsundoku")
+    shop = await build_context(session, "animanga_knox")
     async for event in ClaudeAssistant().stream(session, shop, "How did December go?"):
         ...
 

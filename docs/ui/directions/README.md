@@ -120,7 +120,7 @@ also the primary-button background — audit A12.
   Georgia and Consolas and reads slightly heavier than intended.
 - Phone frames are 760px tall rather than 812 so both fit side by side, so the
   fold sits a little higher here than on a real handset.
-- The data is Tsundoku &amp; Tabletop's seeded catalog and is internally
+- The data is Animanga Knox's seeded catalog and is internally
   consistent: $12,160.45 net over 412 orders is the $29.52 average shown.
 
 ---

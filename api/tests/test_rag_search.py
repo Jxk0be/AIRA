@@ -48,7 +48,7 @@ async def test_search_only_ever_returns_the_tenant_asked_for(
 ) -> None:
     """Rule 3 again, on the table where a mistake would be most visible: a
     comic shop's board games turning up in an anime shop's assistant."""
-    mine = await indexed(db, "tsundoku", embedder)
+    mine = await indexed(db, "animanga_knox", embedder)
     theirs = await indexed(db, "panel_and_pawn", embedder)
 
     their_products = {
@@ -83,7 +83,7 @@ async def test_a_vector_from_another_model_is_never_compared(
     answer, it is a meaningless one, and silently returning it would look like
     search working badly rather than search being misconfigured.
     """
-    tenant = await indexed(db, "tsundoku", embedder)
+    tenant = await indexed(db, "animanga_knox", embedder)
 
     assert await search(db, tenant.id, "manga", embedder, k=5)
     stranger = FakeEmbedder(model="some-other-model")
@@ -96,7 +96,7 @@ async def test_a_question_whose_words_are_not_all_there_still_finds_something(
     """`websearch_to_tsquery` ANDs its terms, so one absent word is enough to
     return nothing at all. The fallback to any-word is what makes the lexical
     half work on a question rather than on a search box."""
-    tenant = await indexed(db, "tsundoku", embedder)
+    tenant = await indexed(db, "animanga_knox", embedder)
 
     # "supercalifragilistic" is in nothing, so every-word matching cannot work.
     hits = await search(
@@ -111,12 +111,12 @@ async def test_exact_terms_still_beat_the_fallback(
     """The fallback only applies when the strict query matches nothing: a real
     phrase must still be matched strictly, or the lexical half becomes noise
     that drowns the vector half in the fusion."""
-    tenant = await indexed(db, "tsundoku", embedder)
+    tenant = await indexed(db, "animanga_knox", embedder)
 
-    hits = await search(db, tenant.id, "Saltwater Samurai", embedder, k=5, mode=SearchMode.TEXT)
+    hits = await search(db, tenant.id, "Jujutsu Kaisen", embedder, k=5, mode=SearchMode.TEXT)
 
     assert hits
-    assert all("saltwater samurai" in hit.content.lower() for hit in hits)
+    assert all("jujutsu kaisen" in hit.content.lower() for hit in hits)
 
 
 async def test_results_can_be_narrowed_to_documents(
@@ -124,7 +124,7 @@ async def test_results_can_be_narrowed_to_documents(
 ) -> None:
     """The metadata filter is a jsonb containment match, and the agent will use
     it to keep a policy question out of the catalogue."""
-    tenant = await indexed(db, "tsundoku", embedder)
+    tenant = await indexed(db, "animanga_knox", embedder)
     documents = (
         await db.execute(
             select(func.count())
@@ -144,7 +144,7 @@ async def test_results_can_be_narrowed_to_documents(
 
 
 async def test_an_empty_query_costs_nothing(db: AsyncSession, embedder: FakeEmbedder) -> None:
-    tenant = await indexed(db, "tsundoku", embedder)
+    tenant = await indexed(db, "animanga_knox", embedder)
     before = embedder.query_calls
 
     assert await search(db, tenant.id, "   ", embedder) == []
@@ -155,7 +155,7 @@ async def test_hybrid_reports_which_half_found_each_hit(
     db: AsyncSession, embedder: FakeEmbedder
 ) -> None:
     """The ranks are what make a surprising result explainable."""
-    tenant = await indexed(db, "tsundoku", embedder)
+    tenant = await indexed(db, "animanga_knox", embedder)
 
     hits = await search(db, tenant.id, "booster box", embedder, k=10)
 

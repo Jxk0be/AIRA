@@ -1,1411 +1,1316 @@
 {
-  "tenant": "tsundoku",
+  "tenant": "animanga_knox",
   "currency": "USD",
   "timezone": "America/New_York",
   "rows": [
     {
-      "variant_id": "c1dc0356-9cce-4dce-a10a-482b5abc86be",
-      "product_id": "986f9859-1d72-4d31-8ad0-3427d4820d68",
-      "product_name": "9-Pocket Binder",
+      "variant_id": "2ed4a559-8640-490f-b016-56c80a2b84d6",
+      "product_id": "672e1253-407e-4de3-bb55-a897959b15ac",
+      "product_name": "30MM bEXM-15 Portanova",
       "variant_name": null,
-      "sku": "SUP-9-POCK-00073",
-      "barcode": "836675254599",
-      "category": "Supplies",
-      "price": "24.99",
-      "cost": "12.99",
-      "unit_margin": "0.4802",
-      "units_on_hand": "1",
-      "retail_value": "24.99",
+      "sku": "KIT-30MMBE-13-00348",
+      "barcode": "925188125205",
+      "category": "Model Kits",
+      "price": "14.99",
+      "cost": "9.74",
+      "unit_margin": "0.3502",
+      "units_on_hand": "7",
+      "retail_value": "104.93",
       "stock": [
         {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "7"
+        }
+      ],
+      "last_sold_at": "2026-08-27T21:54:20Z",
+      "is_active": true,
+      "label": "30MM bEXM-15 Portanova"
+    },
+    {
+      "variant_id": "11ba0d39-8d84-44c4-9074-6d203ea20142",
+      "product_id": "04269688-850b-4186-8f2f-5d2b2cb4ecc2",
+      "product_name": "Acrylic Figure Display Case, Small",
+      "variant_name": null,
+      "sku": "SUP-ACRYLI-09-00415",
+      "barcode": "353153136363",
+      "category": "Card Supplies",
+      "price": "34.99",
+      "cost": "19.24",
+      "unit_margin": "0.4501",
+      "units_on_hand": "13",
+      "retail_value": "454.87",
+      "stock": [
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "13"
+        }
+      ],
+      "last_sold_at": "2026-09-22T21:38:37Z",
+      "is_active": true,
+      "label": "Acrylic Figure Display Case, Small"
+    },
+    {
+      "variant_id": "bc00b920-c85d-489e-836f-f87d3a5bb4c5",
+      "product_id": "5f9beca9-31e8-4c86-ad3d-c8a7ffa37bf6",
+      "product_name": "Acrylic Keychain - Anya Forger",
+      "variant_name": null,
+      "sku": "PIN-ACRYLI-06-00224",
+      "barcode": "855241406029",
+      "category": "Pins & Keychains",
+      "price": "7.99",
+      "cost": "3.19",
+      "unit_margin": "0.6008",
+      "units_on_hand": "30",
+      "retail_value": "239.70",
+      "stock": [
+        {
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
+          "on_hand": "15"
+        },
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "15"
+        }
+      ],
+      "last_sold_at": "2026-09-20T19:40:45Z",
+      "is_active": true,
+      "label": "Acrylic Keychain - Anya Forger"
+    },
+    {
+      "variant_id": "1928da83-c019-44c0-82e0-f74acf87accc",
+      "product_id": "1a258095-4ab3-4690-9347-f0f7f13d8413",
+      "product_name": "Alter 1/7 Scale - Rem",
+      "variant_name": null,
+      "sku": "FIG-ALTER1-04-00396",
+      "barcode": "938525800106",
+      "category": "Scale Figures",
+      "price": "279.99",
+      "cost": "184.79",
+      "unit_margin": "0.3400",
+      "units_on_hand": "2",
+      "retail_value": "559.98",
+      "stock": [
+        {
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
           "on_hand": "1"
         },
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "0"
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "1"
         }
       ],
-      "last_sold_at": "2026-09-02T18:42:12Z",
+      "last_sold_at": "2026-04-26T00:31:30Z",
       "is_active": true,
-      "label": "9-Pocket Binder"
+      "label": "Alter 1/7 Scale - Rem"
     },
     {
-      "variant_id": "71db43ad-42b2-493f-a697-1fcaf282415e",
-      "product_id": "11550200-ee41-4052-a85d-5c17dac0beb7",
-      "product_name": "Ash Herald (AC01)",
-      "variant_name": "LP",
-      "sku": "SGL-AC01-ASH -LP-00235",
-      "barcode": "082148628902",
-      "category": "Singles",
-      "price": "3.00",
-      "cost": "1.50",
-      "unit_margin": "0.5000",
-      "units_on_hand": "17",
-      "retail_value": "51.00",
+      "variant_id": "9c31365e-7309-4a35-a57b-496ba3955eb3",
+      "product_id": "2298be8c-3545-47b1-980c-2f32731711de",
+      "product_name": "Aniplex+ 1/7 Scale - Satoru Gojo",
+      "variant_name": null,
+      "sku": "FIG-ANIPLE-07-00519",
+      "barcode": "988649767762",
+      "category": "Scale Figures",
+      "price": "319.99",
+      "cost": "211.19",
+      "unit_margin": "0.3400",
+      "units_on_hand": "2",
+      "retail_value": "639.98",
       "stock": [
         {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
+          "on_hand": "1"
+        },
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "1"
+        }
+      ],
+      "last_sold_at": "2026-08-16T21:57:31Z",
+      "is_active": true,
+      "label": "Aniplex+ 1/7 Scale - Satoru Gojo"
+    },
+    {
+      "variant_id": "a9c9ebd8-aef8-4d49-ada5-fc7e1dfe1c1b",
+      "product_id": "a828f780-9bfd-4ca2-992a-cb3681fc7f1d",
+      "product_name": "Anya Forger Plush 9in",
+      "variant_name": null,
+      "sku": "PLU-ANYAFO-10-00350",
+      "barcode": "051728975267",
+      "category": "Plush",
+      "price": "26.99",
+      "cost": null,
+      "unit_margin": null,
+      "units_on_hand": "14",
+      "retail_value": "377.86",
+      "stock": [
+        {
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
+          "on_hand": "7"
+        },
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "7"
+        }
+      ],
+      "last_sold_at": "2026-08-23T16:12:31Z",
+      "is_active": true,
+      "label": "Anya Forger Plush 9in"
+    },
+    {
+      "variant_id": "8ed25be9-17dd-4276-9578-2fc68e322d96",
+      "product_id": "b130479a-9eb2-4944-aa89-ce57f16e953b",
+      "product_name": "Attack on Titan Survey Corps Poster (24x36)",
+      "variant_name": null,
+      "sku": "WAL-ATTACK-00-00117",
+      "barcode": "208267734540",
+      "category": "Posters & Wall Scrolls",
+      "price": "9.99",
+      "cost": "4.49",
+      "unit_margin": "0.5506",
+      "units_on_hand": "16",
+      "retail_value": "159.84",
+      "stock": [
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "16"
+        }
+      ],
+      "last_sold_at": "2026-09-11T23:04:53Z",
+      "is_active": true,
+      "label": "Attack on Titan Survey Corps Poster (24x36)"
+    },
+    {
+      "variant_id": "e1a3542e-3c2c-433c-b429-31504e4b932c",
+      "product_id": "33f062ed-dbbd-4965-a847-16a7efcfe587",
+      "product_name": "Attack on Titan Survey Corps Tee",
+      "variant_name": "2XL",
+      "sku": "APP-ATTACK-02-2XL-00009",
+      "barcode": "320037917693",
+      "category": "Apparel",
+      "price": "24.99",
+      "cost": null,
+      "unit_margin": null,
+      "units_on_hand": "14",
+      "retail_value": "349.86",
+      "stock": [
+        {
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
+          "on_hand": "7"
+        },
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "7"
+        }
+      ],
+      "last_sold_at": "2026-07-10T19:31:03Z",
+      "is_active": true,
+      "label": "Attack on Titan Survey Corps Tee — 2XL"
+    },
+    {
+      "variant_id": "62b554c6-bd84-4e0e-ac6c-f7b0f85261f5",
+      "product_id": "33f062ed-dbbd-4965-a847-16a7efcfe587",
+      "product_name": "Attack on Titan Survey Corps Tee",
+      "variant_name": "L",
+      "sku": "APP-ATTACK-02-L-00007",
+      "barcode": "946804436995",
+      "category": "Apparel",
+      "price": "24.99",
+      "cost": "11.24",
+      "unit_margin": "0.5502",
+      "units_on_hand": "11",
+      "retail_value": "274.89",
+      "stock": [
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "11"
+        }
+      ],
+      "last_sold_at": null,
+      "is_active": true,
+      "label": "Attack on Titan Survey Corps Tee — L"
+    },
+    {
+      "variant_id": "77e3085e-e5c1-440c-a107-adacac766080",
+      "product_id": "33f062ed-dbbd-4965-a847-16a7efcfe587",
+      "product_name": "Attack on Titan Survey Corps Tee",
+      "variant_name": "M",
+      "sku": "APP-ATTACK-02-M-00006",
+      "barcode": "484656482366",
+      "category": "Apparel",
+      "price": "24.99",
+      "cost": "11.24",
+      "unit_margin": "0.5502",
+      "units_on_hand": "16",
+      "retail_value": "399.84",
+      "stock": [
+        {
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
+          "on_hand": "8"
+        },
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "8"
+        }
+      ],
+      "last_sold_at": "2026-09-17T23:54:08Z",
+      "is_active": true,
+      "label": "Attack on Titan Survey Corps Tee — M"
+    },
+    {
+      "variant_id": "14218ec7-9e4f-4260-a0d5-4d78ca389ba0",
+      "product_id": "33f062ed-dbbd-4965-a847-16a7efcfe587",
+      "product_name": "Attack on Titan Survey Corps Tee",
+      "variant_name": "S",
+      "sku": "APP-ATTACK-02-S-00005",
+      "barcode": "060883561595",
+      "category": "Apparel",
+      "price": "24.99",
+      "cost": "11.24",
+      "unit_margin": "0.5502",
+      "units_on_hand": "9",
+      "retail_value": "224.91",
+      "stock": [
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "9"
+        }
+      ],
+      "last_sold_at": "2026-08-14T15:23:55Z",
+      "is_active": true,
+      "label": "Attack on Titan Survey Corps Tee — S"
+    },
+    {
+      "variant_id": "25168409-f0e3-41e2-bab7-68cdb6e2e2c6",
+      "product_id": "33f062ed-dbbd-4965-a847-16a7efcfe587",
+      "product_name": "Attack on Titan Survey Corps Tee",
+      "variant_name": "XL",
+      "sku": "APP-ATTACK-02-XL-00008",
+      "barcode": "738721489513",
+      "category": "Apparel",
+      "price": "24.99",
+      "cost": "11.24",
+      "unit_margin": "0.5502",
+      "units_on_hand": "10",
+      "retail_value": "249.90",
+      "stock": [
+        {
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
           "on_hand": "5"
         },
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "12"
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "5"
         }
       ],
-      "last_sold_at": "2026-09-04T17:37:21Z",
+      "last_sold_at": "2026-07-26T18:50:40Z",
       "is_active": true,
-      "label": "Ash Herald (AC01) — LP"
+      "label": "Attack on Titan Survey Corps Tee — XL"
     },
     {
-      "variant_id": "f43553cd-72af-4d80-be8e-e7dc10e268c8",
-      "product_id": "11550200-ee41-4052-a85d-5c17dac0beb7",
-      "product_name": "Ash Herald (AC01)",
-      "variant_name": "MP",
-      "sku": "SGL-AC01-ASH -MP-00236",
-      "barcode": "030705345786",
-      "category": "Singles",
-      "price": null,
-      "cost": null,
-      "unit_margin": null,
-      "units_on_hand": "4",
+      "variant_id": "1fb8e024-994c-4fb6-bfcc-b67594159baa",
+      "product_id": "99610d5e-0f53-4175-bcb1-37ba42496da8",
+      "product_name": "Attack on Titan Vol. 1",
+      "variant_name": "Paperback",
+      "sku": "MNG-AOT-01-00109",
+      "barcode": "825952694958",
+      "category": "Manga",
+      "price": "10.99",
+      "cost": "6.59",
+      "unit_margin": "0.4004",
+      "units_on_hand": "18",
+      "retail_value": "197.82",
+      "stock": [
+        {
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
+          "on_hand": "9"
+        },
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "9"
+        }
+      ],
+      "last_sold_at": "2026-09-12T14:51:38Z",
+      "is_active": true,
+      "label": "Attack on Titan Vol. 1 — Paperback"
+    },
+    {
+      "variant_id": "2b2dc8df-41f2-48ff-898d-4a751c44a4b0",
+      "product_id": "99610d5e-0f53-4175-bcb1-37ba42496da8",
+      "product_name": "Attack on Titan Vol. 1",
+      "variant_name": "Special Edition",
+      "sku": "MNG-AOT-01-SE-00110",
+      "barcode": "947055169409",
+      "category": "Manga",
+      "price": "18.99",
+      "cost": "12.34",
+      "unit_margin": "0.3502",
+      "units_on_hand": "6",
+      "retail_value": "113.94",
+      "stock": [
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "6"
+        }
+      ],
+      "last_sold_at": "2026-08-09T19:52:18Z",
+      "is_active": true,
+      "label": "Attack on Titan Vol. 1 — Special Edition"
+    },
+    {
+      "variant_id": "a1980320-195a-4d2e-87f0-a6fa3aa08f5d",
+      "product_id": "bc6615d7-d59b-4d47-bd20-729d9081b50c",
+      "product_name": "Attack on Titan Vol. 10",
+      "variant_name": "Paperback",
+      "sku": "MNG-AOT-10-00153",
+      "barcode": "646519398280",
+      "category": "Manga",
+      "price": "10.99",
+      "cost": "6.59",
+      "unit_margin": "0.4004",
+      "units_on_hand": "9",
+      "retail_value": "98.91",
+      "stock": [
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "9"
+        }
+      ],
+      "last_sold_at": "2026-07-30T16:31:59Z",
+      "is_active": true,
+      "label": "Attack on Titan Vol. 10 — Paperback"
+    },
+    {
+      "variant_id": "e0c502d0-c0a7-4f5a-a2cc-e0fc36b8eed5",
+      "product_id": "bbe8cd0c-b4ae-4f1f-88ce-9371c88d43ab",
+      "product_name": "Attack on Titan Vol. 11",
+      "variant_name": "Paperback",
+      "sku": "MNG-AOT-11-00291",
+      "barcode": "658902601279",
+      "category": "Manga",
+      "price": "10.99",
+      "cost": "6.59",
+      "unit_margin": "0.4004",
+      "units_on_hand": "0",
       "retail_value": "0.00",
       "stock": [
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "4"
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "0"
+        }
+      ],
+      "last_sold_at": "2026-09-04T18:07:49Z",
+      "is_active": true,
+      "label": "Attack on Titan Vol. 11 — Paperback"
+    },
+    {
+      "variant_id": "6e9671cf-ce8f-4847-9c6c-e72fddb5ce78",
+      "product_id": "717fa2c5-6c99-46fd-b4b0-ed4dac4dfec1",
+      "product_name": "Attack on Titan Vol. 12",
+      "variant_name": "Paperback",
+      "sku": "MNG-AOT-12-00118",
+      "barcode": "026206724004",
+      "category": "Manga",
+      "price": "10.99",
+      "cost": "6.59",
+      "unit_margin": "0.4004",
+      "units_on_hand": "19",
+      "retail_value": "208.81",
+      "stock": [
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "19"
         }
       ],
       "last_sold_at": null,
       "is_active": true,
-      "label": "Ash Herald (AC01) — MP"
+      "label": "Attack on Titan Vol. 12 — Paperback"
     },
     {
-      "variant_id": "330b2aed-a162-42dd-9c79-facdd2e5f4f0",
-      "product_id": "11550200-ee41-4052-a85d-5c17dac0beb7",
-      "product_name": "Ash Herald (AC01)",
-      "variant_name": "NM",
-      "sku": "SGL-AC01-ASH -NM-00234",
-      "barcode": "475469137367",
-      "category": "Singles",
-      "price": "3.75",
-      "cost": "1.87",
-      "unit_margin": "0.5013",
-      "units_on_hand": "12",
-      "retail_value": "45.00",
+      "variant_id": "201a6fa5-a8c4-47b5-aca9-0576646fa43e",
+      "product_id": "b52fe7c0-f556-4c49-9d7b-104d53d0e585",
+      "product_name": "Attack on Titan Vol. 2",
+      "variant_name": "Paperback",
+      "sku": "MNG-AOT-02-00278",
+      "barcode": "303856770051",
+      "category": "Manga",
+      "price": "10.99",
+      "cost": "6.59",
+      "unit_margin": "0.4004",
+      "units_on_hand": "18",
+      "retail_value": "197.82",
       "stock": [
         {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "6"
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
+          "on_hand": "9"
         },
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "6"
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "9"
         }
       ],
-      "last_sold_at": "2026-09-20T00:33:58Z",
+      "last_sold_at": "2026-09-22T22:11:06Z",
       "is_active": true,
-      "label": "Ash Herald (AC01) — NM"
+      "label": "Attack on Titan Vol. 2 — Paperback"
     },
     {
-      "variant_id": "619289fd-da29-42d2-9435-0614c4970581",
-      "product_id": "51ea02b2-fd63-4da6-be06-e458809d63fd",
-      "product_name": "Ash Herald (AC02)",
-      "variant_name": "LP",
-      "sku": "SGL-AC02-ASH -LP-00278",
-      "barcode": "085887704358",
-      "category": "Singles",
-      "price": "39.75",
-      "cost": "19.87",
-      "unit_margin": "0.5001",
-      "units_on_hand": "6",
-      "retail_value": "238.50",
+      "variant_id": "be927e1e-8ab3-4a40-86e1-25a5f13dfbf4",
+      "product_id": "b9da1062-356e-49ee-9bcc-f175df349b8b",
+      "product_name": "Attack on Titan Vol. 3",
+      "variant_name": "Paperback",
+      "sku": "MNG-AOT-03-00422",
+      "barcode": "580464989319",
+      "category": "Manga",
+      "price": "10.99",
+      "cost": "6.59",
+      "unit_margin": "0.4004",
+      "units_on_hand": "9",
+      "retail_value": "98.91",
       "stock": [
         {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "4"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "2"
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "9"
         }
       ],
-      "last_sold_at": "2026-09-30T15:07:00Z",
+      "last_sold_at": "2026-09-22T22:11:06Z",
       "is_active": true,
-      "label": "Ash Herald (AC02) — LP"
+      "label": "Attack on Titan Vol. 3 — Paperback"
     },
     {
-      "variant_id": "9eb83ea0-5ca4-4576-b340-67ba542daa72",
-      "product_id": "51ea02b2-fd63-4da6-be06-e458809d63fd",
-      "product_name": "Ash Herald (AC02)",
-      "variant_name": "MP",
-      "sku": "SGL-AC02-ASH -MP-00279",
-      "barcode": "288013361386",
-      "category": "Singles",
-      "price": "29.75",
-      "cost": "14.87",
-      "unit_margin": "0.5002",
-      "units_on_hand": "10",
-      "retail_value": "297.50",
+      "variant_id": "0fbf1bdb-337b-457b-ae90-346865d53f5b",
+      "product_id": "227b7e5b-9c25-4c6f-9da8-f976eeb0a1f9",
+      "product_name": "Attack on Titan Vol. 4",
+      "variant_name": "Paperback",
+      "sku": "MNG-AOT-04-00098",
+      "barcode": "912517785289",
+      "category": "Manga",
+      "price": "10.99",
+      "cost": "6.59",
+      "unit_margin": "0.4004",
+      "units_on_hand": "5",
+      "retail_value": "54.95",
       "stock": [
         {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "5"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
           "on_hand": "5"
         }
       ],
-      "last_sold_at": "2026-08-16T17:05:43Z",
+      "last_sold_at": "2026-09-17T19:43:14Z",
       "is_active": true,
-      "label": "Ash Herald (AC02) — MP"
+      "label": "Attack on Titan Vol. 4 — Paperback"
     },
     {
-      "variant_id": "31f2048c-7396-4a15-8d24-a287d0719bef",
-      "product_id": "51ea02b2-fd63-4da6-be06-e458809d63fd",
-      "product_name": "Ash Herald (AC02)",
-      "variant_name": "NM",
-      "sku": "SGL-AC02-ASH -NM-00277",
-      "barcode": "573993056164",
-      "category": "Singles",
-      "price": "49.75",
-      "cost": "24.87",
-      "unit_margin": "0.5001",
-      "units_on_hand": "12",
-      "retail_value": "597.00",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "6"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "6"
-        }
-      ],
-      "last_sold_at": "2026-06-27T23:32:59Z",
-      "is_active": true,
-      "label": "Ash Herald (AC02) — NM"
-    },
-    {
-      "variant_id": "1f13d05f-0577-420d-b882-a49bc434b3cb",
-      "product_id": "46b55c1b-b2cc-4bfa-aa59-83cb876d2b6a",
-      "product_name": "Ash Herald (AC03)",
-      "variant_name": "LP",
-      "sku": "SGL-AC03-ASH -LP-00257",
-      "barcode": "667467621202",
-      "category": "Singles",
-      "price": "5.50",
-      "cost": "2.75",
-      "unit_margin": "0.5000",
-      "units_on_hand": "3",
-      "retail_value": "16.50",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "1"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "2"
-        }
-      ],
-      "last_sold_at": "2026-07-11T23:12:01Z",
-      "is_active": true,
-      "label": "Ash Herald (AC03) — LP"
-    },
-    {
-      "variant_id": "06e7b84e-83b4-4dbb-9e2f-ec638fab7a03",
-      "product_id": "46b55c1b-b2cc-4bfa-aa59-83cb876d2b6a",
-      "product_name": "Ash Herald (AC03)",
-      "variant_name": "MP",
-      "sku": "SGL-AC03-ASH -MP-00258",
-      "barcode": "979729659027",
-      "category": "Singles",
-      "price": "4.00",
-      "cost": "2.00",
-      "unit_margin": "0.5000",
-      "units_on_hand": "7",
-      "retail_value": "28.00",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "4"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "3"
-        }
-      ],
-      "last_sold_at": "2026-09-29T18:47:00Z",
-      "is_active": true,
-      "label": "Ash Herald (AC03) — MP"
-    },
-    {
-      "variant_id": "1f9156ab-a5ae-4db2-92f0-1ddb1243cdfa",
-      "product_id": "46b55c1b-b2cc-4bfa-aa59-83cb876d2b6a",
-      "product_name": "Ash Herald (AC03)",
-      "variant_name": "NM",
-      "sku": "SGL-AC03-ASH -NM-00256",
-      "barcode": "002255794155",
-      "category": "Singles",
-      "price": "6.75",
-      "cost": "3.37",
-      "unit_margin": "0.5007",
+      "variant_id": "7037d0f7-9f83-4024-8322-281725a6b617",
+      "product_id": "37b7b4ca-18ad-4cca-a326-a0aa35690893",
+      "product_name": "Attack on Titan Vol. 5",
+      "variant_name": "Paperback",
+      "sku": "MNG-AOT-05-00035",
+      "barcode": "680876038597",
+      "category": "Manga",
+      "price": "10.99",
+      "cost": "6.59",
+      "unit_margin": "0.4004",
       "units_on_hand": "8",
-      "retail_value": "54.00",
+      "retail_value": "87.92",
       "stock": [
         {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
           "on_hand": "4"
         },
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
           "on_hand": "4"
         }
       ],
-      "last_sold_at": "2026-09-13T18:11:36Z",
+      "last_sold_at": "2026-09-22T16:56:53Z",
       "is_active": true,
-      "label": "Ash Herald (AC03) — NM"
+      "label": "Attack on Titan Vol. 5 — Paperback"
     },
     {
-      "variant_id": "c8333757-6989-40a8-89d1-99fe44dbc235",
-      "product_id": "0b1e2eb5-dab4-4630-8e55-60b45d5dea34",
-      "product_name": "Ashfall Frame Basic Grade Model Kit",
-      "variant_name": null,
-      "sku": "KIT-ASHF-BA-00149",
-      "barcode": "560932048996",
-      "category": "Model Kits",
-      "price": "34.99",
-      "cost": "22.39",
-      "unit_margin": "0.3601",
-      "units_on_hand": "3",
-      "retail_value": "104.97",
+      "variant_id": "12782ce4-9a7b-46ce-83ee-7730985d17e1",
+      "product_id": "d59a5929-3563-4219-912f-aaced8ea0f7d",
+      "product_name": "Attack on Titan Vol. 6",
+      "variant_name": "Paperback",
+      "sku": "MNG-AOT-06-00229",
+      "barcode": "387584282417",
+      "category": "Manga",
+      "price": "10.99",
+      "cost": "6.59",
+      "unit_margin": "0.4004",
+      "units_on_hand": "9",
+      "retail_value": "98.91",
       "stock": [
         {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "3"
-        },
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "9"
+        }
+      ],
+      "last_sold_at": null,
+      "is_active": true,
+      "label": "Attack on Titan Vol. 6 — Paperback"
+    },
+    {
+      "variant_id": "1b75897c-0295-415f-a755-5a4a1a72dafe",
+      "product_id": "e27ef066-52a1-4845-8c84-821419b4eb98",
+      "product_name": "Attack on Titan Vol. 7",
+      "variant_name": "Paperback",
+      "sku": "MNG-AOT-07-00346",
+      "barcode": "084325621689",
+      "category": "Manga",
+      "price": "10.99",
+      "cost": "6.59",
+      "unit_margin": "0.4004",
+      "units_on_hand": "0",
+      "retail_value": "0.00",
+      "stock": [
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
           "on_hand": "0"
         }
       ],
-      "last_sold_at": "2026-08-30T18:18:22Z",
+      "last_sold_at": "2026-08-20T17:49:15Z",
       "is_active": true,
-      "label": "Ashfall Frame Basic Grade Model Kit"
+      "label": "Attack on Titan Vol. 7 — Paperback"
     },
     {
-      "variant_id": "34df4581-0f23-4c80-a1f7-f21c2bec13cc",
-      "product_id": "02e463a6-72d2-40e5-be95-33ae9cd53cf4",
-      "product_name": "Ashfall Frame High Grade Model Kit",
-      "variant_name": null,
-      "sku": "KIT-ASHF-HI-00298",
-      "barcode": "369292984257",
-      "category": "Model Kits",
-      "price": "34.99",
-      "cost": "22.39",
-      "unit_margin": "0.3601",
-      "units_on_hand": "7",
-      "retail_value": "244.93",
+      "variant_id": "2bcde1db-16e2-43ca-9b6f-6ed39214bcf9",
+      "product_id": "19ee3689-639c-4877-917c-aec50d66f4b6",
+      "product_name": "Attack on Titan Vol. 8",
+      "variant_name": "Paperback",
+      "sku": "MNG-AOT-08-00080",
+      "barcode": "834735977468",
+      "category": "Manga",
+      "price": "10.99",
+      "cost": "6.59",
+      "unit_margin": "0.4004",
+      "units_on_hand": "5",
+      "retail_value": "54.95",
       "stock": [
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "7"
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "5"
         }
       ],
-      "last_sold_at": "2026-09-30T15:52:00Z",
+      "last_sold_at": "2026-09-23T16:22:22Z",
       "is_active": true,
-      "label": "Ashfall Frame High Grade Model Kit"
+      "label": "Attack on Titan Vol. 8 — Paperback"
     },
     {
-      "variant_id": "3043dcab-3314-4f70-a31e-80d4a48fb64c",
-      "product_id": "62179107-83d3-4608-b3e9-5b9bf596e2cb",
-      "product_name": "Ashfall Frame Master Grade Model Kit",
-      "variant_name": null,
-      "sku": "KIT-ASHF-MA-00207",
-      "barcode": "249035213568",
-      "category": "Model Kits",
-      "price": "34.99",
-      "cost": "22.39",
-      "unit_margin": "0.3601",
-      "units_on_hand": "6",
-      "retail_value": "209.94",
+      "variant_id": "e1c198b7-6d65-4049-b429-5681cc09eead",
+      "product_id": "3af9ad04-d545-40fe-a43d-e222539018a1",
+      "product_name": "Attack on Titan Vol. 9",
+      "variant_name": "Paperback",
+      "sku": "MNG-AOT-09-00087",
+      "barcode": "051531952058",
+      "category": "Manga",
+      "price": "10.99",
+      "cost": "6.59",
+      "unit_margin": "0.4004",
+      "units_on_hand": "9",
+      "retail_value": "98.91",
       "stock": [
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "6"
-        }
-      ],
-      "last_sold_at": "2026-09-07T21:33:21Z",
-      "is_active": true,
-      "label": "Ashfall Frame Master Grade Model Kit"
-    },
-    {
-      "variant_id": "d51e710c-bfd9-4bfd-a053-02b4aa2eaa25",
-      "product_id": "4e3c6be1-fd4f-4bee-b594-4c3b40847dff",
-      "product_name": "Ashfall Frame Mini Model Kit",
-      "variant_name": null,
-      "sku": "KIT-ASHF-MI-00297",
-      "barcode": "242869904137",
-      "category": "Model Kits",
-      "price": "15.74",
-      "cost": "10.07",
-      "unit_margin": "0.3602",
-      "units_on_hand": "13",
-      "retail_value": "204.62",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "7"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "6"
-        }
-      ],
-      "last_sold_at": "2026-10-01T21:08:00Z",
-      "is_active": true,
-      "label": "Ashfall Frame Mini Model Kit"
-    },
-    {
-      "variant_id": "9641808a-5b91-4e4c-8018-2c897eb8faed",
-      "product_id": "ab91bb10-af7c-459e-ba6d-a1c939f4c615",
-      "product_name": "Astral Clash: Ember Accord Booster Box",
-      "variant_name": null,
-      "sku": "SLD-AC02-BOO-00075",
-      "barcode": "497840369003",
-      "category": "Sealed Product",
-      "price": "129.99",
-      "cost": "88.39",
-      "unit_margin": "0.3200",
-      "units_on_hand": "18",
-      "retail_value": "2339.82",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "9"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
           "on_hand": "9"
         }
       ],
-      "last_sold_at": "2026-09-02T22:46:50Z",
+      "last_sold_at": "2026-05-31T20:12:24Z",
       "is_active": true,
-      "label": "Astral Clash: Ember Accord Booster Box"
+      "label": "Attack on Titan Vol. 9 — Paperback"
     },
     {
-      "variant_id": "77d8fff3-3bd2-47e1-95ef-2594e12941f8",
-      "product_id": "ce647a0d-5433-4f78-85ec-36c627b6755f",
-      "product_name": "Astral Clash: Ember Accord Booster Pack",
+      "variant_id": "85919715-fc5f-4666-a9d3-90a2da39d4f6",
+      "product_id": "96fc8f0d-7006-4dd5-a1e6-b4b809de1d1e",
+      "product_name": "Banpresto Amazing Heroes - Shoto Todoroki",
       "variant_name": null,
-      "sku": "SLD-AC02-BOO-00139",
-      "barcode": "656766182512",
-      "category": "Sealed Product",
-      "price": "4.99",
-      "cost": "3.39",
-      "unit_margin": "0.3206",
-      "units_on_hand": "3",
-      "retail_value": "14.97",
+      "sku": "FIG-BANPRE-07-00363",
+      "barcode": "794695489952",
+      "category": "Prize Figures",
+      "price": "24.99",
+      "cost": "15.49",
+      "unit_margin": "0.3802",
+      "units_on_hand": "16",
+      "retail_value": "399.84",
       "stock": [
         {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "2"
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
+          "on_hand": "8"
         },
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "1"
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "8"
         }
       ],
-      "last_sold_at": "2026-09-08T20:04:30Z",
+      "last_sold_at": "2026-09-23T19:24:48Z",
       "is_active": true,
-      "label": "Astral Clash: Ember Accord Booster Pack"
+      "label": "Banpresto Amazing Heroes - Shoto Todoroki"
     },
     {
-      "variant_id": "7cc6c4f0-6b77-4d03-9a21-1a5aeb469c87",
-      "product_id": "942c7f51-80b4-44ba-ad4e-950a304fbc34",
-      "product_name": "Astral Clash: Ember Accord Collector Bundle",
+      "variant_id": "bcfe7a8d-8399-4ad2-8e53-b0292fc7202a",
+      "product_id": "3ba1927a-07e9-40b0-bc2c-8ba2807a3807",
+      "product_name": "Banpresto DXF Grandline Men - Roronoa Zoro",
       "variant_name": null,
-      "sku": "SLD-AC02-COL-00224",
-      "barcode": "368844431069",
-      "category": "Sealed Product",
-      "price": "54.99",
-      "cost": "37.39",
-      "unit_margin": "0.3201",
-      "units_on_hand": "4",
-      "retail_value": "219.96",
+      "sku": "FIG-BANPRE-04-00418",
+      "barcode": "831687397740",
+      "category": "Prize Figures",
+      "price": "24.99",
+      "cost": "15.49",
+      "unit_margin": "0.3802",
+      "units_on_hand": "26",
+      "retail_value": "649.74",
       "stock": [
         {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "3"
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
+          "on_hand": "9"
         },
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "1"
-        }
-      ],
-      "last_sold_at": "2026-08-30T20:22:10Z",
-      "is_active": true,
-      "label": "Astral Clash: Ember Accord Collector Bundle"
-    },
-    {
-      "variant_id": "c8241448-e155-4cd5-b2d3-2bd8b933f8b8",
-      "product_id": "ce3b811d-10f3-4053-b178-832748a2abc6",
-      "product_name": "Astral Clash: Ember Accord Starter Deck",
-      "variant_name": null,
-      "sku": "SLD-AC02-STA-00021",
-      "barcode": "669096705466",
-      "category": "Sealed Product",
-      "price": "21.99",
-      "cost": "14.95",
-      "unit_margin": "0.3201",
-      "units_on_hand": "34",
-      "retail_value": "747.66",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "17"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
           "on_hand": "17"
         }
       ],
-      "last_sold_at": "2026-09-18T19:40:44Z",
+      "last_sold_at": "2026-08-18T16:57:53Z",
       "is_active": true,
-      "label": "Astral Clash: Ember Accord Starter Deck"
+      "label": "Banpresto DXF Grandline Men - Roronoa Zoro"
     },
     {
-      "variant_id": "dcd79422-8b97-47aa-b11a-4399e5ac952c",
-      "product_id": "263f3c9d-b59b-47fc-8c78-f4e31241a8f3",
-      "product_name": "Astral Clash: Gilded Static Booster Box",
+      "variant_id": "5a207c73-8565-46ee-9058-7afa97dbcd75",
+      "product_id": "7793c40c-00cd-4e44-99cc-0055b1ea512c",
+      "product_name": "Banpresto Exceed Creative - Anya Forger",
       "variant_name": null,
-      "sku": "SLD-AC04-BOO-00189",
-      "barcode": "426221890927",
-      "category": "Sealed Product",
-      "price": "129.99",
-      "cost": "88.39",
-      "unit_margin": "0.3200",
-      "units_on_hand": "34",
-      "retail_value": "4419.66",
+      "sku": "FIG-BANPRE-06-00083",
+      "barcode": "515220472779",
+      "category": "Prize Figures",
+      "price": "34.99",
+      "cost": "21.69",
+      "unit_margin": "0.3801",
+      "units_on_hand": "8",
+      "retail_value": "279.92",
       "stock": [
         {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "17"
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
+          "on_hand": "4"
         },
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "17"
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "4"
         }
       ],
-      "last_sold_at": "2026-08-23T18:26:49Z",
+      "last_sold_at": "2026-09-04T22:49:08Z",
       "is_active": true,
-      "label": "Astral Clash: Gilded Static Booster Box"
+      "label": "Banpresto Exceed Creative - Anya Forger"
     },
     {
-      "variant_id": "ddc2a337-12f7-4bb6-87cd-4ae3fe401715",
-      "product_id": "3970813f-ba9f-4760-8719-5ceb8f1b5b70",
-      "product_name": "Astral Clash: Gilded Static Booster Pack",
+      "variant_id": "b377c2ee-2c08-467c-a659-6ff217c4ad3c",
+      "product_id": "e5408cbc-fb58-43f2-9d70-4c68b1744fd6",
+      "product_name": "Banpresto Grandista Nero - Uzumaki Naruto",
       "variant_name": null,
-      "sku": "SLD-AC04-BOO-00151",
-      "barcode": "280801006231",
-      "category": "Sealed Product",
-      "price": "4.99",
-      "cost": "3.39",
-      "unit_margin": "0.3206",
+      "sku": "FIG-BANPRE-00-00440",
+      "barcode": "597964715890",
+      "category": "Prize Figures",
+      "price": "44.99",
+      "cost": "27.89",
+      "unit_margin": "0.3801",
       "units_on_hand": "10",
-      "retail_value": "49.90",
+      "retail_value": "449.90",
       "stock": [
         {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
           "on_hand": "5"
         },
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
           "on_hand": "5"
         }
       ],
-      "last_sold_at": "2026-09-26T16:34:00Z",
+      "last_sold_at": "2026-09-25T21:08:38Z",
       "is_active": true,
-      "label": "Astral Clash: Gilded Static Booster Pack"
+      "label": "Banpresto Grandista Nero - Uzumaki Naruto"
     },
     {
-      "variant_id": "3142e67a-cb70-4f9b-8960-949616017564",
-      "product_id": "f5977edd-037d-4ae5-8607-1b8b5dbbc4b6",
-      "product_name": "Astral Clash: Gilded Static Collector Bundle",
+      "variant_id": "9f15b6f3-061c-45d2-9b94-2a1d9bd3312f",
+      "product_id": "3522334e-1588-4fed-b715-8cc156c89632",
+      "product_name": "Banpresto Match Makers - Son Goku",
       "variant_name": null,
-      "sku": "SLD-AC04-COL-00260",
-      "barcode": "562890028772",
-      "category": "Sealed Product",
-      "price": "54.99",
-      "cost": "37.39",
-      "unit_margin": "0.3201",
-      "units_on_hand": "36",
-      "retail_value": "1979.64",
+      "sku": "FIG-BANPRE-03-00471",
+      "barcode": "915596363212",
+      "category": "Prize Figures",
+      "price": "29.99",
+      "cost": "18.59",
+      "unit_margin": "0.3801",
+      "units_on_hand": "2",
+      "retail_value": "59.98",
       "stock": [
         {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "18"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "18"
-        }
-      ],
-      "last_sold_at": "2026-07-26T20:48:15Z",
-      "is_active": true,
-      "label": "Astral Clash: Gilded Static Collector Bundle"
-    },
-    {
-      "variant_id": "b58c5ad0-04e8-4c55-b407-345f1ed2fbb6",
-      "product_id": "f4ea00a5-74da-4f25-818d-6db349f299b2",
-      "product_name": "Astral Clash: Gilded Static Starter Deck",
-      "variant_name": null,
-      "sku": "SLD-AC04-STA-00126",
-      "barcode": "198665240415",
-      "category": "Sealed Product",
-      "price": "21.99",
-      "cost": "14.95",
-      "unit_margin": "0.3201",
-      "units_on_hand": "18",
-      "retail_value": "395.82",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "16"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
           "on_hand": "2"
-        }
-      ],
-      "last_sold_at": "2026-09-11T20:22:27Z",
-      "is_active": true,
-      "label": "Astral Clash: Gilded Static Starter Deck"
-    },
-    {
-      "variant_id": "8928a3ee-a4cb-4b53-8e5e-a4abf98b2aec",
-      "product_id": "b2916d2b-b428-41c2-a120-8c44cfdb209d",
-      "product_name": "Astral Clash: Tidebreak Booster Box",
-      "variant_name": null,
-      "sku": "SLD-AC01-BOO-00226",
-      "barcode": "677418625652",
-      "category": "Sealed Product",
-      "price": "129.99",
-      "cost": "88.39",
-      "unit_margin": "0.3200",
-      "units_on_hand": "12",
-      "retail_value": "1559.88",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "6"
         },
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "6"
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "0"
         }
       ],
-      "last_sold_at": "2026-09-14T18:07:13Z",
+      "last_sold_at": "2026-08-12T20:08:37Z",
       "is_active": true,
-      "label": "Astral Clash: Tidebreak Booster Box"
+      "label": "Banpresto Match Makers - Son Goku"
     },
     {
-      "variant_id": "89ff813b-a92a-4ca6-89e1-efdcf4f5342e",
-      "product_id": "e8be907d-163e-4a7e-b53b-9c8a75c9635e",
-      "product_name": "Astral Clash: Tidebreak Booster Pack",
+      "variant_id": "cc19ac12-752c-48dd-b06f-edea53110ea6",
+      "product_id": "ee1c14e2-de72-4d68-81ac-3807ac0ac172",
+      "product_name": "Banpresto Q Posket - Nezuko Kamado",
       "variant_name": null,
-      "sku": "SLD-AC01-BOO-00110",
-      "barcode": "143842498182",
-      "category": "Sealed Product",
-      "price": "4.99",
+      "sku": "FIG-BANPRE-01-00245",
+      "barcode": "670145089935",
+      "category": "Prize Figures",
+      "price": "27.99",
+      "cost": "17.35",
+      "unit_margin": "0.3801",
+      "units_on_hand": "7",
+      "retail_value": "195.93",
+      "stock": [
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "7"
+        }
+      ],
+      "last_sold_at": null,
+      "is_active": true,
+      "label": "Banpresto Q Posket - Nezuko Kamado"
+    },
+    {
+      "variant_id": "cc9c47bb-aa93-49d6-9bf2-081e1f7f90c6",
+      "product_id": "92a515c1-fff5-401b-a1b8-c6943a2c6edc",
+      "product_name": "Banpresto Vibration Stars - Power",
+      "variant_name": null,
+      "sku": "FIG-BANPRE-05-00150",
+      "barcode": "444721264647",
+      "category": "Prize Figures",
+      "price": "27.99",
       "cost": null,
       "unit_margin": null,
-      "units_on_hand": "15",
-      "retail_value": "74.85",
+      "units_on_hand": "0",
+      "retail_value": "0.00",
       "stock": [
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "15"
-        }
-      ],
-      "last_sold_at": null,
-      "is_active": true,
-      "label": "Astral Clash: Tidebreak Booster Pack"
-    },
-    {
-      "variant_id": "a6f4db08-9d89-4c39-a268-9d366f08db20",
-      "product_id": "1bfa234a-2681-4d6d-a531-325cdf8f2614",
-      "product_name": "Astral Clash: Tidebreak Collector Bundle",
-      "variant_name": null,
-      "sku": "SLD-AC01-COL-00264",
-      "barcode": "571130554885",
-      "category": "Sealed Product",
-      "price": "54.99",
-      "cost": "37.39",
-      "unit_margin": "0.3201",
-      "units_on_hand": "4",
-      "retail_value": "219.96",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "1"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "3"
-        }
-      ],
-      "last_sold_at": "2026-09-22T23:37:30Z",
-      "is_active": true,
-      "label": "Astral Clash: Tidebreak Collector Bundle"
-    },
-    {
-      "variant_id": "baf7fc2c-054a-44b6-922a-94270fd562d8",
-      "product_id": "32ee23ee-384a-4a0d-8b8e-71c6842d7ddc",
-      "product_name": "Astral Clash: Tidebreak Starter Deck",
-      "variant_name": null,
-      "sku": "SLD-AC01-STA-00319",
-      "barcode": "647292931438",
-      "category": "Sealed Product",
-      "price": "21.99",
-      "cost": "14.95",
-      "unit_margin": "0.3201",
-      "units_on_hand": "23",
-      "retail_value": "505.77",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "12"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "11"
-        }
-      ],
-      "last_sold_at": "2026-09-29T23:37:00Z",
-      "is_active": true,
-      "label": "Astral Clash: Tidebreak Starter Deck"
-    },
-    {
-      "variant_id": "2388aa7c-cc86-425c-ad33-e65d15cba8e1",
-      "product_id": "87d71fd7-9094-425e-bda3-7642212a02f3",
-      "product_name": "Astral Clash: Veil of Nine Booster Box",
-      "variant_name": null,
-      "sku": "SLD-AC03-BOO-00265",
-      "barcode": "261493316373",
-      "category": "Sealed Product",
-      "price": "129.99",
-      "cost": "88.39",
-      "unit_margin": "0.3200",
-      "units_on_hand": "14",
-      "retail_value": "1819.86",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "7"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "7"
-        }
-      ],
-      "last_sold_at": "2026-09-09T15:28:35Z",
-      "is_active": true,
-      "label": "Astral Clash: Veil of Nine Booster Box"
-    },
-    {
-      "variant_id": "b6fbffa6-7eca-41bc-9506-c2d9b0e80a5d",
-      "product_id": "a7896540-47d4-47b5-9c06-7d67600089cd",
-      "product_name": "Astral Clash: Veil of Nine Booster Pack",
-      "variant_name": null,
-      "sku": "SLD-AC03-BOO-00304",
-      "barcode": "368872588744",
-      "category": "Sealed Product",
-      "price": "4.99",
-      "cost": "3.39",
-      "unit_margin": "0.3206",
-      "units_on_hand": "16",
-      "retail_value": "79.84",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "11"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "5"
-        }
-      ],
-      "last_sold_at": "2026-09-20T20:49:22Z",
-      "is_active": true,
-      "label": "Astral Clash: Veil of Nine Booster Pack"
-    },
-    {
-      "variant_id": "581fc1a6-3498-45d4-945f-03daa800917b",
-      "product_id": "6dcf2c1b-aaf9-4bed-8a75-ed7f2e153a87",
-      "product_name": "Astral Clash: Veil of Nine Collector Bundle",
-      "variant_name": null,
-      "sku": "SLD-AC03-COL-00285",
-      "barcode": "908781414139",
-      "category": "Sealed Product",
-      "price": "54.99",
-      "cost": "37.39",
-      "unit_margin": "0.3201",
-      "units_on_hand": "11",
-      "retail_value": "604.89",
-      "stock": [
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "11"
-        }
-      ],
-      "last_sold_at": null,
-      "is_active": true,
-      "label": "Astral Clash: Veil of Nine Collector Bundle"
-    },
-    {
-      "variant_id": "3047ef67-0860-49b7-b6be-2c75ca67ce07",
-      "product_id": "ea54d897-b7ab-48e3-934d-2f2824c567ed",
-      "product_name": "Astral Clash: Veil of Nine Starter Deck",
-      "variant_name": null,
-      "sku": "SLD-AC03-STA-00034",
-      "barcode": "082400842710",
-      "category": "Sealed Product",
-      "price": "21.99",
-      "cost": "14.95",
-      "unit_margin": "0.3201",
-      "units_on_hand": "1",
-      "retail_value": "21.99",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
           "on_hand": "0"
+        }
+      ],
+      "last_sold_at": "2026-09-24T16:34:15Z",
+      "is_active": true,
+      "label": "Banpresto Vibration Stars - Power"
+    },
+    {
+      "variant_id": "cebf552b-2790-478a-b6c6-78688f629cc9",
+      "product_id": "4ce43a7d-7c88-467d-aa08-b1f95c7f26c0",
+      "product_name": "BCW Card Saver I, 50ct",
+      "variant_name": null,
+      "sku": "SUP-BCWCAR-04-00420",
+      "barcode": "177318063254",
+      "category": "Card Supplies",
+      "price": "8.99",
+      "cost": "4.94",
+      "unit_margin": "0.4505",
+      "units_on_hand": "60",
+      "retail_value": "539.40",
+      "stock": [
+        {
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
+          "on_hand": "30"
         },
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "1"
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "30"
         }
       ],
-      "last_sold_at": "2026-08-22T14:52:27Z",
+      "last_sold_at": "2026-08-11T21:29:58Z",
       "is_active": true,
-      "label": "Astral Clash: Veil of Nine Starter Deck"
+      "label": "BCW Card Saver I, 50ct"
     },
     {
-      "variant_id": "78c02a0f-15f7-4d3e-8287-ecb9db2d7354",
-      "product_id": "a1bfc8dd-9e8f-47b9-9719-63184cf734dd",
-      "product_name": "Barista Jin Prize Figure",
-      "variant_name": "Standard",
-      "sku": "FIG-BARI-07-00206",
-      "barcode": "127756185374",
-      "category": "Prize Figures",
-      "price": "18.99",
-      "cost": "11.77",
-      "unit_margin": "0.3802",
-      "units_on_hand": "12",
-      "retail_value": "227.88",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "6"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "6"
-        }
-      ],
-      "last_sold_at": "2026-09-12T20:56:56Z",
-      "is_active": true,
-      "label": "Barista Jin Prize Figure — Standard"
-    },
-    {
-      "variant_id": "8c110c7b-5d7f-4f64-932a-1dbd37e0d12f",
-      "product_id": "6caa59df-b100-4436-b2d3-7ea121ac4b16",
-      "product_name": "Bento Alchemist (AC01)",
-      "variant_name": "LP",
-      "sku": "SGL-AC01-BENT-LP-00240",
-      "barcode": "691085899441",
-      "category": "Singles",
-      "price": "10.25",
-      "cost": "5.12",
-      "unit_margin": "0.5005",
-      "units_on_hand": "16",
-      "retail_value": "164.00",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "4"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "12"
-        }
-      ],
-      "last_sold_at": "2026-08-18T16:44:26Z",
-      "is_active": true,
-      "label": "Bento Alchemist (AC01) — LP"
-    },
-    {
-      "variant_id": "46452594-b857-46f3-991e-0c81233d4a92",
-      "product_id": "6caa59df-b100-4436-b2d3-7ea121ac4b16",
-      "product_name": "Bento Alchemist (AC01)",
-      "variant_name": "MP",
-      "sku": "SGL-AC01-BENT-MP-00241",
-      "barcode": "545444328309",
-      "category": "Singles",
-      "price": "7.75",
-      "cost": "3.87",
-      "unit_margin": "0.5006",
-      "units_on_hand": "20",
-      "retail_value": "155.00",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "6"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "14"
-        }
-      ],
-      "last_sold_at": "2026-05-29T19:32:03Z",
-      "is_active": true,
-      "label": "Bento Alchemist (AC01) — MP"
-    },
-    {
-      "variant_id": "6f14b6f6-fd80-4101-ab5e-8ff43dbea1f1",
-      "product_id": "6caa59df-b100-4436-b2d3-7ea121ac4b16",
-      "product_name": "Bento Alchemist (AC01)",
-      "variant_name": "NM",
-      "sku": "SGL-AC01-BENT-NM-00239",
-      "barcode": "494466574374",
-      "category": "Singles",
-      "price": "12.75",
-      "cost": "6.37",
-      "unit_margin": "0.5004",
-      "units_on_hand": "16",
-      "retail_value": "204.00",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "8"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "8"
-        }
-      ],
-      "last_sold_at": "2026-09-19T00:57:48Z",
-      "is_active": true,
-      "label": "Bento Alchemist (AC01) — NM"
-    },
-    {
-      "variant_id": "1295ad94-cbdb-49b0-b548-8b8c175ab268",
-      "product_id": "8f6b38dd-8962-4784-b6c0-d7c2a27d0b20",
-      "product_name": "Bento Alchemist (AC02)",
-      "variant_name": "LP",
-      "sku": "SGL-AC02-BENT-LP-00301",
-      "barcode": "863765991624",
-      "category": "Singles",
-      "price": "3.00",
-      "cost": "1.50",
-      "unit_margin": "0.5000",
-      "units_on_hand": "5",
-      "retail_value": "15.00",
-      "stock": [
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "5"
-        }
-      ],
-      "last_sold_at": "2026-08-17T21:05:08Z",
-      "is_active": true,
-      "label": "Bento Alchemist (AC02) — LP"
-    },
-    {
-      "variant_id": "92334bce-43db-4e00-b9e9-31f2f84f0d4e",
-      "product_id": "8f6b38dd-8962-4784-b6c0-d7c2a27d0b20",
-      "product_name": "Bento Alchemist (AC02)",
-      "variant_name": "MP",
-      "sku": "SGL-AC02-BENT-MP-00302",
-      "barcode": "149864300981",
-      "category": "Singles",
-      "price": "2.25",
-      "cost": "1.12",
-      "unit_margin": "0.5022",
-      "units_on_hand": "8",
-      "retail_value": "18.00",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "4"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "4"
-        }
-      ],
-      "last_sold_at": "2026-08-02T17:48:38Z",
-      "is_active": true,
-      "label": "Bento Alchemist (AC02) — MP"
-    },
-    {
-      "variant_id": "91213ead-ab07-415a-8971-b2bbee480093",
-      "product_id": "8f6b38dd-8962-4784-b6c0-d7c2a27d0b20",
-      "product_name": "Bento Alchemist (AC02)",
-      "variant_name": "NM",
-      "sku": "SGL-AC02-BENT-NM-00300",
-      "barcode": "881172980686",
-      "category": "Singles",
-      "price": "3.75",
-      "cost": "1.87",
-      "unit_margin": "0.5013",
-      "units_on_hand": "8",
-      "retail_value": "30.00",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "4"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "4"
-        }
-      ],
-      "last_sold_at": "2026-09-13T21:50:54Z",
-      "is_active": true,
-      "label": "Bento Alchemist (AC02) — NM"
-    },
-    {
-      "variant_id": "04ff819d-d67c-4dc7-af8c-bc97dde0a4a7",
-      "product_id": "bf4a716f-bf82-41b7-80a8-476ebba18857",
-      "product_name": "Bento Alchemist (AC03)",
-      "variant_name": "LP",
-      "sku": "SGL-AC03-BENT-LP-00043",
-      "barcode": "516808760385",
-      "category": "Singles",
-      "price": "5.50",
-      "cost": "2.75",
-      "unit_margin": "0.5000",
-      "units_on_hand": "14",
-      "retail_value": "77.00",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "7"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "7"
-        }
-      ],
-      "last_sold_at": "2026-09-03T22:30:32Z",
-      "is_active": true,
-      "label": "Bento Alchemist (AC03) — LP"
-    },
-    {
-      "variant_id": "dced0f59-107c-4ced-8c65-276b3c2b9424",
-      "product_id": "bf4a716f-bf82-41b7-80a8-476ebba18857",
-      "product_name": "Bento Alchemist (AC03)",
-      "variant_name": "MP",
-      "sku": "SGL-AC03-BENT-MP-00044",
-      "barcode": "703482477109",
-      "category": "Singles",
-      "price": "4.00",
-      "cost": "2.00",
-      "unit_margin": "0.5000",
-      "units_on_hand": "5",
-      "retail_value": "20.00",
-      "stock": [
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "5"
-        }
-      ],
-      "last_sold_at": "2026-09-13T20:27:33Z",
-      "is_active": true,
-      "label": "Bento Alchemist (AC03) — MP"
-    },
-    {
-      "variant_id": "1d6c42bd-7b4c-43df-bcb3-3e22a9165738",
-      "product_id": "bf4a716f-bf82-41b7-80a8-476ebba18857",
-      "product_name": "Bento Alchemist (AC03)",
-      "variant_name": "NM",
-      "sku": "SGL-AC03-BENT-NM-00042",
-      "barcode": "512567468071",
-      "category": "Singles",
-      "price": "6.75",
-      "cost": "3.37",
-      "unit_margin": "0.5007",
-      "units_on_hand": "15",
-      "retail_value": "101.25",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "6"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "9"
-        }
-      ],
-      "last_sold_at": "2026-10-01T18:08:00Z",
-      "is_active": true,
-      "label": "Bento Alchemist (AC03) — NM"
-    },
-    {
-      "variant_id": "a51cb4d3-9d4e-4003-ad4d-7a7b0444aa3b",
-      "product_id": "7337e43a-df82-4292-a464-fb4bdc88be4a",
-      "product_name": "Bento Cat Plush (Large)",
-      "variant_name": "Large",
-      "sku": "PLU-BENT-L-00125",
-      "barcode": "733484344375",
-      "category": "Plush",
-      "price": "32.99",
-      "cost": "16.49",
-      "unit_margin": "0.5002",
-      "units_on_hand": "20",
-      "retail_value": "659.80",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "10"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "10"
-        }
-      ],
-      "last_sold_at": "2026-07-21T15:23:01Z",
-      "is_active": true,
-      "label": "Bento Cat Plush (Large) — Large"
-    },
-    {
-      "variant_id": "85a9dbfe-8e8a-44ad-8471-4449c7453f11",
-      "product_id": "d95d3610-465a-4062-bfd2-235ff1f14236",
-      "product_name": "Bento Cat Plush (Small)",
-      "variant_name": "Small",
-      "sku": "PLU-BENT-S-00057",
-      "barcode": "588424745171",
-      "category": "Plush",
-      "price": "16.99",
-      "cost": "8.49",
-      "unit_margin": "0.5003",
-      "units_on_hand": "15",
-      "retail_value": "254.85",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "8"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "7"
-        }
-      ],
-      "last_sold_at": "2026-10-01T15:48:00Z",
-      "is_active": true,
-      "label": "Bento Cat Plush (Small) — Small"
-    },
-    {
-      "variant_id": "f80d4320-0712-4c8e-b9da-97d95c5079a7",
-      "product_id": "41afaa91-2944-45f6-9971-62a83a6cc4fd",
-      "product_name": "Captain Brine Prize Figure",
-      "variant_name": "Standard",
-      "sku": "FIG-CAPT-04-00157",
-      "barcode": "396856218501",
-      "category": "Prize Figures",
-      "price": "26.99",
-      "cost": "16.73",
-      "unit_margin": "0.3801",
-      "units_on_hand": "9",
-      "retail_value": "242.91",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "5"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "4"
-        }
-      ],
-      "last_sold_at": "2026-09-28T22:46:00Z",
-      "is_active": true,
-      "label": "Captain Brine Prize Figure — Standard"
-    },
-    {
-      "variant_id": "9d90b2dd-83bd-466c-915d-a22a65d7af10",
-      "product_id": "69815cb5-822a-4b8e-88a6-9a37d24274a1",
-      "product_name": "Cinder & Clockwork Vol. 1",
+      "variant_id": "09e45d4d-4e9d-4109-a6e2-ce4ac4a757a3",
+      "product_id": "d34c19d2-e5ff-4e97-addd-a618258088da",
+      "product_name": "Berserk Deluxe Edition Vol. 1",
       "variant_name": "Paperback",
-      "sku": "MNG-CIND-01-00198",
-      "barcode": "917785079252",
+      "sku": "MNG-BERSER-01-00017",
+      "barcode": "531003309232",
       "category": "Manga",
-      "price": "14.99",
-      "cost": "8.24",
-      "unit_margin": "0.4503",
+      "price": "49.99",
+      "cost": "29.99",
+      "unit_margin": "0.4001",
       "units_on_hand": "3",
-      "retail_value": "44.97",
+      "retail_value": "149.97",
       "stock": [
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
           "on_hand": "3"
         }
       ],
-      "last_sold_at": "2026-09-30T15:07:00Z",
+      "last_sold_at": "2026-09-19T20:02:15Z",
       "is_active": true,
-      "label": "Cinder & Clockwork Vol. 1 — Paperback"
+      "label": "Berserk Deluxe Edition Vol. 1 — Paperback"
     },
     {
-      "variant_id": "bd9fc4c6-0583-4de2-9a83-c02e3d8a7fae",
-      "product_id": "419d13ab-2214-4616-beb0-429e0f3138ff",
-      "product_name": "Cinder & Clockwork Vol. 2",
+      "variant_id": "a1a0afd3-ba76-4561-935e-54d993fb5b95",
+      "product_id": "86f56bc8-ce1c-4b2c-9889-2ef956cdd5c8",
+      "product_name": "Berserk Deluxe Edition Vol. 2",
       "variant_name": "Paperback",
-      "sku": "MNG-CIND-02-00138",
-      "barcode": "391065180170",
+      "sku": "MNG-BERSER-02-00256",
+      "barcode": "968460810620",
       "category": "Manga",
-      "price": "14.99",
-      "cost": "8.24",
-      "unit_margin": "0.4503",
-      "units_on_hand": "22",
-      "retail_value": "329.78",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "7"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "15"
-        }
-      ],
-      "last_sold_at": "2026-08-12T18:30:36Z",
-      "is_active": true,
-      "label": "Cinder & Clockwork Vol. 2 — Paperback"
-    },
-    {
-      "variant_id": "e560abfe-f3d2-4a26-815d-f5d66a7cd993",
-      "product_id": "ff3c0d57-f37e-4d99-a072-a0b72e10b108",
-      "product_name": "Cinder & Clockwork Vol. 3",
-      "variant_name": "Paperback",
-      "sku": "MNG-CIND-03-00060",
-      "barcode": "711382675869",
-      "category": "Manga",
-      "price": "14.99",
-      "cost": "8.24",
-      "unit_margin": "0.4503",
-      "units_on_hand": "14",
-      "retail_value": "209.86",
-      "stock": [
-        {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "7"
-        },
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "7"
-        }
-      ],
-      "last_sold_at": "2026-08-25T16:22:34Z",
-      "is_active": true,
-      "label": "Cinder & Clockwork Vol. 3 — Paperback"
-    },
-    {
-      "variant_id": "3575625c-b21a-4fab-b4f4-7d28595f0fd8",
-      "product_id": "5192b35b-0431-4a83-bc11-d1b2a1ba9dfd",
-      "product_name": "Cinder & Clockwork Vol. 4",
-      "variant_name": "Paperback",
-      "sku": "MNG-CIND-04-00339",
-      "barcode": "271950052812",
-      "category": "Manga",
-      "price": "14.99",
-      "cost": "8.24",
-      "unit_margin": "0.4503",
-      "units_on_hand": "11",
-      "retail_value": "164.89",
-      "stock": [
-        {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
-          "on_hand": "11"
-        }
-      ],
-      "last_sold_at": "2026-09-08T17:45:43Z",
-      "is_active": true,
-      "label": "Cinder & Clockwork Vol. 4 — Paperback"
-    },
-    {
-      "variant_id": "ce56fe08-f41d-4fcd-a2dc-3efea2a892ae",
-      "product_id": "def59570-d1ea-4aaa-a0c5-8cd8d6fe44a3",
-      "product_name": "Cinder & Clockwork Vol. 5",
-      "variant_name": "Paperback",
-      "sku": "MNG-CIND-05-00286",
-      "barcode": "314913577594",
-      "category": "Manga",
-      "price": "14.99",
-      "cost": "8.24",
-      "unit_margin": "0.4503",
+      "price": "49.99",
+      "cost": "29.99",
+      "unit_margin": "0.4001",
       "units_on_hand": "5",
-      "retail_value": "74.95",
+      "retail_value": "249.95",
       "stock": [
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
           "on_hand": "5"
         }
       ],
-      "last_sold_at": "2026-09-18T17:30:15Z",
+      "last_sold_at": "2026-08-01T23:54:49Z",
       "is_active": true,
-      "label": "Cinder & Clockwork Vol. 5 — Paperback"
+      "label": "Berserk Deluxe Edition Vol. 2 — Paperback"
     },
     {
-      "variant_id": "66980e4e-a158-4c98-8988-5a99afa21519",
-      "product_id": "6ce31f9b-ef53-4812-8bf0-cc4ef79043b7",
-      "product_name": "Cinder & Clockwork Vol. 6",
+      "variant_id": "ecc8eda1-c5ef-4d08-8b80-b4dcff55fc87",
+      "product_id": "9f3a3d63-96d5-41c1-8d10-8abb55f55321",
+      "product_name": "Berserk Deluxe Edition Vol. 3",
       "variant_name": "Paperback",
-      "sku": "MNG-CIND-06-00067",
-      "barcode": "998569847896",
+      "sku": "MNG-BERSER-03-00320",
+      "barcode": "520881474350",
       "category": "Manga",
-      "price": "14.99",
-      "cost": "8.24",
-      "unit_margin": "0.4503",
-      "units_on_hand": "18",
-      "retail_value": "269.82",
+      "price": "49.99",
+      "cost": null,
+      "unit_margin": null,
+      "units_on_hand": "4",
+      "retail_value": "199.96",
       "stock": [
         {
-          "location_id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
-          "location": "Con Booth",
-          "on_hand": "9"
-        },
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "4"
+        }
+      ],
+      "last_sold_at": "2026-08-01T23:54:49Z",
+      "is_active": true,
+      "label": "Berserk Deluxe Edition Vol. 3 — Paperback"
+    },
+    {
+      "variant_id": "5eb9b82e-333c-4d4a-96dd-96a2518c2979",
+      "product_id": "e240060a-026d-43fa-96b1-d048863a18b7",
+      "product_name": "Berserk Deluxe Edition Vol. 4",
+      "variant_name": "Paperback",
+      "sku": "MNG-BERSER-04-00084",
+      "barcode": "289861434103",
+      "category": "Manga",
+      "price": "49.99",
+      "cost": "29.99",
+      "unit_margin": "0.4001",
+      "units_on_hand": "9",
+      "retail_value": "449.91",
+      "stock": [
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
           "on_hand": "9"
         }
       ],
-      "last_sold_at": "2026-07-11T14:21:37Z",
+      "last_sold_at": "2026-03-23T16:59:52Z",
       "is_active": true,
-      "label": "Cinder & Clockwork Vol. 6 — Paperback"
+      "label": "Berserk Deluxe Edition Vol. 4 — Paperback"
     },
     {
-      "variant_id": "4586dafe-c415-42bd-b033-1e5ebda0f4f8",
-      "product_id": "93078d6c-bd20-4202-8000-dd6013593d30",
-      "product_name": "Cinder & Clockwork Vol. 7",
+      "variant_id": "b62d1b14-85b7-4eba-b0b4-1d32d9ca9bfd",
+      "product_id": "6f655116-7dba-4c09-8fc7-046826581999",
+      "product_name": "Berserk Deluxe Edition Vol. 5",
       "variant_name": "Paperback",
-      "sku": "MNG-CIND-07-00303",
-      "barcode": "565126944869",
+      "sku": "MNG-BERSER-05-00097",
+      "barcode": "589578291146",
       "category": "Manga",
-      "price": "14.99",
-      "cost": "8.24",
-      "unit_margin": "0.4503",
+      "price": "49.99",
+      "cost": "29.99",
+      "unit_margin": "0.4001",
       "units_on_hand": "8",
-      "retail_value": "119.92",
+      "retail_value": "399.92",
       "stock": [
         {
-          "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
-          "location": "Tsundoku & Tabletop — Gay St",
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
           "on_hand": "8"
         }
       ],
-      "last_sold_at": "2026-07-11T14:21:37Z",
+      "last_sold_at": "2026-07-12T20:30:17Z",
       "is_active": true,
-      "label": "Cinder & Clockwork Vol. 7 — Paperback"
+      "label": "Berserk Deluxe Edition Vol. 5 — Paperback"
+    },
+    {
+      "variant_id": "9199f2e3-3d3c-4684-887a-322e532f335a",
+      "product_id": "1f25e23b-70f7-4169-93ad-b0bcd3de29d3",
+      "product_name": "Berserk Deluxe Edition Vol. 6",
+      "variant_name": "Paperback",
+      "sku": "MNG-BERSER-06-00260",
+      "barcode": "484229405720",
+      "category": "Manga",
+      "price": "49.99",
+      "cost": "29.99",
+      "unit_margin": "0.4001",
+      "units_on_hand": "6",
+      "retail_value": "299.94",
+      "stock": [
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "6"
+        }
+      ],
+      "last_sold_at": "2026-09-21T17:48:25Z",
+      "is_active": true,
+      "label": "Berserk Deluxe Edition Vol. 6 — Paperback"
+    },
+    {
+      "variant_id": "c2070124-ca5d-44b9-9b4d-d3c7ee948565",
+      "product_id": "d1424b38-5d93-4b11-b513-b414bb0bb17e",
+      "product_name": "Berserk Guts Poster (24x36)",
+      "variant_name": null,
+      "sku": "WAL-BERSER-05-00353",
+      "barcode": "038860868034",
+      "category": "Posters & Wall Scrolls",
+      "price": "11.99",
+      "cost": null,
+      "unit_margin": null,
+      "units_on_hand": "24",
+      "retail_value": "287.76",
+      "stock": [
+        {
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
+          "on_hand": "12"
+        },
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "12"
+        }
+      ],
+      "last_sold_at": "2026-08-03T22:51:32Z",
+      "is_active": true,
+      "label": "Berserk Guts Poster (24x36)"
+    },
+    {
+      "variant_id": "cd3ab4da-ff02-4771-b2f9-48a84049aa12",
+      "product_id": "a2c5a7a5-05dc-4e53-a951-e735a405fe90",
+      "product_name": "Blind Box Pin - Pokemon Series 1",
+      "variant_name": null,
+      "sku": "PIN-BLINDB-05-00492",
+      "barcode": "925158377674",
+      "category": "Pins & Keychains",
+      "price": "6.99",
+      "cost": "2.79",
+      "unit_margin": "0.6009",
+      "units_on_hand": "20",
+      "retail_value": "139.80",
+      "stock": [
+        {
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
+          "on_hand": "10"
+        },
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "10"
+        }
+      ],
+      "last_sold_at": "2026-09-15T18:37:21Z",
+      "is_active": true,
+      "label": "Blind Box Pin - Pokemon Series 1"
+    },
+    {
+      "variant_id": "2f7c791f-e1b1-4d30-bf3c-373eebe3510f",
+      "product_id": "66ad33fb-5022-4c87-8614-aff87899c5c0",
+      "product_name": "Blue Lock Vol. 1",
+      "variant_name": "Paperback",
+      "sku": "MNG-BLUELO-01-00416",
+      "barcode": "623972652735",
+      "category": "Manga",
+      "price": "12.99",
+      "cost": "7.79",
+      "unit_margin": "0.4003",
+      "units_on_hand": "5",
+      "retail_value": "64.95",
+      "stock": [
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "5"
+        }
+      ],
+      "last_sold_at": "2026-09-09T22:46:34Z",
+      "is_active": true,
+      "label": "Blue Lock Vol. 1 — Paperback"
+    },
+    {
+      "variant_id": "ea611798-7f97-4afe-a9d7-bfdbad3e40bd",
+      "product_id": "9aa0cf6d-3236-4489-9436-e84902f26edc",
+      "product_name": "Blue Lock Vol. 10",
+      "variant_name": "Paperback",
+      "sku": "MNG-BLUELO-10-00241",
+      "barcode": "197218114374",
+      "category": "Manga",
+      "price": "12.99",
+      "cost": "7.79",
+      "unit_margin": "0.4003",
+      "units_on_hand": "7",
+      "retail_value": "90.93",
+      "stock": [
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "7"
+        }
+      ],
+      "last_sold_at": "2026-08-23T16:11:08Z",
+      "is_active": true,
+      "label": "Blue Lock Vol. 10 — Paperback"
+    },
+    {
+      "variant_id": "9f89c072-beed-4e19-b654-f8e3dd03b0be",
+      "product_id": "92016a46-31ee-4025-badd-fc9bde45966e",
+      "product_name": "Blue Lock Vol. 11",
+      "variant_name": "Paperback",
+      "sku": "MNG-BLUELO-11-00446",
+      "barcode": "089071401401",
+      "category": "Manga",
+      "price": "12.99",
+      "cost": "7.79",
+      "unit_margin": "0.4003",
+      "units_on_hand": "8",
+      "retail_value": "103.92",
+      "stock": [
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "8"
+        }
+      ],
+      "last_sold_at": "2026-08-23T16:11:08Z",
+      "is_active": true,
+      "label": "Blue Lock Vol. 11 — Paperback"
+    },
+    {
+      "variant_id": "0f1bdccd-1623-4ca3-b6ec-d813eac97fc7",
+      "product_id": "0009448c-7d83-47f2-92c5-e22a8464b466",
+      "product_name": "Blue Lock Vol. 12",
+      "variant_name": "Paperback",
+      "sku": "MNG-BLUELO-12-00067",
+      "barcode": "343244510762",
+      "category": "Manga",
+      "price": "12.99",
+      "cost": "7.79",
+      "unit_margin": "0.4003",
+      "units_on_hand": "7",
+      "retail_value": "90.93",
+      "stock": [
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "7"
+        }
+      ],
+      "last_sold_at": "2025-08-24T00:11:40Z",
+      "is_active": true,
+      "label": "Blue Lock Vol. 12 — Paperback"
+    },
+    {
+      "variant_id": "a92080d0-c842-4026-b040-f66a20d96343",
+      "product_id": "688b960c-0a46-4b63-9d87-7aacecc73787",
+      "product_name": "Blue Lock Vol. 2",
+      "variant_name": "Paperback",
+      "sku": "MNG-BLUELO-02-00128",
+      "barcode": "004786863375",
+      "category": "Manga",
+      "price": "12.99",
+      "cost": "7.79",
+      "unit_margin": "0.4003",
+      "units_on_hand": "12",
+      "retail_value": "155.88",
+      "stock": [
+        {
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
+          "on_hand": "6"
+        },
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "6"
+        }
+      ],
+      "last_sold_at": "2026-09-06T20:12:17Z",
+      "is_active": true,
+      "label": "Blue Lock Vol. 2 — Paperback"
+    },
+    {
+      "variant_id": "e2a52b36-16f5-48d7-8eb0-9bfad3803234",
+      "product_id": "b379b84a-84b5-4a5e-baf1-027b41fa9ae4",
+      "product_name": "Blue Lock Vol. 3",
+      "variant_name": "Paperback",
+      "sku": "MNG-BLUELO-03-00540",
+      "barcode": "894870605664",
+      "category": "Manga",
+      "price": "12.99",
+      "cost": "7.79",
+      "unit_margin": "0.4003",
+      "units_on_hand": "9",
+      "retail_value": "116.91",
+      "stock": [
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "9"
+        }
+      ],
+      "last_sold_at": "2026-09-19T16:13:18Z",
+      "is_active": true,
+      "label": "Blue Lock Vol. 3 — Paperback"
+    },
+    {
+      "variant_id": "b325d5a2-553d-4794-9203-115c06db0850",
+      "product_id": "69f6988e-18f5-4387-8a95-37ed6df4d5b1",
+      "product_name": "Blue Lock Vol. 4",
+      "variant_name": "Paperback",
+      "sku": "MNG-BLUELO-04-00275",
+      "barcode": "080996930848",
+      "category": "Manga",
+      "price": "12.99",
+      "cost": "7.79",
+      "unit_margin": "0.4003",
+      "units_on_hand": "18",
+      "retail_value": "233.82",
+      "stock": [
+        {
+          "location_id": "d720ae33-19a6-481b-a583-6a4b7d3d957e",
+          "location": "Animanga Knox - Con Booth",
+          "on_hand": "9"
+        },
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "9"
+        }
+      ],
+      "last_sold_at": "2026-09-19T22:29:38Z",
+      "is_active": true,
+      "label": "Blue Lock Vol. 4 — Paperback"
+    },
+    {
+      "variant_id": "08d40532-42c4-4637-86d4-2d81fe5c5ad2",
+      "product_id": "da3b8e17-4751-4eb7-b05a-2aa01cea0c40",
+      "product_name": "Blue Lock Vol. 5",
+      "variant_name": "Paperback",
+      "sku": "MNG-BLUELO-05-00494",
+      "barcode": "476174224386",
+      "category": "Manga",
+      "price": "12.99",
+      "cost": "7.79",
+      "unit_margin": "0.4003",
+      "units_on_hand": "8",
+      "retail_value": "103.92",
+      "stock": [
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "8"
+        }
+      ],
+      "last_sold_at": "2026-09-19T22:29:38Z",
+      "is_active": true,
+      "label": "Blue Lock Vol. 5 — Paperback"
+    },
+    {
+      "variant_id": "55b05cb9-68c1-489e-a6d7-1f7758f1c5dc",
+      "product_id": "e2bf2b27-7d37-4702-9601-917c214aab7d",
+      "product_name": "Blue Lock Vol. 6",
+      "variant_name": "Paperback",
+      "sku": "MNG-BLUELO-06-00161",
+      "barcode": "182553714785",
+      "category": "Manga",
+      "price": "12.99",
+      "cost": "7.79",
+      "unit_margin": "0.4003",
+      "units_on_hand": "8",
+      "retail_value": "103.92",
+      "stock": [
+        {
+          "location_id": "76534765-0f6c-45c5-b4c7-e819c1f243c8",
+          "location": "Animanga Knox - Market Square",
+          "on_hand": "8"
+        }
+      ],
+      "last_sold_at": "2026-08-01T14:24:32Z",
+      "is_active": true,
+      "label": "Blue Lock Vol. 6 — Paperback"
     }
   ],
-  "total": 333,
+  "total": 518,
   "limit": 50,
   "offset": 0,
   "caveats": [
     {
       "code": "missing_cost",
-      "message": "2 of the 50 items on this page have no cost recorded, so their margin is blank rather than zero."
+      "message": "5 of the 50 items on this page have no cost recorded, so their margin is blank rather than zero."
     }
   ]
 }
