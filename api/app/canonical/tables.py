@@ -95,6 +95,18 @@ class Integration(TenantMixin, Base):
     adapter: Mapped[str] = mapped_column(String(64), nullable=False)
     # `source` is the value stamped onto every row this integration syncs.
     source: Mapped[str] = mapped_column(String(64), nullable=False)
+    # What to call this register on a screen: "Square (front counter)", "Etsy",
+    # "Market booth". Defaulted from the adapter's own `display_name` when the
+    # integration is created, and meant to be editable by the shop afterwards —
+    # a shop with two Square accounts needs to tell them apart in their own
+    # words.
+    #
+    # It lives here, on a canonical table, for a specific reason: a consolidated
+    # P&L has to label its rows, and `app.analytics` is not allowed to ask
+    # `app.connectors` what a platform is called (CLAUDE.md rule 1). The
+    # platform-aware layer writes the name down once; the platform-blind layer
+    # reads a string.
+    display_name: Mapped[str | None] = mapped_column(String(120))
     config: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False, default=dict)
     # Credentials live in a secret store; we only keep the pointer.
     secret_ref: Mapped[str | None] = mapped_column(String(255))

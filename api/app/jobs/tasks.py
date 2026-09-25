@@ -37,33 +37,24 @@ log = logging.getLogger(__name__)
 
 async def sync(session: AsyncSession, ctx: AnalyticsContext) -> dict[str, Any]:
     """Pull whatever changed since last time, then re-index for search."""
-    from app.connectors.sync import SyncEngine
-    from app.sync import build_adapter, load_tenant, reindex
+    from app.sync import sync_tenant
 
-    tenant, integration = await load_tenant(session, ctx.slug)
-    adapter = build_adapter(integration)
-    try:
-        engine = SyncEngine(session, tenant, integration, adapter)  # type: ignore[arg-type]
-        report = await engine.run(SyncMode.INCREMENTAL)
-    finally:
-        await adapter.aclose()  # type: ignore[attr-defined]
+    # Every register, not the first one found. The loop lives in `sync_tenant` so
+    # that the worker, the Data screen and the CLI cannot disagree about it.
+    result = await sync_tenant(session, ctx.slug, SyncMode.INCREMENTAL)
 
-    indexed = None
-    if report.ok:
-        indexed = await reindex(session, tenant)
-    await session.commit()
-
-    if not report.ok:
-        raise RuntimeError(
-            "; ".join(f"{error['entity']}: {error['error']}" for error in report.errors)
-        )
+    if not result.ok:
+        # Named per register, because "orders: connection refused" is not
+        # actionable for a shop that runs two tills.
+        raise RuntimeError("; ".join(result.errors))
 
     return {
-        "fetched": report.total("fetched"),
-        "upserted": report.total("upserted"),
-        "customers_merged": report.customers_merged,
-        "chunks_embedded": getattr(indexed, "embedded", 0) if indexed else 0,
-        "duration_ms": report.duration_ms,
+        "registers": len(result.registers),
+        "fetched": result.total("fetched"),
+        "upserted": result.total("upserted"),
+        "customers_merged": result.customers_merged,
+        "chunks_embedded": getattr(result.indexed, "embedded", 0) if result.indexed else 0,
+        "duration_ms": result.duration_ms,
     }
 
 

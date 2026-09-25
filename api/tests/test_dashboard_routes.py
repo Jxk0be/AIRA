@@ -225,7 +225,13 @@ async def test_data_screen_reports_the_connection(
     await synced(db, POS_SHOP)
     body = (await client.get(f"/tenants/{POS_SHOP}/data")).json()
 
-    assert [row["adapter"] for row in body["integrations"]] == ["registerone"]
+    # Both of this shop's registers. It runs a POS at the counter and a
+    # marketplace online, and a Data screen that listed one of them would be the
+    # screen where you never find out the other stopped syncing.
+    adapters = [row["adapter"] for row in body["integrations"]]
+    sources = [row["source"] for row in body["integrations"]]
+    assert adapters == ["registerone", "mapping"]
+    assert sources == ["registerone", "animanga_knox_online"]
     assert body["last_sync"]["status"] in {"succeeded", "failed", "running"}
     assert body["quality"] is not None
     # Findings are the owner-facing version, so every one has a sentence.

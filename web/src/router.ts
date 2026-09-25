@@ -20,6 +20,7 @@
 
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
+import { useAuthStore } from './stores/auth'
 import { useTenantStore } from './stores/tenant'
 
 /** Old path -> where it lives now. Query strings are carried across. */
@@ -52,6 +53,12 @@ const moved = (from: string): RouteRecordRaw => ({
 })
 
 const routes: RouteRecordRaw[] = [
+  {
+    path: '/sign-in',
+    name: 'sign-in',
+    component: () => import('./views/SignInView.vue'),
+    meta: { title: 'Sign in', public: true },
+  },
   {
     path: '/',
     name: 'root',
@@ -127,17 +134,42 @@ export const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
+  const auth = useAuthStore()
   const store = useTenantStore()
   const wanted = typeof to.params.tenant === 'string' ? to.params.tenant : null
+
+  // Supabase reads the stored session asynchronously, so for one tick on every
+  // load we do not yet know whether somebody is signed in. Waiting here is what
+  // stops a refresh of a deep link bouncing a signed-in owner to the sign-in
+  // screen and losing where they were.
+  await auth.start()
+
+  if (to.meta.public) {
+    // Nothing to do on the sign-in screen but leave; it redirects itself once a
+    // session appears, including after a reset link.
+    return true
+  }
+
+  if (!auth.signedIn) {
+    // `next` is checked for a leading slash before it is used, in SignInView, so
+    // this cannot be turned into an open redirect off-site.
+    return { name: 'sign-in', query: to.fullPath === '/' ? {} : { next: to.fullPath } }
+  }
 
   // The styleguide is not a shop screen: it has no tenant and must not be
   // bounced to one.
   if (to.name === 'styleguide') return true
 
-  // `/` points at a slug that may not exist here. Send it to whatever does.
+  // Signed in, but nobody has added them to a shop. The picker says so; sending
+  // them to a tenant route would just 404 on every request.
+  if (!auth.hasShops) {
+    return to.name === 'root' ? true : { name: 'root' }
+  }
+
+  // `/` points at no shop in particular. Send it to the first one this person
+  // may open — which is now "theirs", not "whatever this install has".
   if (to.name === 'root' || !wanted) {
-    const tenants = await store.loadTenants().catch(() => [])
-    const first = tenants[0]
+    const first = auth.shops[0]
     return first ? { name: 'home', params: { tenant: first.tenant } } : true
   }
 

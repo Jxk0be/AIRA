@@ -35,14 +35,27 @@ python tasks.py api       # http://127.0.0.1:8000/health
 python tasks.py web       # http://localhost:5173
 ```
 
-The web app opens on the first shop it finds. If nothing is connected yet, it
-says so and prints the commands that fix it.
+The web app asks you to sign in. Create an account on the sign-in screen — the
+local stack confirms addresses automatically — then give it a shop:
+
+```bash
+python tasks.py invite you@example.com animanga_knox owner
+```
+
+Signing up on its own grants nothing, which is the point: until somebody adds you
+to a shop, the app says so rather than showing you one. Once you have a
+membership it opens on the first shop you may see, and if nothing is connected
+yet it prints the commands that fix that too.
 
 ## Tasks
 
 | Command | What it does |
 | --- | --- |
 | `python tasks.py env` | What the `.env` holds, with secrets masked |
+| `python tasks.py export-online` | Regenerate Animanga Knox's CardNexus export |
+| `python tasks.py members <tenant>` | Who may open a shop |
+| `python tasks.py invite <email> <tenant> [role]` | Add somebody. `owner`, `manager` or `staff` |
+| `python tasks.py revoke <email> <tenant>` | Remove somebody. Bites on their next request |
 | `python tasks.py setup` | Install Python and Node dependencies |
 | `python tasks.py db` / `db-stop` / `db-reset` | Local Supabase stack |
 | `python tasks.py sources` / `sources-stop` | Fake customer systems (docker compose) |
@@ -104,10 +117,14 @@ paste mistakes (stray quotes, trailing whitespace, a truncated key), and says
 which keys are not needed until a later phase. It exits non-zero only when
 something already-built is actually missing.
 
-The web app is the exception: it reads nothing from that file. In development
-it calls `/api`, which Vite proxies to the API on port 8000, and a deployed
-build points somewhere else through `VITE_API_BASE` in `web/.env`. Nothing
-secret belongs there — anything Vite inlines is in the bundle.
+The web app reads nothing from that file. In development it calls `/api`, which
+Vite proxies to the API on port 8000, and a deployed build points somewhere else
+through `VITE_API_BASE` in `web/.env`. It needs two Supabase values of its own to
+sign anybody in; a dev build falls back to the local stack's, so there is nothing
+to fill in on a fresh clone, and `web/.env.example` documents what a hosted build
+needs. Nothing secret belongs in either — anything Vite inlines is in the
+bundle, which is why the publishable key is fine there and the secret key never
+is.
 
 ## Databases
 
@@ -122,11 +139,27 @@ Two different things, kept apart on purpose:
 
 ## The test customer
 
-**Animanga Knox** is a Knoxville anime, manga and hobby shop running
-**RegisterOne**, a fictional cloud POS. Eighteen months of history, a main store
-and a convention booth, and a long list of deliberate mess — missing costs,
-duplicate customers, partial refunds, custom-amount lines, a category renamed
-mid-history.
+**Animanga Knox** is a Knoxville anime, manga and hobby shop, and it runs **two
+registers** — which is the whole reason this product exists.
+
+**RegisterOne**, a fictional cloud POS, runs the counter and the convention
+booth. Eighteen months of history and a long list of deliberate mess — missing
+costs, duplicate customers, partial refunds, custom-amount lines, a category
+renamed mid-history.
+
+**CardNexus**, a fictional TCG marketplace, is the online storefront they opened
+in July 2026. It has no API on any plan they can afford and hands them one
+spreadsheet a month. It is awkward in the opposite direction to the POS:
+machine-clean, perfectly consistent, and missing things on purpose — no costs, no
+customers, no stock, no refunds, no payouts. Its listing titles are its own and
+match nothing in the POS catalogue, which is true to life and an honest limit
+worth showing: revenue consolidates across two systems, product identity does
+not.
+
+The shop is a two-source tenant by default, so every multi-register path in the
+codebase is exercised by simply running the fixtures. It was not, until recently,
+and three things were quietly broken as a result — see
+[All your registers, one P&L](#all-your-registers-one-pl).
 
 The shop is invented; its catalog is not. Real manga runs at their publishers'
 real prices, real figure lines, real Gunpla kit numbers, real card sets and
@@ -148,11 +181,20 @@ The adapter talks to the mock API at `http://localhost:8100`, never to
 requests a second, and fails about 1% of calls with a retryable 503 — because
 the real ones do.
 
+The storefront needs no server: it is a file, regenerated on demand. See
+[QUIRKS.md](sources/marketplace/QUIRKS.md) for every trap in it and why it is
+deliberately small.
+
 ```bash
-python tasks.py backfill      # ~30s for 18 months
+python tasks.py export-online   # writes the CardNexus export
+```
+
+```bash
+python tasks.py backfill      # both registers, ~30s for 18 months
+python tasks.py backfill animanga_knox --source registerone   # just the POS
 python tasks.py simulate-day
 python tasks.py incremental   # ~5s, only the new day
-python tasks.py conformance
+python tasks.py conformance   # three targets now: two adapters, three registers
 ```
 
 ## The second test customer
@@ -379,6 +421,127 @@ called a correct answer invented. Every figure in that answer was checked by
 hand against RegisterOne and was exact. It is left in the set, and left failing,
 rather than reworded until it passes.
 
+## All your registers, one P&L
+
+The thing neither incumbent can ship. Square AI needs Square, Sidekick needs
+Shopify, and neither will ever add a competitor's takings to their own. A shop
+running a till on the floor and a marketplace online has two dashboards that never
+meet, and adds them up by hand on the first of the month.
+
+Every sourced row has always carried a `source`, and row identity is
+`(tenant_id, source, external_id)` — so two registers can both call something
+SKU-1 without colliding. What was missing was everything above that:
+
+- **`source` is a dimension** in the semantic layer, so `source_breakdown` splits
+  net sales per register, and `Filters(sources=...)` narrows any metric to one.
+  Exact rather than approximate, unlike a product split: a refund belongs to an
+  order and an order came out of exactly one system, so the rows subtract refunds
+  properly and **sum to consolidated net sales to the cent**.
+- **A register has a name.** `integrations.display_name` — "Front counter",
+  "Etsy shop" — written by the platform-aware layer and read as a plain string by
+  `app.analytics`, which is not allowed to know what a platform is
+  (CLAUDE.md rule 1).
+- **`AnalyticsContext.sources`** carries the registers, each with *its own*
+  capabilities. The union on the context decides whether a metric can be
+  attempted; the per-register capability decides which half of the shop it covers.
+
+Three things were quietly broken, all of them only visible with two registers:
+
+1. **The sync CLI, the Data screen and the worker each stopped at the first
+   integration they found.** A shop's second register was never synced. The loop
+   now lives once, in `app.sync.sync_tenant`; three copies of it is how that
+   happens.
+2. **The month-end packet reconciled one register's takings against both
+   registers' sales.** `has_payments` is a union, so a till that reports payments
+   plus a marketplace export that does not produced takings covering half the shop,
+   compared against net sales covering all of it — and told a bookkeeper their
+   books were short by the entire marketplace. Takings are now scoped to the
+   registers that report them, and reconciled against the matching subset of sales.
+3. **A missing margin failed the whole packet.** `has_costs` is a union too, so a
+   month whose sales all came through a costless marketplace export raised
+   `CapabilityUnavailable` out of `build` and lost every other section with it. It
+   now degrades to a note.
+
+Animanga Knox runs two registers out of the box, so
+`/animanga_knox/reports?tab=sales` leads with "All your registers" as soon as the
+fixtures are synced. The card is hidden for a shop that runs one till, because a
+permanent "connect another register" panel is an advert rather than a number.
+
+## Signing in, and who may see what
+
+Authentication is Supabase Auth. The browser signs in against GoTrue and sends
+its access token as a bearer; the API verifies that token itself against the
+project's published JWKS rather than calling the auth server once per request.
+Asymmetric signatures only — a verifier that also accepted HS256 could be handed
+a token an attacker signed with the JWKS public key as an HMAC secret.
+
+**A token proves identity and nothing else.** Every authorisation decision is a
+row in our own `memberships` table, read on every request. That is deliberate: a
+token is refreshed at most once an hour, so a membership carried inside one would
+mean revoking somebody's access took up to an hour to bite. Here it takes effect
+on their next request.
+
+Three settings, documented in `.env.example`. Only the first needs thought:
+`SUPABASE_URL` is the local stack's `http://127.0.0.1:54321` in development and
+`https://<project-ref>.supabase.co` when hosted, and it is **not** the same value
+in both — a deploy that keeps the loopback address authenticates nobody.
+`SUPABASE_JWT_ISSUER` stays blank unless auth moves to a custom domain, and
+`SUPABASE_SERVICE_KEY` is only needed by `tasks.py invite --send`.
+
+`GET /health` reports whether auth is configured and whether the JWKS is
+reachable, and calls the service degraded when it is not. That is the check a
+deploy should read: the alternative symptom is every request answering 401 with
+"could not reach the sign-in service", visible only to the one person who cannot
+fix it.
+
+`app.accounts.guard` is installed as an application-wide dependency, so **every**
+route is private unless its path template is on a short public list (`/`,
+`/health`, and the unsubscribe link in our own emails). A route added later is
+protected because nobody did anything.
+`tests/test_accounts_auth.py` walks the app's routing table and asserts exactly
+that, method by method, so forgetting to think about auth fails the suite.
+
+Asking for a shop you are not a member of returns **404, not 403** — the same
+answer a shop that does not exist gives, so the difference cannot be used to find
+out which slugs are taken.
+
+Three roles, ordered. `owner` does billing, registers and people; `manager` does
+the day job — approving a reorder, raising a purchase order, changing who gets
+alerted; `staff` reads every screen and asks the assistant, and writes nothing.
+`staff` exists because Shopify charges for staff accounts on a $105 plan and we
+do not. Every write route carries its requirement in its decorator, and a test
+asserts that any write not on an explicit "harmless" list has one.
+
+The first owner of a shop cannot be added through the API, because adding a
+member is owner-only and a new shop has no owner:
+
+```bash
+python tasks.py members animanga_knox
+python tasks.py invite you@shop.com animanga_knox owner
+python tasks.py revoke them@shop.com animanga_knox
+```
+
+This is also the hand-held half of onboarding. It never creates an account — an
+account made from a terminal would have no password and no confirmed address,
+and confirming an address is what the auth service is for. It resolves an email
+against our `users` table, then against `auth.users`, and says which it found.
+
+### The Data API is closed
+
+PostgREST serves the `public` schema, and Supabase grants `anon` and
+`authenticated` on every table `postgres` creates there. So before the
+`close_the_data_api` migration, `GET /rest/v1/orders` with the project's
+*publishable* key returned other shops' orders — past FastAPI and past every
+`tenant_id` filter in `app.analytics`. That key is meant to be public and is in
+the web app's bundle.
+
+It is closed in two layers: row-level security on every table with no policies at
+all (the correct policy set, since nothing is supposed to reach these tables that
+way), and the grants themselves revoked, including the default privileges that
+handed them out. Our own connection is `postgres`, which bypasses RLS, so nothing
+in the app changed. `tests/test_data_api_is_closed.py` walks the tables we declare
+and fails if a new one is missing RLS.
+
 ## The dashboard
 
 Four screens, and every figure on them comes out of `api/app/analytics` — the
@@ -447,3 +610,5 @@ shop's own uploaded documents.
 | 9. Evals | Done |
 | 10. Vue dashboard | Done |
 | 11. Onboarding playbook | Not started |
+| 12. Auth and accounts | Done |
+| 13. Multi-source consolidation | Done |

@@ -328,12 +328,29 @@ async def _category_ids(ctx: ToolContext, name: str) -> tuple[uuid.UUID, ...]:
         )
     ).all()
     wanted = name.strip().lower()
+
+    # Every category of that name, not the first. Category identity is per source,
+    # so a shop running two registers that both file things under "Singles" has
+    # two rows and the honest answer to "how did Singles do?" covers both.
     exact = [row.id for row in rows if row.name.lower() == wanted]
     if exact:
         return tuple(exact)
-    partial = [row.id for row in rows if wanted in row.name.lower()]
+
+    partial = [row for row in rows if wanted in row.name.lower()]
     if len(partial) == 1:
-        return tuple(partial)
+        return (partial[0].id,)
+
+    if len(partial) > 1:
+        # Not "no such category" — there are several, and saying otherwise sends
+        # the owner looking for a typo that is not there. Two registers make this
+        # ordinary: the counter files sealed product under one name and the
+        # marketplace under its own.
+        options = ", ".join(sorted(row.name for row in partial))
+        raise ToolError(
+            f"{name!r} matches more than one category here: {options}. "
+            "Ask again with the full name of the one you mean."
+        )
+
     known = ", ".join(sorted(row.name for row in rows)) or "none"
     raise ToolError(f"No category called {name!r}. This shop's categories are: {known}.")
 

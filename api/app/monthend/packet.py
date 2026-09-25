@@ -65,6 +65,18 @@ class Packet:
     dead_stock_items: int = 0
     checks: MonthEndChecks = field(default_factory=MonthEndChecks)
     notes: list[str] = field(default_factory=list)
+    # Net sales for just the registers whose takings we hold, when that is not
+    # all of them. The takings reconciliation compares against this instead of the
+    # shop total, so a shop running a till plus a marketplace export is not told
+    # its books are short by the whole marketplace.
+    takings_net_sales: Decimal | None = None
+    # Per-register split of the month. One row for a single-register shop, which
+    # is why the section can print unconditionally.
+    by_source: an.Breakdown | None = None
+    # Why there is no margin section, when the shop's setup says there should be.
+    # Written for the reader, and printed in the notes in place of the coverage
+    # line.
+    margin_refusal: str | None = None
 
     @property
     def title(self) -> str:
@@ -125,6 +137,7 @@ class Packet:
             "by_category": _rows(self.by_category),
             "by_channel": _rows(self.by_channel),
             "by_location": _rows(self.by_location) if self.by_location else None,
+            "by_source": _rows(self.by_source) if self.by_source else None,
             "inventory": {
                 "opening": _snapshot(self.opening_inventory),
                 "closing": _snapshot(self.closing_inventory),
@@ -187,14 +200,40 @@ async def build(session: AsyncSession, ctx: AnalyticsContext, period: DateRange)
     finance = await financial_summary(session, ctx, period)
 
     margin = None
+    margin_refusal: str | None = None
     if ctx.has("has_costs"):
-        margin = await an.margin_report(session, ctx, period)
+        try:
+            margin = await an.margin_report(session, ctx, period)
+        except an.CapabilityUnavailable as refused:
+            # Declared but unusable *for this month*: costs exist somewhere in the
+            # shop's setup, and nothing that actually sold in these weeks had one.
+            #
+            # A two-register shop makes this ordinary rather than exotic.
+            # `has_costs` is the union across registers, so it is true because of
+            # the till even in a month whose sales all came through a marketplace
+            # export that has never heard of a cost. Letting the refusal escape
+            # would fail the whole packet — every reconciliation, every section —
+            # over a missing optional figure.
+            margin_refusal = refused.message
 
     by_category = await an.category_breakdown(session, ctx, period, limit=50)
     by_channel = await an.channel_breakdown(session, ctx, period)
     by_location = (
         await an.location_breakdown(session, ctx, period) if ctx.has("multi_location") else None
     )
+    # Unconditional: a one-register shop gets one row that equals its net sales,
+    # and a bookkeeper looking at a two-register shop gets the split they would
+    # otherwise assemble by hand from two portals.
+    by_source = await an.source_breakdown(session, ctx, period)
+
+    # When takings only cover some of the registers, the reconciliation needs the
+    # matching subset of sales rather than the shop total.
+    takings_net_sales = None
+    if finance.payment_sources and not finance.payments_cover_everything:
+        covered = await an.sales_summary(
+            session, ctx, period, an.Filters(sources=finance.payment_sources)
+        )
+        takings_net_sales = covered.net_sales
 
     # One ranked pull, cut two ways, so "best" and "worst" cannot disagree
     # about what anything sold.
@@ -224,6 +263,9 @@ async def build(session: AsyncSession, ctx: AnalyticsContext, period: DateRange)
         worst=worst,
         dead_stock_value=stale.total_cash,
         dead_stock_items=len(stale.items),
+        takings_net_sales=takings_net_sales,
+        by_source=by_source,
+        margin_refusal=margin_refusal,
     )
     packet.checks = _reconcile(packet)
     packet.notes = await _notes(session, ctx, packet)
@@ -268,9 +310,16 @@ def _reconcile(packet: Packet) -> MonthEndChecks:
     # Takings less refunds against net sales plus tax plus tips. Only possible
     # where the source reports payments separately from orders.
     if packet.finance.payments_total is not None:
-        expected = (
-            packet.summary.net_sales + packet.finance.tax_collected + packet.finance.tips
-        ).quantize(Decimal("0.01"))
+        # Against the registers the takings actually cover, which is the whole
+        # shop unless one of its systems does not report payments at all.
+        against = (
+            packet.summary.net_sales
+            if packet.takings_net_sales is None
+            else packet.takings_net_sales
+        )
+        expected = (against + packet.finance.tax_collected + packet.finance.tips).quantize(
+            Decimal("0.01")
+        )
         # Tips are added back: a payment's `amount` is the sale without its
         # tip, so takings that leave them out fall short by exactly the
         # month's tips and the packet reports a shop's books as not balancing
@@ -298,8 +347,11 @@ async def _notes(session: AsyncSession, ctx: AnalyticsContext, packet: Packet) -
 
     if packet.margin is None:
         notes.append(
-            "No costs are recorded in this shop's system, so there is no cost of goods "
-            "or margin in this packet."
+            packet.margin_refusal
+            or (
+                "No costs are recorded in this shop's system, so there is no cost of goods "
+                "or margin in this packet."
+            )
         )
     elif packet.margin.cost_coverage is not None and packet.margin.cost_coverage < 1:
         notes.append(

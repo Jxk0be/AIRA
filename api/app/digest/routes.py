@@ -15,7 +15,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from app.digest import prepare
 from app.digest.service import send_test
-from app.http import ShopDep
+from app.http import MANAGER_ONLY, ShopDep
 from app.notify import recipients
 
 router = APIRouter(tags=["digest"])
@@ -80,7 +80,7 @@ async def preview_html(shop: ShopDep, as_of: date | None = None) -> Response:
     return Response(content=html, media_type="text/html")
 
 
-@router.post("/tenants/{tenant}/digest/test")
+@router.post("/tenants/{tenant}/digest/test", dependencies=MANAGER_ONLY)
 async def test_send(shop: ShopDep, body: TestIn, as_of: date | None = None) -> dict[str, str]:
     """Send one copy to one person now, without marking anything as notified."""
     people = await recipients(shop.session, shop.ctx)

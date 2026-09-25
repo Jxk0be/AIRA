@@ -6,11 +6,14 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from typing import Any, Literal
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy import text
 
+from app.accounts.guard import guard
+from app.accounts.routes import router as accounts_router
+from app.accounts.tokens import check_auth
 from app.agent.routes import router as agent_router
 from app.config import get_settings
 from app.dashboard import dashboard_router, operations_router
@@ -33,7 +36,17 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     await dispose_engine()
 
 
-app = FastAPI(title="AIRA", version="0.1.0", lifespan=lifespan)
+# `dependencies` here is the security boundary: it runs before any route's own
+# dependencies, on every route, and `app.accounts.guard` refuses anything whose
+# path template is not on its short public list. A route added later is therefore
+# private by default — see `tests/test_accounts_auth.py`, which walks this app's
+# routes and fails if any of them answers without a token.
+app = FastAPI(
+    title="AIRA",
+    version="0.1.0",
+    lifespan=lifespan,
+    dependencies=[Depends(guard)],
+)
 
 settings = get_settings()
 app.add_middleware(
@@ -53,11 +66,27 @@ class DatabaseHealth(BaseModel):
     pgvector_version: str | None = None
 
 
+class AuthHealthOut(BaseModel):
+    """Whether this server can authenticate anybody.
+
+    The issuer is included because it is the thing you need to see when this is
+    wrong, and it is not a secret: it appears in every token we issue and its
+    JWKS is public by design.
+    """
+
+    configured: bool
+    issuer: str | None = None
+    reachable: bool = False
+    keys: int = 0
+    detail: str | None = None
+
+
 class Health(BaseModel):
     status: Literal["ok", "degraded"]
     service: str = "aira-api"
     version: str = "0.1.0"
     database: DatabaseHealth
+    auth: AuthHealthOut
     embedding_model: str
     embedding_dim: int
 
@@ -82,6 +111,10 @@ async def _check_database() -> DatabaseHealth:
     )
 
 
+# Who is asking, and who else may ask. First, because everything below it is
+# only reachable once this has answered.
+app.include_router(accounts_router)
+
 app.include_router(dashboard_router)
 app.include_router(operations_router)
 app.include_router(rag_router)
@@ -98,17 +131,29 @@ app.include_router(digest_router)
 app.include_router(notifications_router)
 app.include_router(jobs_router)
 
-# Served without a signed-in owner: the unsubscribe links in our own emails.
+# Served without a signed-in owner: the unsubscribe links in our own emails. The
+# token in the path is the authorisation, and `guard` lists this route as public.
 app.include_router(unsubscribe_router)
 
 
 @app.get("/health", response_model=Health)
 async def health() -> Health:
     db = await _check_database()
-    healthy = db.reachable and bool(db.pgvector)
+    auth = await check_auth(settings)
+    # An API that cannot verify a token cannot serve a single shop screen, so it
+    # is degraded even with a perfectly good database. This is the check a deploy
+    # should be reading.
+    healthy = db.reachable and bool(db.pgvector) and auth.configured and auth.reachable
     return Health(
         status="ok" if healthy else "degraded",
         database=db,
+        auth=AuthHealthOut(
+            configured=auth.configured,
+            issuer=auth.issuer,
+            reachable=auth.reachable,
+            keys=auth.keys,
+            detail=auth.detail,
+        ),
         embedding_model=settings.embedding_model,
         embedding_dim=settings.embedding_dim,
     )

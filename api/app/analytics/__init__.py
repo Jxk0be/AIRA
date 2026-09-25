@@ -25,6 +25,7 @@ from app.analytics.context import (
     AnalyticsError,
     CapabilityUnavailable,
     DateRange,
+    SourceRef,
     TenantNotFound,
     load_context,
 )
@@ -43,6 +44,7 @@ from app.analytics.metrics import (
     sales_series,
     sales_summary,
     sell_through,
+    source_breakdown,
     top_products,
 )
 from app.analytics.queries import Filters
@@ -89,6 +91,7 @@ __all__ = [
     "SalesSummary",
     "SellThrough",
     "SeriesPoint",
+    "SourceRef",
     "StockAtLocation",
     "StockList",
     "StockRow",
@@ -109,5 +112,6 @@ __all__ = [
     "sales_series",
     "sales_summary",
     "sell_through",
+    "source_breakdown",
     "top_products",
 ]

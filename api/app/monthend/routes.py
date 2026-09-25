@@ -10,7 +10,7 @@ from fastapi import APIRouter, Response
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.analytics import DateRange
-from app.http import ShopDep, not_found
+from app.http import MANAGER_ONLY, ShopDep, not_found
 from app.monthend import (
     email_packet,
     generate,
@@ -69,7 +69,12 @@ async def packets(shop: ShopDep) -> list[PacketOut]:
     ]
 
 
-@router.post("/tenants/{tenant}/month-end", response_model=PacketOut, status_code=201)
+@router.post(
+    "/tenants/{tenant}/month-end",
+    response_model=PacketOut,
+    status_code=201,
+    dependencies=MANAGER_ONLY,
+)
 async def make_packet(shop: ShopDep, body: GenerateIn) -> PacketOut:
     period = None
     if body.year and body.month:
@@ -132,7 +137,7 @@ async def one_packet(shop: ShopDep, packet_id: uuid.UUID) -> PacketOut:
     )
 
 
-@router.post("/tenants/{tenant}/month-end/{packet_id}/email")
+@router.post("/tenants/{tenant}/month-end/{packet_id}/email", dependencies=MANAGER_ONLY)
 async def email(shop: ShopDep, packet_id: uuid.UUID, body: EmailIn) -> dict[str, int]:
     packet = await get_packet(shop.session, shop.ctx, packet_id)
     if packet is None:

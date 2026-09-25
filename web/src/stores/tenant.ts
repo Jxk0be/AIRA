@@ -14,7 +14,7 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
 import { api } from '../api/client'
-import type { Capabilities, ShopProfile, TenantSummary } from '../api/types'
+import type { Capabilities, ShopProfile, ShopSource, TenantSummary } from '../api/types'
 
 export const useTenantStore = defineStore('tenant', () => {
   const tenants = ref<TenantSummary[]>([])
@@ -54,6 +54,17 @@ export const useTenantStore = defineStore('tenant', () => {
   function can(capability: keyof Capabilities): boolean {
     return Boolean(capabilities.value[capability])
   }
+
+  /**
+   * The registers this shop runs.
+   *
+   * Almost always one. When it is more than one, this shop is the reason the
+   * product exists — neither Square nor Shopify will ever add a competitor's
+   * takings to their own — and the screens give consolidation a headline instead
+   * of a footnote.
+   */
+  const sources = computed<ShopSource[]>(() => profile.value?.sources ?? [])
+  const hasMultipleSources = computed(() => sources.value.length > 1)
 
   async function loadTenants(): Promise<TenantSummary[]> {
     if (tenants.value.length) return tenants.value
@@ -100,6 +111,8 @@ export const useTenantStore = defineStore('tenant', () => {
     timezone,
     capabilities,
     brandColor,
+    sources,
+    hasMultipleSources,
     can,
     loadTenants,
     select,

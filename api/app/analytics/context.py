@@ -14,7 +14,7 @@ other (CLAUDE.md rule 1).
 from __future__ import annotations
 
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import UTC, date, datetime, time, timedelta
 from typing import Any
 from zoneinfo import ZoneInfo
@@ -24,6 +24,28 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.canonical import tables as t
 from app.canonical.models import Capabilities
+
+
+@dataclass(frozen=True, slots=True)
+class SourceRef:
+    """One register a shop runs, by the slug on its rows and the shop's name for it.
+
+    Carries its *own* capabilities, not the shop's. The union on the context is
+    what decides whether a metric can be attempted at all; this is what decides
+    which half of the shop it actually covers — and the difference between those
+    two is where a consolidated figure quietly goes wrong.
+    """
+
+    source: str
+    display_name: str | None = None
+    capabilities: Capabilities = field(default_factory=Capabilities)
+
+    @property
+    def label(self) -> str:
+        return self.display_name or self.source
+
+    def has(self, capability: str) -> bool:
+        return bool(getattr(self.capabilities, capability))
 
 
 class AnalyticsError(RuntimeError):
@@ -135,6 +157,46 @@ class AnalyticsContext:
     currency: str
     capabilities: Capabilities
     settings: dict[str, Any]
+    # Every register this shop runs, in the order a screen should list them.
+    # Carried here because almost every caller that wants a consolidated number
+    # also wants to label its parts, and a second query per request to answer
+    # "which tills does this shop have" would be silly.
+    #
+    # Still platform-blind: these are the slugs and names the sync engine wrote
+    # onto `integrations`, not anything imported from `app.connectors`.
+    sources: tuple[SourceRef, ...] = ()
+
+    @property
+    def has_more_than_one_source(self) -> bool:
+        """Whether consolidation is this shop's problem at all.
+
+        The gate a *screen* asks before giving "all your registers" a headline. A
+        metric never asks: `source_breakdown` on a one-register shop returns one
+        row, which is correct and reconciles.
+        """
+        return len(self.sources) > 1
+
+    def label_for_source(self, source: str) -> str:
+        """What to call one register. Falls back to the slug we stamped."""
+        for ref in self.sources:
+            if ref.source == source:
+                return ref.label
+        return source
+
+    def sources_with(self, capability: str) -> tuple[str, ...]:
+        """The registers that can answer for this capability, by slug.
+
+        `has()` says whether *anybody* can, which is the right gate for
+        attempting a metric. This says who — which is the right scope for
+        reconciling one, because comparing a figure that covers one register
+        against a figure that covers two is how a packet tells a bookkeeper their
+        books do not balance when they do.
+        """
+        return tuple(ref.source for ref in self.sources if ref.has(capability))
+
+    def covers_every_source(self, capability: str) -> bool:
+        """True when every register this shop runs can answer for this."""
+        return bool(self.sources) and len(self.sources_with(capability)) == len(self.sources)
 
     @property
     def tz(self) -> ZoneInfo:
@@ -186,6 +248,10 @@ async def load_context(session: AsyncSession, tenant: str | uuid.UUID) -> Analyt
     Capabilities are the union across the tenant's active integrations: a shop
     running a POS plus a spreadsheet of costs can do margin even though only one
     of the two sources knows a cost. A capability nothing claims stays off.
+
+    The same read also collects the registers themselves, in the order they were
+    connected, so that a consolidated number can name its parts without a second
+    query.
     """
     query = select(t.Tenant).where(t.Tenant.deleted_at.is_(None))
     if isinstance(tenant, uuid.UUID):
@@ -197,20 +263,30 @@ async def load_context(session: AsyncSession, tenant: str | uuid.UUID) -> Analyt
     if row is None:
         raise TenantNotFound(f"no tenant {tenant!r}")
 
-    declared = (
-        (
-            await session.execute(
-                select(t.Integration.capabilities).where(
-                    t.Integration.tenant_id == row.id, t.Integration.is_active.is_(True)
-                )
+    active = (
+        await session.execute(
+            select(
+                t.Integration.source,
+                t.Integration.display_name,
+                t.Integration.capabilities,
             )
+            .where(t.Integration.tenant_id == row.id, t.Integration.is_active.is_(True))
+            .order_by(t.Integration.created_at, t.Integration.source)
         )
-        .scalars()
-        .all()
-    )
+    ).all()
+
+    declared = [one.capabilities for one in active]
     merged = {
         field: any(bool(one.get(field)) for one in declared) for field in Capabilities.model_fields
     }
+    sources = tuple(
+        SourceRef(
+            source=one.source,
+            display_name=one.display_name,
+            capabilities=Capabilities(**(one.capabilities or {})),
+        )
+        for one in active
+    )
 
     return AnalyticsContext(
         tenant_id=row.id,
@@ -220,4 +296,5 @@ async def load_context(session: AsyncSession, tenant: str | uuid.UUID) -> Analyt
         currency=row.currency,
         capabilities=Capabilities(**merged),
         settings=dict(row.settings or {}),
+        sources=sources,
     )

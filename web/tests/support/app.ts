@@ -70,6 +70,7 @@ function fixture(name: string): string | null {
 function fixtureFor(url: URL): string | null {
   const path = url.pathname.replace(/^\/api/, '')
   if (path === '/tenants') return 'tenants'
+  if (path === '/me') return 'me'
 
   const rest = path.replace(new RegExp(`^/tenants/${TENANT}`), '')
 
@@ -110,7 +111,16 @@ function fixtureFor(url: URL): string | null {
  * body a spec reads back; inventing the rest would be fixtures nobody
  * recorded.
  */
-export async function mockApi(page: Page): Promise<string[]> {
+/**
+ * Replacement bodies for named fixtures, keyed by fixture name.
+ *
+ * For the handful of specs that need a shop unlike the recorded one — two
+ * registers rather than one, say. Everything not overridden still comes off disk,
+ * so a spec states only what it is actually about.
+ */
+export type Overrides = Record<string, unknown>
+
+export async function mockApi(page: Page, overrides: Overrides = {}): Promise<string[]> {
   const missing: string[] = []
 
   // A pathname predicate rather than a `**/api/**` glob: that glob also matches
@@ -148,7 +158,8 @@ export async function mockApi(page: Page): Promise<string[]> {
       }
 
       const name = fixtureFor(url)
-      const body = name ? fixture(name) : null
+      const overridden = name && name in overrides ? JSON.stringify(overrides[name]) : null
+      const body = overridden ?? (name ? fixture(name) : null)
       if (!body) {
         missing.push(`${request.method()} ${url.pathname}${url.search}`)
         await route.fulfill({
@@ -167,13 +178,89 @@ export async function mockApi(page: Page): Promise<string[]> {
 }
 
 /**
- * Open a screen with the API mocked and the theme pinned.
+ * Where `lib/supabase.ts` keeps the session. Named there rather than derived
+ * from the project URL precisely so this file can write to it.
+ */
+const AUTH_STORAGE_KEY = 'aira-auth'
+
+/**
+ * A session that supabase-js will hand back without asking anybody.
  *
- * The theme goes into localStorage before any app script runs, which is the
- * same path a returning owner takes — and the only way to exercise the no-flash
- * script in index.html rather than route around it.
+ * Every screen is behind a router guard now, so a suite with no session renders
+ * the sign-in page thirteen times. Seeding one is better than mocking the auth
+ * library: the app takes its normal path — stored session, `getSession`, guard,
+ * `/me` — and only the auth server is absent.
+ *
+ * `expires_at` is far enough out that no refresh is attempted, which is what
+ * keeps the suite off the network. The token is not a real JWT and never reaches
+ * anything that would verify it: the API is replayed from `../fixtures`.
+ */
+function seededSession(): string {
+  const oneDay = Math.floor(Date.now() / 1000) + 24 * 60 * 60
+  return JSON.stringify({
+    access_token: 'ui-suite-not-a-real-token',
+    refresh_token: 'ui-suite-not-a-real-refresh-token',
+    token_type: 'bearer',
+    expires_in: 24 * 60 * 60,
+    expires_at: oneDay,
+    user: {
+      id: '00000000-0000-4000-8000-000000000001',
+      aud: 'authenticated',
+      role: 'authenticated',
+      email: 'owner@animangaknox.test',
+      app_metadata: {},
+      user_metadata: {},
+      created_at: '2026-01-01T00:00:00.000Z',
+    },
+  })
+}
+
+/**
+ * Open a screen with the API mocked, a session in place and the theme pinned.
+ *
+ * Both go into localStorage before any app script runs, which is the same path a
+ * returning owner takes — and the only way to exercise the no-flash script in
+ * index.html rather than route around it.
  */
 export async function open(
+  page: Page,
+  path: string,
+  testInfo: TestInfo,
+  overrides: Overrides = {},
+): Promise<{ missing: string[] }> {
+  const dark = testInfo.project.name.endsWith('dark')
+
+  await page.addInitScript(
+    ({ theme, authKey, session }) => {
+      try {
+        localStorage.setItem('aira-theme', theme)
+        localStorage.setItem(authKey, session)
+      } catch {
+        // Private mode. The default is light either way.
+      }
+    },
+    { theme: dark ? 'dark' : 'light', authKey: AUTH_STORAGE_KEY, session: seededSession() },
+  )
+
+  const missing = await mockApi(page, overrides)
+  await page.goto(path, { waitUntil: 'domcontentloaded' })
+
+  // Charts settle a frame or two after the data lands; without this the
+  // screenshots catch half-drawn axes and axe scans a skeleton.
+  await page.waitForLoadState('networkidle').catch(() => {})
+  await page.waitForTimeout(350)
+
+  return { missing }
+}
+
+/**
+ * Open a path with no session, to exercise the router's gate.
+ *
+ * The API is still mocked, and `missing` is still returned — a signed-out visit
+ * that fetched anything from the API is itself the bug, because it means the
+ * guard let a screen render before it redirected.
+ */
+export async function openSignedOut(
   page: Page,
   path: string,
   testInfo: TestInfo,
@@ -190,12 +277,7 @@ export async function open(
 
   const missing = await mockApi(page)
   await page.goto(path, { waitUntil: 'domcontentloaded' })
-
-  // Charts settle a frame or two after the data lands; without this the
-  // screenshots catch half-drawn axes and axe scans a skeleton.
   await page.waitForLoadState('networkidle').catch(() => {})
-  await page.waitForTimeout(350)
-
   return { missing }
 }
 

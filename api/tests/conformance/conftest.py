@@ -41,21 +41,31 @@ async def synced(db: AsyncSession, target: ConformanceTarget) -> SyncedTenant:
     if tenant is None:
         pytest.skip(f"tenant {target.tenant_slug!r} does not exist. {target.setup_hint}")
 
+    # By source, not `.first()`: this tenant may run several registers and the
+    # suite grades one adapter at a time.
     integration = (
-        (await db.execute(select(t.Integration).where(t.Integration.tenant_id == tenant.id)))
-        .scalars()
-        .first()
-    )
+        await db.execute(
+            select(t.Integration).where(
+                t.Integration.tenant_id == tenant.id, t.Integration.source == target.source
+            )
+        )
+    ).scalar_one_or_none()
     if integration is None:
-        pytest.skip(f"tenant {target.tenant_slug!r} has no integration. {target.setup_hint}")
+        pytest.skip(
+            f"{target.tenant_slug!r} has no {target.source!r} integration. {target.setup_hint}"
+        )
 
     orders = (
         await db.execute(
-            select(func.count()).select_from(t.Order).where(t.Order.tenant_id == tenant.id)
+            select(func.count())
+            .select_from(t.Order)
+            .where(t.Order.tenant_id == tenant.id, t.Order.source == target.source)
         )
     ).scalar_one()
     if not orders:
-        pytest.skip(f"tenant {target.tenant_slug!r} has not been synced. {target.setup_hint}")
+        pytest.skip(
+            f"{target.tenant_slug!r} has nothing synced from {target.source!r}. {target.setup_hint}"
+        )
 
     return SyncedTenant(
         target=target,

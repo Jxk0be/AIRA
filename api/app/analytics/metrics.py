@@ -458,6 +458,35 @@ async def location_breakdown(
     return await breakdown(session, ctx, period, Dimension.LOCATION, filters, limit=25)
 
 
+async def source_breakdown(
+    session: AsyncSession,
+    ctx: AnalyticsContext,
+    period: DateRange,
+    filters: Filters = NO_FILTERS,
+) -> Breakdown:
+    """Net sales per register, adding up to the shop's total.
+
+    The one number neither Square nor Shopify will ever show a shop, because
+    showing it means adding a competitor's revenue to their own. A shop running a
+    till on the floor, a marketplace online and a card reader at a convention has
+    three dashboards that never meet; this is the row that makes them one.
+
+    Exact rather than approximate, unlike the product-shaped splits: a refund
+    belongs to an order and an order came out of exactly one system, so these rows
+    subtract refunds properly and sum to consolidated net sales. That matters more
+    here than anywhere else — a consolidated figure that does not reconcile to its
+    own parts is worse than no consolidated figure.
+
+    No capability gate. A single-register shop gets one row, which is the honest
+    answer and is what makes the month-end packet able to print this section
+    unconditionally. `has_more_than_one_source` is the question a *screen* should
+    ask before giving this a headline.
+
+    Limit 25: a shop with more registers than that has a different problem.
+    """
+    return await breakdown(session, ctx, period, Dimension.SOURCE, filters, limit=25)
+
+
 # ---------------------------------------------------------------------------
 # Margin
 # ---------------------------------------------------------------------------

@@ -19,6 +19,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.canonical import tables as t
 from app.db import get_session
+from app.http import MANAGER_ONLY
 from app.rag import documents as docs
 from app.rag.embeddings import EmbeddingError, shared_embedder
 from app.rag.ingest import ingest_tenant
@@ -124,7 +125,12 @@ async def search_chunks(
     )
 
 
-@router.post("/tenants/{slug}/documents", response_model=DocumentResponse, status_code=201)
+@router.post(
+    "/tenants/{slug}/documents",
+    response_model=DocumentResponse,
+    status_code=201,
+    dependencies=MANAGER_ONLY,
+)
 async def upload_document(
     slug: str,
     session: Annotated[AsyncSession, Depends(get_session)],

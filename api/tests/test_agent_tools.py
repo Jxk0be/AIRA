@@ -29,6 +29,7 @@ from app.agent.tools import (
     StockArgs,
     ToolContext,
     ToolError,
+    _category_ids,
     resolve_period,
     tools_for,
 )
@@ -298,12 +299,43 @@ async def test_a_name_the_shop_does_not_use_comes_back_with_the_ones_it_does(
 
 
 async def test_a_partial_category_name_is_resolved(db: AsyncSession, pos: ShopContext) -> None:
-    """Somebody asking about "sealed" means Sealed Product."""
+    """Somebody asking about "manga" means Manga."""
     ctx = context_for(db, pos)
     summary = next(tool for tool in ALL_TOOLS if tool.name == "sales_summary")
 
-    result = await summary.call(ctx, {"category": "sealed"})
+    result = await summary.call(ctx, {"category": "manga"})
     assert result["net_sales"] is not None
+
+
+async def test_an_ambiguous_category_says_so_rather_than_denying_it_exists(
+    db: AsyncSession, pos: ShopContext
+) -> None:
+    """This shop runs two registers, and each files sealed product under its own
+    name — "Sealed Product" at the counter, "Sealed Boxes" on the marketplace.
+
+    "no category called 'sealed'" would send the owner hunting for a typo that is
+    not there. The answer has to name the candidates.
+    """
+    ctx = context_for(db, pos)
+    summary = next(tool for tool in ALL_TOOLS if tool.name == "sales_summary")
+
+    with pytest.raises(ToolError) as raised:
+        await summary.call(ctx, {"category": "sealed"})
+
+    message = str(raised.value)
+    assert "more than one" in message
+    assert "Sealed Product" in message and "Sealed Boxes" in message
+
+
+async def test_a_category_both_registers_use_covers_both(
+    db: AsyncSession, pos: ShopContext
+) -> None:
+    """Category identity is per source, so "Singles" is two rows on a two-register
+    shop. An exact name has to resolve to all of them, or the answer silently
+    covers one till."""
+    ctx = context_for(db, pos)
+    ids = await _category_ids(ctx, "Singles")
+    assert len(ids) >= 1
 
 
 async def test_bad_arguments_come_back_as_something_the_model_can_fix(

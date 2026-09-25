@@ -46,7 +46,11 @@ async def test_money_is_decimal_dollars(synced: SyncedTenant) -> None:
     rows = (
         await synced.session.execute(
             select(t.OrderLine.unit_price, t.OrderLine.quantity)
-            .where(t.OrderLine.tenant_id == synced.tenant.id, t.OrderLine.unit_price > 0)
+            .where(
+                t.OrderLine.tenant_id == synced.tenant.id,
+                t.OrderLine.source == synced.source,
+                t.OrderLine.unit_price > 0,
+            )
             .limit(500)
         )
     ).all()
@@ -64,7 +68,8 @@ async def test_money_is_decimal_dollars(synced: SyncedTenant) -> None:
     biggest = (
         await synced.session.execute(
             select(func.max(t.OrderLine.unit_price)).where(
-                t.OrderLine.tenant_id == synced.tenant.id
+                t.OrderLine.tenant_id == synced.tenant.id,
+                t.OrderLine.source == synced.source,
             )
         )
     ).scalar_one()
@@ -80,7 +85,9 @@ async def test_timestamps_are_timezone_aware_utc(synced: SyncedTenant) -> None:
     for model, column in columns:
         value = (
             await synced.session.execute(
-                select(column).where(model.tenant_id == synced.tenant.id).limit(1)
+                select(column)
+                .where(model.tenant_id == synced.tenant.id, model.source == synced.source)
+                .limit(1)
             )
         ).scalar_one_or_none()
         if value is None:
@@ -90,17 +97,47 @@ async def test_timestamps_are_timezone_aware_utc(synced: SyncedTenant) -> None:
         assert value.utcoffset() == timedelta(0), f"{column.key} is not UTC"
 
 
-async def test_every_row_carries_this_tenant_and_source(synced: SyncedTenant) -> None:
-    """Tenant isolation is a schema guarantee; this checks the sync honoured it."""
-    for model in (t.Product, t.Variant, t.Order, t.OrderLine, t.InventoryLevel):
-        wrong = (
+async def test_every_row_carries_a_source_this_tenant_connected(synced: SyncedTenant) -> None:
+    """Tenant isolation is a schema guarantee; this checks the sync honoured it.
+
+    Not "no row came from another source" — this shop may well run a second
+    register, and its rows are supposed to be here. What must never happen is a
+    row stamped with a source the tenant has no integration for, which would mean
+    a sync wrote under a name nothing owns and no screen can label.
+    """
+    connected = set(
+        (
             await synced.session.execute(
-                select(func.count())
-                .select_from(model)
-                .where(model.tenant_id == synced.tenant.id, model.source != synced.source)
+                select(t.Integration.source).where(t.Integration.tenant_id == synced.tenant.id)
             )
-        ).scalar_one()
-        assert wrong == 0, f"{model.__tablename__} has {wrong} rows from another source"
+        )
+        .scalars()
+        .all()
+    )
+    assert synced.source in connected
+
+    for model in (t.Product, t.Variant, t.Order, t.OrderLine, t.InventoryLevel):
+        orphaned = (
+            await synced.session.execute(
+                select(model.source, func.count())
+                .where(model.tenant_id == synced.tenant.id, model.source.not_in(connected))
+                .group_by(model.source)
+            )
+        ).all()
+        assert not orphaned, (
+            f"{model.__tablename__} has rows from {orphaned}, which this tenant never connected"
+        )
+
+    # And this adapter did produce rows of its own, or the checks below are
+    # measuring an empty set and passing.
+    mine = (
+        await synced.session.execute(
+            select(func.count())
+            .select_from(t.Order)
+            .where(t.Order.tenant_id == synced.tenant.id, t.Order.source == synced.source)
+        )
+    ).scalar_one()
+    assert mine > 0
 
 
 # ---------------------------------------------------------------------------
@@ -125,10 +162,12 @@ async def test_order_totals_reconcile_with_their_lines(synced: SyncedTenant) -> 
                              where l.order_id = o.id and l.deleted_at is null), 0)
                    - o.discount_total + o.tax_total + o.tip_total) as drift
           from orders o
-          where o.tenant_id = :tenant and o.deleted_at is null and o.status <> 'canceled'
+          where o.tenant_id = :tenant and o.source = :source and o.deleted_at is null
+            and o.status <> 'canceled'
         ) d where abs(drift) > 0.01
         """,
         tenant=str(synced.tenant.id),
+        source=synced.source,
     )
     assert drift == 0, f"{drift} orders do not reconcile with their line items"
 
@@ -141,11 +180,12 @@ async def test_refunds_never_exceed_what_was_charged(synced: SyncedTenant) -> No
           select o.id, o.total, coalesce(sum(r.amount), 0) as refunded
           from orders o
           left join refunds r on r.order_id = o.id and r.deleted_at is null
-          where o.tenant_id = :tenant and o.deleted_at is null
+          where o.tenant_id = :tenant and o.source = :source and o.deleted_at is null
           group by o.id, o.total
         ) x where refunded > total + 0.01
         """,
         tenant=str(synced.tenant.id),
+        source=synced.source,
     )
     assert over == 0, f"{over} orders were refunded for more than they were charged"
 
@@ -153,8 +193,10 @@ async def test_refunds_never_exceed_what_was_charged(synced: SyncedTenant) -> No
 async def test_quantities_and_stock_are_never_silently_negative(synced: SyncedTenant) -> None:
     negative_lines = await scalar(
         synced.session,
-        "select count(*) from order_lines where tenant_id = :tenant and quantity < 0",
+        "select count(*) from order_lines where tenant_id = :tenant and source = :source "
+        "and quantity < 0",
         tenant=str(synced.tenant.id),
+        source=synced.source,
     )
     assert negative_lines == 0, f"{negative_lines} order lines have a negative quantity"
 
@@ -172,7 +214,11 @@ async def test_soft_deleted_products_still_resolve_for_old_order_lines(
         await synced.session.execute(
             select(func.count())
             .select_from(t.Variant)
-            .where(t.Variant.tenant_id == synced.tenant.id, t.Variant.deleted_at.is_not(None))
+            .where(
+                t.Variant.tenant_id == synced.tenant.id,
+                t.Variant.source == synced.source,
+                t.Variant.deleted_at.is_not(None),
+            )
         )
     ).scalar_one()
     if not deleted_variants:
@@ -185,9 +231,10 @@ async def test_soft_deleted_products_still_resolve_for_old_order_lines(
         from order_lines l
         join variants v on v.id = l.variant_id
         join products p on p.id = v.product_id
-        where l.tenant_id = :tenant and v.deleted_at is not null
+        where l.tenant_id = :tenant and l.source = :source and v.deleted_at is not null
         """,
         tenant=str(synced.tenant.id),
+        source=synced.source,
     )
     assert resolvable > 0, (
         "products were deleted upstream but no historical line still joins to one, "
@@ -200,8 +247,9 @@ async def test_line_snapshots_survive_a_rename(synced: SyncedTenant) -> None:
     blank = await scalar(
         synced.session,
         "select count(*) from order_lines "
-        "where tenant_id = :tenant and coalesce(name_snapshot, '') = ''",
+        "where tenant_id = :tenant and source = :source and coalesce(name_snapshot, '') = ''",
         tenant=str(synced.tenant.id),
+        source=synced.source,
     )
     assert blank == 0, f"{blank} order lines have no name snapshot"
 
@@ -210,17 +258,21 @@ async def test_custom_amount_lines_are_allowed_and_still_count(synced: SyncedTen
     """A line with no product behind it is normal, and its money is real."""
     orphan_lines = await scalar(
         synced.session,
-        "select count(*) from order_lines where tenant_id = :tenant and variant_id is null "
+        "select count(*) from order_lines where tenant_id = :tenant and source = :source "
+        "and variant_id is null "
         "and deleted_at is null",
         tenant=str(synced.tenant.id),
+        source=synced.source,
     )
     if not orphan_lines:
         pytest.skip("this source has no custom-amount lines")
     zero_money = await scalar(
         synced.session,
-        "select count(*) from order_lines where tenant_id = :tenant and variant_id is null "
+        "select count(*) from order_lines where tenant_id = :tenant and source = :source "
+        "and variant_id is null "
         "and deleted_at is null and quantity * unit_price <= 0",
         tenant=str(synced.tenant.id),
+        source=synced.source,
     )
     assert zero_money == 0, f"{zero_money} custom-amount lines came through with no money on them"
 
@@ -243,24 +295,30 @@ async def test_declared_capabilities_are_backed_by_data(synced: SyncedTenant) ->
     if caps.has_costs:
         with_cost = await scalar(
             synced.session,
-            "select count(*) from variants where tenant_id = :tenant and cost is not null",
+            "select count(*) from variants where tenant_id = :tenant "
+            "and source = :source and cost is not null",
             tenant=tenant_id,
+            source=synced.source,
         )
         assert with_cost > 0, "has_costs is declared but not one variant has a cost"
 
     if caps.has_customers:
         identified = await scalar(
             synced.session,
-            "select count(*) from orders where tenant_id = :tenant and customer_id is not null",
+            "select count(*) from orders where tenant_id = :tenant and source = :source "
+            "and customer_id is not null",
             tenant=tenant_id,
+            source=synced.source,
         )
         assert identified > 0, "has_customers is declared but no order has a customer"
 
     if caps.multi_location:
         locations = await scalar(
             synced.session,
-            "select count(*) from locations where tenant_id = :tenant and deleted_at is null",
+            "select count(*) from locations where tenant_id = :tenant "
+            "and source = :source and deleted_at is null",
             tenant=tenant_id,
+            source=synced.source,
         )
         assert locations > 1, f"multi_location is declared but there is only {locations} location"
 
@@ -268,7 +326,12 @@ async def test_declared_capabilities_are_backed_by_data(synced: SyncedTenant) ->
         channels = (
             (
                 await synced.session.execute(
-                    select(t.Order.channel).where(t.Order.tenant_id == synced.tenant.id).distinct()
+                    select(t.Order.channel)
+                    .where(
+                        t.Order.tenant_id == synced.tenant.id,
+                        t.Order.source == synced.source,
+                    )
+                    .distinct()
                 )
             )
             .scalars()
@@ -281,8 +344,10 @@ async def test_declared_capabilities_are_backed_by_data(synced: SyncedTenant) ->
     if caps.has_inventory_history:
         movements = await scalar(
             synced.session,
-            "select count(*) from inventory_movements where tenant_id = :tenant",
+            "select count(*) from inventory_movements where tenant_id = :tenant "
+            "and source = :source",
             tenant=tenant_id,
+            source=synced.source,
         )
         assert movements > 0, "has_inventory_history is declared but no movements were synced"
 
@@ -299,8 +364,9 @@ async def test_capabilities_not_declared_are_not_quietly_invented(
         with_cost = await scalar(
             synced.session,
             "select count(*) from order_lines "
-            "where tenant_id = :tenant and unit_cost_snapshot is not null",
+            "where tenant_id = :tenant and source = :source and unit_cost_snapshot is not null",
             tenant=tenant_id,
+            source=synced.source,
         )
         assert with_cost == 0, (
             f"has_costs is false but {with_cost} order lines carry a cost snapshot"
@@ -309,8 +375,10 @@ async def test_capabilities_not_declared_are_not_quietly_invented(
     if not caps.has_customers:
         identified = await scalar(
             synced.session,
-            "select count(*) from orders where tenant_id = :tenant and customer_id is not null",
+            "select count(*) from orders where tenant_id = :tenant and source = :source "
+            "and customer_id is not null",
             tenant=tenant_id,
+            source=synced.source,
         )
         assert identified == 0, "has_customers is false but orders have customers attached"
 
@@ -446,7 +514,12 @@ async def test_orders_have_a_status_and_channel_from_our_vocabulary(
     statuses = (
         (
             await synced.session.execute(
-                select(t.Order.status).where(t.Order.tenant_id == synced.tenant.id).distinct()
+                select(t.Order.status)
+                .where(
+                    t.Order.tenant_id == synced.tenant.id,
+                    t.Order.source == synced.source,
+                )
+                .distinct()
             )
         )
         .scalars()
@@ -455,7 +528,12 @@ async def test_orders_have_a_status_and_channel_from_our_vocabulary(
     channels = (
         (
             await synced.session.execute(
-                select(t.Order.channel).where(t.Order.tenant_id == synced.tenant.id).distinct()
+                select(t.Order.channel)
+                .where(
+                    t.Order.tenant_id == synced.tenant.id,
+                    t.Order.source == synced.source,
+                )
+                .distinct()
             )
         )
         .scalars()
@@ -474,11 +552,12 @@ async def test_inventory_levels_are_one_row_per_variant_and_location(
         """
         select count(*) from (
           select variant_id, location_id from inventory_levels
-          where tenant_id = :tenant and deleted_at is null
+          where tenant_id = :tenant and source = :source and deleted_at is null
           group by 1, 2 having count(*) > 1
         ) d
         """,
         tenant=str(synced.tenant.id),
+        source=synced.source,
     )
     assert duplicates == 0, f"{duplicates} variant/location pairs have more than one stock level"
 
@@ -495,17 +574,20 @@ async def test_merged_customers_point_at_a_survivor_that_is_not_merged(
         """
         select count(*) from customers c
         join customers s on s.id = c.merged_into_id
-        where c.tenant_id = :tenant and s.merged_into_id is not null
+        where c.tenant_id = :tenant and c.source = :source and s.merged_into_id is not null
         """,
         tenant=str(synced.tenant.id),
+        source=synced.source,
     )
     assert chained == 0, f"{chained} customers were merged into another merged customer"
 
     vanished = await scalar(
         synced.session,
         "select count(*) from orders o left join customers c on c.id = o.customer_id "
-        "where o.tenant_id = :tenant and o.customer_id is not null and c.id is null",
+        "where o.tenant_id = :tenant and o.source = :source and o.customer_id is not null "
+        "and c.id is null",
         tenant=str(synced.tenant.id),
+        source=synced.source,
     )
     assert vanished == 0, f"{vanished} orders point at a customer that no longer exists"
 
@@ -514,13 +596,17 @@ async def test_raw_payloads_were_landed_before_mapping(synced: SyncedTenant) -> 
     """`raw_records` is what makes a number arguable against the source."""
     orders = (
         await synced.session.execute(
-            select(func.count()).select_from(t.Order).where(t.Order.tenant_id == synced.tenant.id)
+            select(func.count())
+            .select_from(t.Order)
+            .where(t.Order.tenant_id == synced.tenant.id, t.Order.source == synced.source)
         )
     ).scalar_one()
     landed = await scalar(
         synced.session,
-        "select count(*) from raw_records where tenant_id = :tenant and entity = 'orders'",
+        "select count(*) from raw_records where tenant_id = :tenant and source = :source "
+        "and entity = 'orders'",
         tenant=str(synced.tenant.id),
+        source=synced.source,
     )
     assert landed >= orders, f"{orders} orders were synced but only {landed} raw payloads were kept"
 
@@ -543,7 +629,10 @@ async def test_the_sync_recorded_what_it_did(synced: SyncedTenant) -> None:
     run = (
         await synced.session.execute(
             select(t.SyncRun)
-            .where(t.SyncRun.tenant_id == synced.tenant.id)
+            .where(
+                t.SyncRun.tenant_id == synced.tenant.id,
+                t.SyncRun.integration_id == synced.integration.id,
+            )
             .order_by(t.SyncRun.started_at.desc())
             .limit(1)
         )
@@ -555,6 +644,10 @@ async def test_the_sync_recorded_what_it_did(synced: SyncedTenant) -> None:
     report = (
         await synced.session.execute(
             select(t.DataQualityReport)
+            # Tenant-scoped, not per register: a quality report carries only a
+            # sync_run_id, never an integration_id, so there is nothing to filter
+            # on. That is a real gap for a two-register shop — the Data screen
+            # shows "112 items have no cost" without saying which system's items.
             .where(t.DataQualityReport.tenant_id == synced.tenant.id)
             .order_by(t.DataQualityReport.generated_at.desc())
             .limit(1)
@@ -578,8 +671,9 @@ async def test_dates_bucket_in_the_shop_timezone_not_utc(synced: SyncedTenant) -
     times_of_day = await scalar(
         synced.session,
         "select count(distinct (placed_at at time zone :tz)::time) from orders "
-        "where tenant_id = :tenant",
+        "where tenant_id = :tenant and source = :source",
         tenant=str(synced.tenant.id),
+        source=synced.source,
         tz=synced.tenant.timezone,
     )
     if int(times_of_day or 0) <= 1:
@@ -592,10 +686,11 @@ async def test_dates_bucket_in_the_shop_timezone_not_utc(synced: SyncedTenant) -
         synced.session,
         """
         select count(*) from orders
-        where tenant_id = :tenant
+        where tenant_id = :tenant and source = :source
           and (placed_at at time zone :tz)::date <> (placed_at at time zone 'UTC')::date
         """,
         tenant=str(synced.tenant.id),
+        source=synced.source,
         tz=synced.tenant.timezone,
     )
     assert differing > 0, (

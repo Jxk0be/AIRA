@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIRA Competitive Plan</title>
+<style>
+/* Direction A: the same palette web/src/style.css ships, so this reads as part
+   of the project. No raw hex outside these two blocks. */
+:root{
+  color-scheme:light;
+  --bg:#fbfbf9; --surface:#ffffff; --raised:#f4f4f1;
+  --ink:#1a1a17; --ink-muted:#5c5c55;
+  --border:#e4e4df; --border-strong:#8a8a82;
+  --primary:#3d46b8; --primary-fg:#ffffff; --primary-subtle:#edeefb;
+  --success:#1c6b42; --success-subtle:#e6f2eb;
+  --warning:#8a5a00; --warning-subtle:#fbf0d9;
+  --danger:#b3301f; --danger-subtle:#fbe9e6;
+  --info:#1f5c8a;
+  --focus:#3d46b8;
+  --shadow-1:0 1px 2px rgba(26,26,23,.06);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#15161a; --surface:#1c1e23; --raised:#24272d;
+    --ink:#ecedf0; --ink-muted:#a9adb6;
+    --border:#2e3138; --border-strong:#7c818c;
+    --primary:#949bf5; --primary-fg:#13141a; --primary-subtle:#23253a;
+    --success:#5fd196; --success-subtle:#17291f;
+    --warning:#e0a83c; --warning-subtle:#2c2413;
+    --danger:#f1836c; --danger-subtle:#2f1c18;
+    --info:#69b6e8;
+    --focus:#949bf5;
+    --shadow-1:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#15161a; --surface:#1c1e23; --raised:#24272d;
+  --ink:#ecedf0; --ink-muted:#a9adb6;
+  --border:#2e3138; --border-strong:#7c818c;
+  --primary:#949bf5; --primary-fg:#13141a; --primary-subtle:#23253a;
+  --success:#5fd196; --success-subtle:#17291f;
+  --warning:#e0a83c; --warning-subtle:#2c2413;
+  --danger:#f1836c; --danger-subtle:#2f1c18;
+  --info:#69b6e8;
+  --focus:#949bf5;
+  --shadow-1:0 1px 2px rgba(0,0,0,.4);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+.wrap{max-width:60rem;margin:0 auto;padding:0 16px 6rem}
+
+header{padding:3rem 0 1.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.eyebrow{font-size:.75rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;margin:0 0 .6rem}
+h1{font-size:clamp(1.9rem,5vw,2.6rem);line-height:1.15;margin:0 0 .75rem;letter-spacing:-.02em}
+.standfirst{font-size:1.1rem;color:var(--ink-muted);margin:0;max-width:52ch}
+.meta{margin-top:1.5rem;font-size:.85rem;color:var(--ink-muted);display:flex;gap:1.25rem;flex-wrap:wrap}
+
+h2{font-size:1.45rem;letter-spacing:-.01em;margin:3.5rem 0 .4rem;padding-top:1.75rem;border-top:1px solid var(--border)}
+h2:first-of-type{border-top:0;padding-top:0;margin-top:0}
+h2 .num{color:var(--ink-muted);font-variant-numeric:tabular-nums;font-weight:400;margin-right:.55rem}
+.lede{color:var(--ink-muted);margin:.35rem 0 1.5rem;max-width:62ch}
+p{max-width:68ch}
+code{
+  font:.875em ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  background:var(--raised);border:1px solid var(--border);
+  border-radius:4px;padding:.08em .34em;word-break:break-word;
+}
+
+.thesis{background:var(--primary-subtle);border:1px solid var(--border);border-left:3px solid var(--primary);border-radius:8px;padding:1.25rem 1.4rem}
+.thesis p{margin:0 0 .8rem}
+.thesis p:last-child{margin-bottom:0}
+
+.scroll{overflow-x:auto;margin:1.25rem 0;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:42rem;font-size:.9rem}
+th,td{text-align:left;padding:.7rem .9rem;border-bottom:1px solid var(--border);vertical-align:top}
+thead th{background:var(--raised);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted)}
+tbody tr:last-child td{border-bottom:0}
+.price{white-space:nowrap;font-variant-numeric:tabular-nums}
+
+.cards{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));margin:1.5rem 0}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.1rem 1.2rem;box-shadow:var(--shadow-1)}
+.card h3{margin:0 0 .45rem;font-size:.97rem}
+.card p{margin:0;font-size:.9rem;color:var(--ink-muted)}
+.tag{display:inline-block;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;margin-bottom:.55rem;padding:.15rem .45rem;border-radius:4px;background:var(--success-subtle);color:var(--success)}
+
+ol.tasks{list-style:none;margin:1rem 0;padding:0}
+ol.tasks > li{
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  margin-bottom:.7rem;padding:1rem 1.1rem;display:grid;
+  grid-template-columns:auto 1fr;gap:.85rem;align-items:start;
+}
+ol.tasks input[type=checkbox]{width:1.15rem;height:1.15rem;margin:.22rem 0 0;accent-color:var(--primary);cursor:pointer}
+ol.tasks input:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.task-head{display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap;margin-bottom:.25rem}
+.task-title{font-weight:600}
+.size{font-size:.7rem;font-weight:700;letter-spacing:.05em;padding:.1rem .42rem;border-radius:4px;white-space:nowrap}
+.size-s{background:var(--success-subtle);color:var(--success)}
+.size-m{background:var(--warning-subtle);color:var(--warning)}
+.size-l{background:var(--danger-subtle);color:var(--danger)}
+.task-why{margin:0;font-size:.9rem;color:var(--ink-muted)}
+.task-where{margin:.45rem 0 0;font-size:.82rem;color:var(--ink-muted)}
+li.done .task-title{text-decoration:line-through;color:var(--ink-muted)}
+
+.no{border-left:3px solid var(--danger);background:var(--danger-subtle);border-radius:0 6px 6px 0;padding:.85rem 1.1rem;margin:.7rem 0}
+.no strong{display:block;margin-bottom:.15rem}
+.no span{font-size:.9rem;color:var(--ink-muted)}
+.q{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--info);border-radius:0 6px 6px 0;padding:.9rem 1.1rem;margin:.7rem 0}
+.q strong{display:block;margin-bottom:.2rem}
+.q span{font-size:.9rem;color:var(--ink-muted)}
+
+.bar{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin:1.5rem 0 0}
+button{font:inherit;font-size:.85rem;padding:.42rem .85rem;border-radius:6px;cursor:pointer;background:var(--surface);color:var(--ink);border:1px solid var(--border-strong)}
+button:hover{background:var(--raised)}
+button:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.progress{font-size:.85rem;color:var(--ink-muted);font-variant-numeric:tabular-nums}
+footer{margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:.85rem;color:var(--ink-muted)}
+
+@media print{
+  body{background:#fff}
+  .bar{display:none}
+  ol.tasks > li,.card,.scroll{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">AIRA &middot; Competitive plan</p>
+  <h1>Beating Shopify and Square where they can&rsquo;t follow</h1>
+  <p class="standfirst">
+    Conversational analytics stopped being a product this year. What is left is the part
+    neither incumbent can ship: working with the register a shop already owns, and adding
+    up the ones they run at the same time.
+  </p>
+  <div class="meta">
+    <span>Drafted 25 September 2026</span>
+    <span>Working document &mdash; checkboxes save in this browser</span>
+  </div>
+  <div class="bar">
+    <button id="theme" type="button">Toggle dark</button>
+    <button id="reset" type="button">Clear checkboxes</button>
+    <span class="progress" id="progress"></span>
+  </div>
+</header>
+
+<h2><span class="num">01</span>The call</h2>
+<div class="thesis">
+  <p>
+    <strong>Square AI is free on the $0 tier. Shopify Sidekick is bundled with a $39 plan.</strong>
+    Both answer plain-language questions over the shop&rsquo;s own data and pin charts, and
+    Square added local weather and events data in October. &ldquo;Ask your sales data a
+    question&rdquo; is no longer something we can sell.
+  </p>
+  <p>
+    What we can sell is that <strong>neither one exists unless you are on their
+    platform</strong>, and neither will ever add a competitor&rsquo;s revenue to their own.
+    Those are structural, not feature gaps &mdash; they cannot be closed by a roadmap on
+    their side.
+  </p>
+  <p>
+    So: stop leading with the assistant, lead with coverage and consolidation. The
+    assistant is the interface, not the pitch.
+  </p>
+</div>
+
+<h2><span class="num">02</span>Where we stand</h2>
+<p class="lede">What they sell and for how much, as of September 2026.</p>
+
+<div class="scroll">
+<table>
+  <thead>
+    <tr><th>Tier</th><th>Square</th><th>Shopify</th><th>AIRA</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Entry</strong></td>
+      <td><span class="price">Free</span> &mdash; reporting, low-stock alerts, online shop</td>
+      <td><span class="price">$39/mo</span> Basic ($29 annual) &mdash; sales, sessions, repeat rate, AOV, top products</td>
+      <td rowspan="4">
+        Full semantic layer, 8 proactive detectors, weekly digest, month-end packet,
+        reorder and purchase orders, dead stock, staffing, hybrid retrieval, assistant.
+        <strong>No auth, no billing, no real POS adapter.</strong>
+      </td>
+    </tr>
+    <tr>
+      <td><strong>Middle</strong></td>
+      <td><span class="price">$49/mo</span> per location &mdash; COGS and margin, vendors, purchase orders, stock intake</td>
+      <td><span class="price">$105/mo</span> Grow ($79) &mdash; profit, customer, acquisition and inventory reports; 5 staff accounts</td>
+    </tr>
+    <tr>
+      <td><strong>Top</strong></td>
+      <td><span class="price">$149/mo</span> per location &mdash; cross-location returns, transfers, 24/7 phone</td>
+      <td><span class="price">$399/mo</span> Advanced ($299) &mdash; custom report builder</td>
+    </tr>
+    <tr>
+      <td><strong>AI analyst</strong></td>
+      <td><strong>Square AI &mdash; free, every tier.</strong> Chat, charts you can pin, plus weather, events, news and reviews data</td>
+      <td><strong>Sidekick &mdash; every plan.</strong> Chat, charts, <em>and it takes actions</em>; Sidekick Pulse pushes insights</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="num">03</span>The three wedges</h2>
+<p class="lede">Each of these is something a competitor would have to damage their own business to match.</p>
+
+<div class="cards">
+  <div class="card">
+    <span class="tag">Coverage</span>
+    <h3>We work when they don&rsquo;t</h3>
+    <p>
+      Square AI needs Square. Sidekick needs Shopify. Every shop on Clover, Lightspeed,
+      Toast, Heartland, a QuickBooks POS refugee, or a register that exports a spreadsheet
+      gets nothing from either, at any price. That is a large share of established local
+      retail &mdash; the shops that bought a system in 2016 and will not re-platform.
+    </p>
+  </div>
+  <div class="card">
+    <span class="tag">Consolidation</span>
+    <h3>One P&amp;L across registers</h3>
+    <p>
+      A shop running Square in-store and Shopify online has two dashboards that will never
+      be added together. <code>load_context</code> already unions capabilities across a
+      tenant&rsquo;s active integrations, and <code>integrations</code> is unique on
+      <code>(tenant_id, source)</code>. The architecture is built; nothing sells it.
+    </p>
+  </div>
+  <div class="card">
+    <span class="tag">Trust</span>
+    <h3>We refuse</h3>
+    <p>
+      <code>CapabilityUnavailable</code>, the per-metric caveats, the digest&rsquo;s number
+      validator falling back to a plain template. An incumbent has no commercial reason to
+      say &ldquo;I cannot compute this.&rdquo; A bookkeeper can trust the month-end packet
+      in a way they cannot trust a chat window.
+    </p>
+  </div>
+</div>
+
+<h2><span class="num">04</span>Phase 0 &mdash; the floor</h2>
+<p class="lede">
+  None of this is differentiation. It is what has to be true before we can put AIRA in
+  front of one paying shop.
+</p>
+
+<ol class="tasks">
+  <li>
+    <input type="checkbox" id="t-square">
+    <div>
+      <div class="task-head"><span class="task-title">Square adapter</span><span class="size size-m">M</span></div>
+      <p class="task-why">
+        Best API of the lot, straightforward OAuth, and it is the demo that makes the
+        consolidation story real rather than theoretical. Build it first even though Square
+        sellers already get Square AI free &mdash; they are the second half of every
+        multi-register shop.
+      </p>
+      <p class="task-where">New adapter beside <code>api/app/connectors/adapters/registerone.py</code>. Must pass <code>python tasks.py conformance</code> unchanged.</p>
+    </div>
+  </li>
+  <li>
+    <input type="checkbox" id="t-clover">
+    <div>
+      <div class="task-head"><span class="task-title">Clover and Lightspeed adapters</span><span class="size size-l">L</span></div>
+      <p class="task-why">
+        This is where the actual wedge is. These shops have no AI analyst available to them
+        at any price, and no path to one that does not involve replacing their register.
+      </p>
+      <p class="task-where">Same contract. Read <code>docs/canonical-model.md</code> first, and declare capabilities honestly rather than optimistically.</p>
+    </div>
+  </li>
+  <li>
+    <input type="checkbox" id="t-auth">
+    <div>
+      <div class="task-head"><span class="task-title">Authentication and accounts</span><span class="size size-m">M</span></div>
+      <p class="task-why">
+        There is no current-user concept anywhere in the app. Tenant resolution is a slug in
+        the path with nothing checking the caller is entitled to it.
+      </p>
+      <p class="task-where"><code>api/app/http.py</code> &mdash; the file already says in a comment that this is where it lands, and every route depending on <code>Shop</code> inherits it.</p>
+    </div>
+  </li>
+  <li>
+    <input type="checkbox" id="t-billing">
+    <div>
+      <div class="task-head"><span class="task-title">Billing</span><span class="size size-m">M</span></div>
+      <p class="task-why">
+        Per-shop subscription. <code>agent_runs</code> already records tokens and cost per
+        run, so margin per customer is answerable from day one rather than a guess.
+      </p>
+      <p class="task-where">New module. Keep it out of <code>app/analytics</code> &mdash; it is our data, not shop data.</p>
+    </div>
+  </li>
+  <li>
+    <input type="checkbox" id="t-email">
+    <div>
+      <div class="task-head"><span class="task-title">Send a real email</span><span class="size size-s">S</span></div>
+      <p class="task-why">
+        <code>NOTIFY_TRANSPORT</code> still defaults to <code>console</code> and the live
+        Resend path has never been exercised. The weekly digest is half the value of the
+        product and it has never left the machine.
+      </p>
+      <p class="task-where">Set the transport to <code>live</code>, real key, real recipient. Dev tenants use <code>.example</code> addresses on purpose &mdash; they cannot be delivered to.</p>
+    </div>
+  </li>
+</ol>
+
+<h2><span class="num">05</span>Phase 1 &mdash; the differentiation</h2>
+<p class="lede">Three things, in order. Everything else waits.</p>
+
+<ol class="tasks">
+  <li>
+    <input type="checkbox" id="t-multi">
+    <div>
+      <div class="task-head"><span class="task-title">All your registers, one P&amp;L</span><span class="size size-m">M</span></div>
+      <p class="task-why">
+        Make multi-source the headline instead of an implementation detail. One screen
+        showing in-store plus online plus market booth combined, with per-source
+        attribution, and a month-end packet covering all of it. This is the one thing
+        neither competitor can ever ship, and the plumbing is already there.
+      </p>
+      <p class="task-where">Capabilities already union in <code>load_context</code>. Check the sync screen and the month-end packet handle more than one active integration per tenant before building UI on top.</p>
+    </div>
+  </li>
+  <li>
+    <input type="checkbox" id="t-costs">
+    <div>
+      <div class="task-head"><span class="task-title">Cost-capture flow</span><span class="size size-m">M</span></div>
+      <p class="task-why">
+        Our margin caveats currently tell the owner what is broken. Turn that into the fix:
+        &ldquo;47 SKUs are missing costs; here are the 12 that account for 80% of your
+        sales.&rdquo; It converts our most honest weakness into the feature Square charges
+        $49 a month per location for.
+      </p>
+      <p class="task-where">The ranking query belongs in <code>app/analytics</code>; the write path does not. Costs entered here are ours, not the source system&rsquo;s &mdash; standing rule 2 stays intact.</p>
+    </div>
+  </li>
+  <li>
+    <input type="checkbox" id="t-local">
+    <div>
+      <div class="task-head"><span class="task-title">Knoxville local context</span><span class="size size-m">M</span></div>
+      <p class="task-why">
+        Square shipped weather, events and news in October, so this is where the category is
+        going. We already model a con booth as a channel. UT home games, downtown events,
+        conventions, First Friday. &ldquo;Saturday is down 45%, but Tennessee was away and
+        it rained&rdquo; is the difference between a useful alert and a noisy one.
+      </p>
+      <p class="task-where">Feeds the anomaly baselines, which already keep a spread per side. Check any threshold change against <code>test_an_ordinary_stretch_is_quiet</code> &mdash; it fails if the detector gets noisy.</p>
+    </div>
+  </li>
+</ol>
+
+<h2><span class="num">06</span>Not building</h2>
+<p class="lede">Written down so we stop re-litigating it.</p>
+
+<div class="no">
+  <strong>Customer messaging and SMS</strong>
+  <span>
+    Already dropped once, for good reasons: prior express consent, a working STOP, A2P 10DLC
+    registration. Notifications are email only. The migration that removed it is reversible
+    if that ever changes, and this is not that day.
+  </span>
+</div>
+<div class="no">
+  <strong>A custom report builder</strong>
+  <span>
+    That is Shopify&rsquo;s $399 tier and it is aimed at someone with an analyst on staff.
+    Our buyer wants the answer, not the tooling to derive it.
+  </span>
+</div>
+<div class="no">
+  <strong>Anything touching payments or checkout</strong>
+  <span>
+    We read customer systems and never write to them. Competing on payments means competing
+    on rates against two companies whose entire business is rates.
+  </span>
+</div>
+
+<h2><span class="num">07</span>Pricing</h2>
+<p>
+  Measured cost is about <strong>1.1 cents a question</strong>, so a shop asking twenty a
+  day runs roughly <strong>$6.50 a month</strong> in compute. That leaves plenty of room.
+</p>
+<p>
+  <strong>$49&ndash;79 a month flat, all locations included.</strong> It reads as &ldquo;the
+  same as Square Plus, but it works with whatever you already have, and a second store does
+  not double your bill.&rdquo; Per-location pricing is the thing local shops with a booth or
+  a second front complain about, and not charging it is a one-line differentiator.
+</p>
+
+<h2><span class="num">08</span>Decide tomorrow</h2>
+<p class="lede">Open questions where a wrong assumption costs a week.</p>
+
+<div class="q">
+  <strong>Which adapter actually ships first?</strong>
+  <span>
+    Square is easiest and demos the consolidation story. Clover and Lightspeed are where the
+    unserved customers are. If there is a specific Knoxville shop we can name as customer
+    zero, their register wins over both arguments.
+  </span>
+</div>
+<div class="q">
+  <strong>Do we have customer zero?</strong>
+  <span>
+    Everything above is cheaper to decide with one real shop&rsquo;s data than with two fake
+    ones. Worth an afternoon of asking before it is worth a week of building.
+  </span>
+</div>
+<div class="q">
+  <strong>Does the month-end packet survive two integrations?</strong>
+  <span>
+    It reconciles to the cent today against one source. Tips already caught us out once.
+    Worth proving on a two-source tenant before the consolidation screen is built on the
+    assumption that it holds.
+  </span>
+</div>
+<div class="q">
+  <strong>Self-serve or hand-held onboarding?</strong>
+  <span>
+    Phase 11 in the README is &ldquo;onboarding playbook, not started&rdquo;. For the first
+    ten local shops hand-held is almost certainly right, and that changes what auth and
+    billing need to do on day one.
+  </span>
+</div>
+
+<footer>
+  Pricing above comes from the Shopify and Square published pricing pages and 2026 plan
+  comparisons, the Square AI open-beta and October capability announcements, and the Shopify
+  Sidekick product page. Figures are September 2026 and are worth re-checking before any of
+  them go in front of a customer.
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var KEY = 'aira-plan-v1';
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('ol.tasks input[type=checkbox]'));
+  var progress = document.getElementById('progress');
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; }
+  }
+  function save(state) {
+    // Private windows and blocked site data both throw here; the page still works.
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  function paint() {
+    var done = 0;
+    boxes.forEach(function (b) {
+      b.parentNode.classList.toggle('done', b.checked);
+      if (b.checked) done++;
+    });
+    progress.textContent = done + ' of ' + boxes.length + ' done';
+  }
+
+  var state = load();
+  boxes.forEach(function (b) {
+    b.checked = !!state[b.id];
+    b.addEventListener('change', function () {
+      var s = load();
+      s[b.id] = b.checked;
+      save(s);
+      paint();
+    });
+  });
+  paint();
+
+  document.getElementById('reset').addEventListener('click', function () {
+    boxes.forEach(function (b) { b.checked = false; });
+    save({});
+    paint();
+  });
+
+  document.getElementById('theme').addEventListener('click', function () {
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    var next = dark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem(KEY + '-theme', next); } catch (e) {}
+  });
+
+  try {
+    var saved = localStorage.getItem(KEY + '-theme');
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>

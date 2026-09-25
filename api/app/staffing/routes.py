@@ -9,7 +9,7 @@ from decimal import Decimal
 from fastapi import APIRouter
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from app.http import ShopDep
+from app.http import MANAGER_ONLY, ShopDep
 from app.staffing import (
     WEEKDAY_NAMES,
     busiest_hours,
@@ -155,7 +155,9 @@ async def staffing(
     )
 
 
-@router.put("/tenants/{tenant}/staffing/shifts", response_model=uuid.UUID)
+@router.put(
+    "/tenants/{tenant}/staffing/shifts", response_model=uuid.UUID, dependencies=MANAGER_ONLY
+)
 async def upsert_shift(shop: ShopDep, body: ShiftIn) -> uuid.UUID:
     return await set_shift(
         shop.session,
@@ -169,7 +171,9 @@ async def upsert_shift(shop: ShopDep, body: ShiftIn) -> uuid.UUID:
     )
 
 
-@router.delete("/tenants/{tenant}/staffing/shifts/{shift_id}", status_code=204)
+@router.delete(
+    "/tenants/{tenant}/staffing/shifts/{shift_id}", status_code=204, dependencies=MANAGER_ONLY
+)
 async def remove_shift(shop: ShopDep, shift_id: uuid.UUID) -> None:
     await delete_shift(shop.session, shop.ctx, shift_id)
 

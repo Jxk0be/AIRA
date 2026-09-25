@@ -1,0 +1,177 @@
+# Animanga Knox — CardNexus, the shop's online storefront.
+#
+# The shop's *second* register. RegisterOne runs the counter and the con booth;
+# this is the marketplace they started selling on in July 2026, which has no API
+# on any plan they can afford and hands them one spreadsheet a month.
+#
+# This file is the entire integration. No code was written for it, and none was
+# written for the fact that this shop now has two registers either — every sourced
+# row already carried a `source`, and row identity is
+# (tenant_id, source, external_id), so both systems can call something SKU-1.
+#
+# Reviewed by: (your name here)
+# Written by hand against sources/marketplace/QUIRKS.md.
+
+version: 1
+source: animanga_knox_online
+display_name: CardNexus (online storefront)
+
+workbook: sources/marketplace/export/animanga_knox_online.xlsx
+
+# What this source can honestly answer, and it is much less than RegisterOne.
+#
+# These are unioned with the POS's capabilities to decide what the *shop* can be
+# asked (`load_context`), which is why margin still works here — but `has_costs`
+# being true for the shop does not make it true for these sales, and
+# `ctx.sources_with("has_costs")` is what anything reconciling a figure has to
+# ask instead.
+capabilities:
+  # The marketplace knows what the shop sold something for. It has never known
+  # what the shop paid for it. So cost of goods and margin cover the counter only,
+  # and the month-end packet states the coverage rather than spreading it.
+  has_costs: false
+  # There is a buyer handle on every row. It is pseudonymous, it cannot be joined
+  # to the person who walks into the shop, and treating it as a customer record
+  # would inflate the customer count and corrupt repeat-rate. It stays unmapped.
+  has_customers: false
+  # Nothing about the shelf. The marketplace reports what left, never what is left.
+  has_inventory_history: false
+  # One synthesised location. The storefront is not a place.
+  multi_location: false
+  # This is the online channel, which the counter is not.
+  has_online_channel: true
+  # A file, not an API. Every sync re-reads the whole export.
+  supports_incremental: false
+  has_vendors: false
+  # Payouts arrive on a statement the shop has never sent us. Takings therefore
+  # cover the counter only, and `financial_summary` scopes them to it rather than
+  # reconciling the till's payments against both registers' sales.
+  has_payments: false
+
+notes:
+  - The marketplace reports a settlement date with no time of day, so online sales
+    are placed at midday in the shop's timezone. Hour-of-day questions are
+    answerable for the shop floor and not for the storefront.
+  - Listing titles are the marketplace's own, and match nothing in the POS
+    catalogue. The same card is a separate product in each system. Revenue
+    consolidates across the two registers; product identity does not, so a
+    best-sellers list can show the counter's name and the storefront's name for
+    one card as two rows.
+  - Categories here are the marketplace's vocabulary, not the shop's. They are
+    deliberately named differently ("Sealed Boxes", not the shop's "Sealed
+    Product") so that two systems' categories do not render as duplicate rows
+    that look like a bug.
+  - "Condition is part of what was sold, so it is the variant: one product per
+    card, one variant per condition it sold in."
+
+  - Shipping the buyer paid and the marketplace's commission are both columns in
+    the file and neither is merchandise revenue. Both are deliberately unmapped;
+    counting either would overstate the shop's takings.
+  - Refunds are not in this export. They arrive on a separate statement, so online
+    net sales equal online gross sales and no refund can be attributed to the
+    storefront.
+
+settings:
+  timezone: America/New_York
+  currency: USD
+  assumed_time_of_day: "12:00"
+
+sheets:
+  orders:
+    match: "^Orders$"
+    header_row: 1
+
+entities:
+  # The file never mentions a location, and the storefront is not a place. One
+  # synthesised row, kept apart from the two real ones so that the anomaly
+  # detectors — which baseline per location — never mix online trade into the
+  # counter's normal Saturday.
+  locations:
+    constant:
+      - external_id: ONLINE_STORE
+        name: Animanga Knox Online
+        timezone: America/New_York
+
+  categories:
+    from: orders
+    distinct_by: { column: Category, transforms: [fold_key] }
+    skip_when_blank: [Category]
+    fields:
+      external_id: { column: Category, transforms: [fold_key, { hash_id: { prefix: "cat_" } }] }
+      name: { column: Category, transforms: [trim] }
+
+  products:
+    from: orders
+    distinct_by: { column: Listing Title, transforms: [fold_key] }
+    fields:
+      external_id: { column: Listing Title, transforms: [fold_key, { hash_id: { prefix: "prd_" } }] }
+      name: { column: Listing Title, transforms: [trim] }
+      category_external_id:
+        { column: Category, transforms: [fold_key, { hash_id: { prefix: "cat_" } }] }
+
+  # One variant per condition. A Near Mint Charizard and a Moderately Played one
+  # are different sellable things at different prices, which is exactly what a
+  # variant is for — and unlike the spreadsheet shop, this source has something
+  # real to put in one.
+  variants:
+    from: orders
+    distinct_by:
+      concat:
+        - { column: Listing Title, transforms: [fold_key] }
+        - { column: Condition, transforms: [fold_key] }
+      separator: "|"
+    fields:
+      external_id:
+        concat:
+          - { column: Listing Title, transforms: [fold_key] }
+          - { column: Condition, transforms: [fold_key] }
+        separator: "|"
+      product_external_id:
+        { column: Listing Title, transforms: [fold_key, { hash_id: { prefix: "prd_" } }] }
+      name: { column: Condition, transforms: [trim] }
+      price: { column: Item Price, transforms: [parse_money] }
+      # No cost column anywhere in the file. Blank stays blank: a missing cost is
+      # data, not a zero.
+
+  orders:
+    from: orders
+    # Rows sharing an order number are one sale. Unlike the spreadsheet shop's
+    # export, this one is machine-written and never leaves the number blank.
+    group_by: { column: "Order #", transforms: [trim] }
+    fields:
+      external_id: { column: "Order #", transforms: [trim] }
+      placed_at:
+        column: Settlement Date
+        transforms:
+          - { parse_date: { formats: ["%Y-%m-%d", "%m/%d/%Y"] } }
+          - at_time
+      location_external_id: { constant: ONLINE_STORE }
+      status: { constant: completed }
+      # Everything in this file was sold online. This is the column that makes the
+      # shop's channel split mean something once the two registers are added up.
+      channel: { constant: online }
+    lines:
+      fields:
+        # Title *and* condition: one order can contain the same card twice in
+        # different conditions, and keying on the title alone would silently merge
+        # them into one line.
+        external_id:
+          concat:
+            - { group_key: true }
+            - { column: Listing Title, transforms: [fold_key] }
+            - { column: Condition, transforms: [fold_key] }
+          separator: ":"
+        variant_external_id:
+          concat:
+            - { column: Listing Title, transforms: [fold_key] }
+            - { column: Condition, transforms: [fold_key] }
+          separator: "|"
+        name_snapshot: { column: Listing Title, transforms: [trim] }
+        quantity: { column: Qty, transforms: [to_decimal] }
+        unit_price: { column: Item Price, transforms: [parse_money] }
+        # No discounts on this marketplace: the listing price is the price.
+        discount: { constant: "0", transforms: [to_decimal] }
+        # No cost history, and no cost at all. Margin covers the counter only.
+
+  # No inventory_levels. The marketplace does not report the shop's stock, and
+  # synthesising a level from what sold would invent a shelf that does not exist.

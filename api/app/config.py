@@ -25,6 +25,19 @@ class Settings(BaseSettings):
 
     database_url: str = "postgresql+asyncpg://postgres:postgres@127.0.0.1:54322/postgres"
 
+    # The Supabase project's API URL — http://127.0.0.1:54321 locally, the
+    # project URL when hosted. Auth tokens are verified against the JWKS this
+    # serves, so with it unset the API cannot authenticate anybody and says so
+    # (503) rather than letting requests through.
+    supabase_url: str = ""
+    # Only needed when tokens name an issuer that is not `{supabase_url}/auth/v1`,
+    # which happens when auth is served from a custom domain.
+    supabase_jwt_issuer: str = ""
+    # Admin (secret) key, used by `tasks.py invite` to send an invitation email
+    # through the auth server. Never needed to serve a request, and never sent
+    # to the browser.
+    supabase_service_key: str = ""
+
     anthropic_api_key: str = ""
     agent_model: str = "claude-sonnet-5"
     utility_model: str = "claude-haiku-4-5-20251001"

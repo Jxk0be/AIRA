@@ -51,5 +51,33 @@
   ],
   "data_from": "2025-03-26",
   "data_to": "2026-09-26",
-  "brand_color": null
+  "brand_color": null,
+  "sources": [
+    {
+      "source": "registerone",
+      "label": "RegisterOne (counter and booth)",
+      "capabilities": {
+        "has_costs": true,
+        "has_customers": true,
+        "has_inventory_history": true,
+        "multi_location": true,
+        "has_online_channel": true,
+        "supports_incremental": true,
+        "has_vendors": true,
+        "has_payments": true
+      }
+    },
+    {
+      "source": "animanga_knox_online",
+      "label": "CardNexus (online storefront)",
+      "capabilities": {
+        "has_costs": false,
+        "has_customers": false,
+        "has_inventory_history": false,
+        "multi_location": false,
+        "has_online_channel": true,
+        "supports_incremental": false
+      }
+    }
+  ]
 }

@@ -30,8 +30,15 @@ SOURCED_TABLES = {
     "refund_lines",
 }
 
-# Everything except `tenants` itself must be tenant-scoped.
-UNSCOPED_TABLES = {"tenants"}
+# Everything except these must be tenant-scoped. Two exceptions, both because
+# the row is about the shop rather than inside it:
+#
+# * `tenants` is the thing being scoped to.
+# * `users` is one person, who may be an owner at one shop and weekend staff at
+#   another. Scoping it would make that two accounts. Nothing hangs off `users`
+#   except `memberships`, which *is* tenant-scoped, so every path from a user to
+#   any shop data still goes through a tenant_id.
+UNSCOPED_TABLES = {"tenants", "users"}
 
 
 def test_every_table_but_tenants_has_a_non_null_tenant_id() -> None:

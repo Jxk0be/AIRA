@@ -32,6 +32,8 @@ from app.connectors.secrets import resolve
 from app.connectors.sync import SyncEngine
 
 TENANT_SLUG = "animanga_knox"
+# The register this file is about. The shop also runs a marketplace export.
+SOURCE = "registerone"
 API_BASE = os.environ.get("REGISTERONE_BASE_URL", "http://localhost:8100")
 ADMIN_TOKEN = os.environ.get("REGISTERONE_ADMIN_TOKEN", "ro_admin_9c3e77")
 SOURCE_DSN = os.environ.get(
@@ -63,12 +65,18 @@ async def _context(db: AsyncSession) -> tuple[t.Tenant, t.Integration]:
     ).scalar_one_or_none()
     if tenant is None:
         pytest.skip("animanga_knox is not set up; run `python tasks.py backfill`")
+    # Named, not `.first()`. This shop runs two registers and everything below is
+    # about RegisterOne's incremental sync; the marketplace export is a file and
+    # has no watermark worth testing.
     integration = (
-        (await db.execute(select(t.Integration).where(t.Integration.tenant_id == tenant.id)))
-        .scalars()
-        .first()
-    )
-    assert integration is not None
+        await db.execute(
+            select(t.Integration).where(
+                t.Integration.tenant_id == tenant.id, t.Integration.source == SOURCE
+            )
+        )
+    ).scalar_one_or_none()
+    if integration is None:
+        pytest.skip(f"animanga_knox has no {SOURCE!r} integration; run `python tasks.py backfill`")
     return tenant, integration
 
 
@@ -247,7 +255,11 @@ async def test_the_watermark_follows_the_source_clock_not_ours(db: AsyncSession)
     newest_source_stamp = (
         await db.execute(
             select(func.max(t.Order.source_updated_at)).where(
-                t.Order.tenant_id == tenant_id, t.Order.deleted_at.is_(None)
+                t.Order.tenant_id == tenant_id,
+                # This register's rows. Each one keeps its own watermark, and the
+                # marketplace export's orders are newer than the POS's here.
+                t.Order.source == integration.source,
+                t.Order.deleted_at.is_(None),
             )
         )
     ).scalar_one()

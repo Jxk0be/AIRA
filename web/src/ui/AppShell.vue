@@ -29,9 +29,11 @@ import { RouterLink, useRoute, type RouteLocationRaw } from 'vue-router'
 
 import { useTenantStore } from '../stores/tenant'
 import { api } from '../api/client'
+import { useAuthStore } from '../stores/auth'
 import ThemeToggle from './ThemeToggle.vue'
 
 const shop = useTenantStore()
+const auth = useAuthStore()
 const route = useRoute()
 
 const slug = computed(() => (typeof route.params.tenant === 'string' ? route.params.tenant : ''))
@@ -253,6 +255,23 @@ onMounted(() => {
 
         <div v-if="sidebarOpen" class="mt-auto border-t border-border p-3">
           <ThemeToggle />
+          <!--
+            Who you are, and how to stop being them. At the bottom of the sidebar
+            because that is where a shop with two accounts on one back-office
+            laptop goes looking for it, and because the email is the fastest way
+            to answer "why am I not seeing the other shop?".
+          -->
+          <p v-if="auth.email" class="mt-3 truncate text-sm text-ink-muted" :title="auth.email">
+            {{ auth.email }}
+          </p>
+          <button
+            v-if="auth.signedIn"
+            type="button"
+            class="mt-1 min-h-11 text-left text-sm text-ink-muted underline underline-offset-2 hover:text-ink"
+            @click="auth.signOut()"
+          >
+            Sign out
+          </button>
         </div>
       </aside>
 

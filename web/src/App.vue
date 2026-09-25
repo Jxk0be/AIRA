@@ -2,9 +2,9 @@
 /**
  * The shell, or nothing.
  *
- * Two screens render without it: the shop picker at `/`, which only appears
- * when there is no shop to send you to, and the dev styleguide. Everything else
- * lives inside `AppShell`.
+ * Three screens render without it: sign-in, which has no shop yet; the shop
+ * picker at `/`, which only appears when there is no shop to send you to; and
+ * the dev styleguide. Everything else lives inside `AppShell`.
  */
 import { computed, watchEffect } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
@@ -19,7 +19,9 @@ const route = useRoute()
 const shop = useTenantStore()
 const { resolved } = useTheme()
 
-const bare = computed(() => route.name === 'root' || route.name === 'styleguide')
+const bare = computed(
+  () => route.name === 'root' || route.name === 'styleguide' || route.name === 'sign-in',
+)
 
 /**
  * The shop's color, on the page.

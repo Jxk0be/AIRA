@@ -17,7 +17,7 @@ from fastapi import APIRouter, Query
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.canonical.enums import InsightStatus
-from app.http import ShopDep, not_found
+from app.http import MANAGER_ONLY, ShopDep, not_found
 from app.insights import (
     counts_by_status,
     list_insights,
@@ -133,7 +133,11 @@ async def inbox(
     )
 
 
-@router.post("/tenants/{tenant}/insights/{insight_id}/status", response_model=InsightOut)
+@router.post(
+    "/tenants/{tenant}/insights/{insight_id}/status",
+    response_model=InsightOut,
+    dependencies=MANAGER_ONLY,
+)
 async def change_status(shop: ShopDep, insight_id: uuid.UUID, body: StatusIn) -> InsightOut:
     updated = await set_status(
         shop.session,
@@ -186,7 +190,9 @@ class DetectorRunOut(BaseModel):
     error: str | None
 
 
-@router.post("/tenants/{tenant}/insights/run", response_model=list[DetectorRunOut])
+@router.post(
+    "/tenants/{tenant}/insights/run", response_model=list[DetectorRunOut], dependencies=MANAGER_ONLY
+)
 async def run_now(shop: ShopDep, as_of: date | None = None) -> list[DetectorRunOut]:
     """Run every detector now. The "check again" button on the inbox."""
     runs = await run_detectors(shop.session, shop.ctx, as_of)

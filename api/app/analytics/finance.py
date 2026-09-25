@@ -47,9 +47,18 @@ class FinancialSummary:
     period: DateRange
     tax_collected: Decimal
     tips: Decimal
-    # Null when the source does not report payments separately from orders.
+    # Null when no source reports payments separately from orders.
     tenders: list[TenderLine] | None = None
     payments_total: Decimal | None = None
+    # Which registers the takings above actually cover. Empty when none do.
+    #
+    # This is the field that keeps a two-register shop honest: a till that reports
+    # payments and a marketplace export that does not would otherwise produce
+    # takings for half the shop and get reconciled against sales for all of it.
+    payment_sources: tuple[str, ...] = ()
+    # True when every register the shop runs reports payments, so the takings
+    # cover the whole month's sales.
+    payments_cover_everything: bool = True
 
     @property
     def tenders_available(self) -> bool:
@@ -98,9 +107,23 @@ async def financial_summary(
     if not ctx.has("has_payments"):
         return summary
 
+    # Only the registers that actually report payments. `ctx.has` is a union
+    # across them, so on a shop running a till plus a marketplace export it is
+    # true because of the till alone — and taking every payment row without
+    # scoping it would be fine, but claiming those takings cover the whole
+    # month's sales would not.
+    summary.payment_sources = ctx.sources_with("has_payments")
+    summary.payments_cover_everything = ctx.covers_every_source("has_payments")
+
+    payment_params = dict(params)
+    scope = ""
+    if summary.payment_sources and not summary.payments_cover_everything:
+        payment_params["payment_sources"] = list(summary.payment_sources)
+        scope = "and o.source = any(:payment_sources)"
+
     tenders = await fetch_all(
         session,
-        """
+        f"""
         select p.tender as tender,
                coalesce(sum(p.amount), 0) as amount,
                coalesce(sum(p.tip), 0) as tips,
@@ -110,10 +133,11 @@ async def financial_summary(
         where p.tenant_id = :tenant and p.deleted_at is null
           and o.deleted_at is null and o.status <> 'canceled'
           and p.occurred_at >= :start and p.occurred_at < :end
+          {scope}
         group by 1
         order by 2 desc
         """,
-        params,
+        payment_params,
     )
     summary.tenders = [
         TenderLine(

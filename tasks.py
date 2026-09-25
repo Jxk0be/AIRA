@@ -12,6 +12,7 @@ There is no `make` on Windows, so this stdlib-only script plays its part:
     python tasks.py sources-stop
     python tasks.py seed       # fill RegisterOne with 18 months of history
     python tasks.py export     # regenerate the Panel & Pawn spreadsheet export
+    python tasks.py export-online  # regenerate Animanga Knox's CardNexus export
     python tasks.py simulate-day
     python tasks.py sources-test
     python tasks.py backfill    # sync a tenant from its source system
@@ -27,6 +28,9 @@ There is no `make` on Windows, so this stdlib-only script plays its part:
     python tasks.py round       # one worker round now, then stop
     python tasks.py detect      # run the detectors for a tenant and print what they found
     python tasks.py digest      # print next Monday's digest for a tenant
+    python tasks.py members animanga_knox      # who may open a shop
+    python tasks.py invite you@shop.com animanga_knox owner
+    python tasks.py revoke them@shop.com animanga_knox
     python tasks.py api
     python tasks.py web
     python tasks.py build       # production build of the web app
@@ -50,6 +54,7 @@ API = ROOT / "api"
 WEB = ROOT / "web"
 REGISTERONE = ROOT / "sources" / "registerone"
 SPREADSHEET_SHOP = ROOT / "sources" / "spreadsheet_shop"
+MARKETPLACE = ROOT / "sources" / "marketplace"
 
 # The Supabase CLI is not installed globally here; npx fetches the pinned binary.
 SUPABASE = ["npx", "--yes", "supabase@latest"]
@@ -114,6 +119,11 @@ def task_seed(argv: list[str]) -> int:
 def task_export(argv: list[str]) -> int:
     """Regenerate Panel & Pawn's messy spreadsheet export."""
     return uv(["run", "python", "-m", "panelpawn.generate", *argv], cwd=SPREADSHEET_SHOP)
+
+
+def task_export_online(argv: list[str]) -> int:
+    """Regenerate Animanga Knox's CardNexus export — the shop's second register."""
+    return uv(["run", "python", "-m", "cardnexus.generate", *argv], cwd=MARKETPLACE)
 
 
 def task_simulate_day(argv: list[str]) -> int:
@@ -250,6 +260,25 @@ def task_revision(argv: list[str]) -> int:
     return uv(["run", "alembic", "revision", "--autogenerate", *argv])
 
 
+def task_members(argv: list[str]) -> int:
+    """Who may open a shop."""
+    return uv(["run", "python", "-m", "app.accounts.cli", "members", *argv])
+
+
+def task_invite(argv: list[str]) -> int:
+    """Add somebody to a shop: invite <email> <tenant> [owner|manager|staff].
+
+    How the first owner of a shop gets in: adding a member through the API is
+    owner-only, and a new shop has no owner yet.
+    """
+    return uv(["run", "python", "-m", "app.accounts.cli", "invite", *argv])
+
+
+def task_revoke(argv: list[str]) -> int:
+    """Remove somebody from a shop: revoke <email> <tenant>."""
+    return uv(["run", "python", "-m", "app.accounts.cli", "revoke", *argv])
+
+
 def task_api(argv: list[str]) -> int:
     return uv(["run", "uvicorn", "app.main:app", "--reload", *argv])
 
@@ -364,6 +393,7 @@ TASKS = {
     "sources-test": task_sources_test,
     "seed": task_seed,
     "export": task_export,
+    "export-online": task_export_online,
     "backfill": task_backfill,
     "incremental": task_incremental,
     "conformance": task_conformance,
@@ -383,6 +413,9 @@ TASKS = {
     "db-reset": task_db_reset,
     "migrate": task_migrate,
     "revision": task_revision,
+    "members": task_members,
+    "invite": task_invite,
+    "revoke": task_revoke,
     "api": task_api,
     "web": task_web,
     "build": task_build,

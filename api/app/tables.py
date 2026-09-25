@@ -11,6 +11,7 @@ its own tables are defined and documented.
 
 from __future__ import annotations
 
+import app.accounts.tables
 import app.canonical.tables
 import app.deadstock.tables
 import app.insights.tables

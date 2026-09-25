@@ -15,7 +15,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.deadstock import log_action, plan, recent_actions
-from app.http import ShopDep
+from app.http import MANAGER_ONLY, ShopDep
 
 router = APIRouter(tags=["dead stock"])
 
@@ -140,7 +140,12 @@ async def dead_stock(shop: ShopDep, as_of: date | None = None) -> DeadStockOut:
     )
 
 
-@router.post("/tenants/{tenant}/dead-stock/actions", response_model=ActionOut, status_code=201)
+@router.post(
+    "/tenants/{tenant}/dead-stock/actions",
+    response_model=ActionOut,
+    status_code=201,
+    dependencies=MANAGER_ONLY,
+)
 async def log(shop: ShopDep, body: ActionIn) -> ActionOut:
     """ "I did this." The one click that makes the outcome measurable."""
     action_id = await log_action(

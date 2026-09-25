@@ -28,6 +28,7 @@ from app.analytics import AnalyticsContext, TenantNotFound, load_context
 from app.canonical import tables as t
 from app.canonical.enums import Severity, SyncMode, SyncStatus
 from app.db import get_session, get_sessionmaker
+from app.http import MANAGER_ONLY
 
 log = logging.getLogger(__name__)
 
@@ -256,32 +257,29 @@ async def _sync(slug: str, mode: SyncMode) -> None:
     and the app that mounts it — does not pull the connector layer in just to
     render a page.
     """
-    from app.connectors.data_quality import build_report
-    from app.connectors.sync import SyncEngine
-    from app.sync import build_adapter, load_tenant, reindex
+    from app.sync import sync_tenant
 
     try:
         async with get_sessionmaker()() as session:
-            tenant, integration = await load_tenant(session, slug)
-            adapter = build_adapter(integration)
-            try:
-                engine = SyncEngine(session, tenant, integration, adapter)  # type: ignore[arg-type]
-                report = await engine.run(mode)
-            finally:
-                await adapter.aclose()  # type: ignore[attr-defined]
-
-            await build_report(session, tenant, integration)
-            if report.ok:
-                await reindex(session, tenant)
-            await session.commit()
-            log.info("sync for %s finished: %s", slug, report.status.value)
+            # Every register this shop runs, not the first one found. `sync_tenant`
+            # owns that loop so this screen and the worker cannot drift apart.
+            result = await sync_tenant(session, slug, mode)
+            log.info(
+                "sync for %s finished: %d register(s), ok=%s%s",
+                slug,
+                len(result.registers),
+                result.ok,
+                "" if result.ok else f" — {'; '.join(result.errors)}",
+            )
     except Exception:
         log.exception("background sync failed for %s", slug)
     finally:
         _running.discard(slug)
 
 
-@router.post("/tenants/{slug}/sync", response_model=SyncStarted, status_code=202)
+@router.post(
+    "/tenants/{slug}/sync", response_model=SyncStarted, status_code=202, dependencies=MANAGER_ONLY
+)
 async def start_sync(
     slug: str,
     session: Annotated[AsyncSession, Depends(get_session)],

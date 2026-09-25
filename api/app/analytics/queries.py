@@ -44,6 +44,10 @@ class Filters:
     category_ids: tuple[uuid.UUID, ...] = ()
     product_ids: tuple[uuid.UUID, ...] = ()
     variant_ids: tuple[uuid.UUID, ...] = ()
+    # Source slugs, as stamped on every synced row. Narrows to one or more of the
+    # tenant's registers: "how did the booth do?" on a shop whose booth is a
+    # different system from the shop floor.
+    sources: tuple[str, ...] = ()
 
     @property
     def is_empty(self) -> bool:
@@ -53,6 +57,7 @@ class Filters:
             or self.category_ids
             or self.product_ids
             or self.variant_ids
+            or self.sources
         )
 
     @property
@@ -158,6 +163,9 @@ def sales_scope(
     if filters.location_ids:
         params["location_ids"] = list(filters.location_ids)
         clauses.append("o.location_id = any(:location_ids)")
+    if filters.sources:
+        params["sources"] = list(filters.sources)
+        clauses.append("o.source = any(:sources)")
     if filters.channels:
         params["channels"] = [c.value for c in filters.channels]
         clauses.append("o.channel = any(:channels)")
@@ -193,6 +201,9 @@ def order_scope(ctx: AnalyticsContext, period: DateRange, filters: Filters) -> S
     if filters.location_ids:
         params["location_ids"] = list(filters.location_ids)
         clauses.append("o.location_id = any(:location_ids)")
+    if filters.sources:
+        params["sources"] = list(filters.sources)
+        clauses.append("o.source = any(:sources)")
     if filters.channels:
         params["channels"] = [c.value for c in filters.channels]
         clauses.append("o.channel = any(:channels)")
@@ -233,6 +244,9 @@ def refund_scope(ctx: AnalyticsContext, period: DateRange, filters: Filters) -> 
     if filters.location_ids:
         params["location_ids"] = list(filters.location_ids)
         clauses.append("o.location_id = any(:location_ids)")
+    if filters.sources:
+        params["sources"] = list(filters.sources)
+        clauses.append("o.source = any(:sources)")
     if filters.channels:
         params["channels"] = [c.value for c in filters.channels]
         clauses.append("o.channel = any(:channels)")
@@ -264,6 +278,9 @@ def stock_scope(ctx: AnalyticsContext, filters: Filters) -> Scope:
     if filters.location_ids:
         params["location_ids"] = list(filters.location_ids)
         clauses.append("i.location_id = any(:location_ids)")
+    if filters.sources:
+        params["sources"] = list(filters.sources)
+        clauses.append("i.source = any(:sources)")
     clauses.extend(_merchandise_filters(filters, params))
 
     caveats: list[Caveat] = []
@@ -344,6 +361,12 @@ VARIANT_LABEL = """
 case when v.name is null or v.name = p.name then p.name else p.name || ' — ' || v.name end
 """
 
+# The shop's own name for the register, falling back to the slug we stamped. The
+# join is on (tenant_id, source), which `integrations` is unique on.
+SOURCE_LABEL = "coalesce(si.display_name, o.source)"
+
+SOURCE_JOIN = "left join integrations si on si.tenant_id = o.tenant_id and si.source = o.source"
+
 DIMENSION_SQL: dict[Dimension, DimensionSql] = {
     Dimension.PRODUCT: DimensionSql(key="p.id::text", label="p.name", needs_product=True),
     Dimension.VARIANT: DimensionSql(key="v.id::text", label=VARIANT_LABEL, needs_product=True),
@@ -359,6 +382,13 @@ DIMENSION_SQL: dict[Dimension, DimensionSql] = {
         label="coalesce(loc.name, 'Unknown location')",
         join="left join locations loc on loc.id = o.location_id",
         refundable=True,
+    ),
+    # Refundable, and this one is exact rather than approximate: a refund belongs
+    # to an order, and an order came out of exactly one system. Consolidated net
+    # sales split by register therefore adds up to the total, which is the whole
+    # promise of the screen built on it.
+    Dimension.SOURCE: DimensionSql(
+        key="o.source", label=SOURCE_LABEL, join=SOURCE_JOIN, refundable=True
     ),
 }
 

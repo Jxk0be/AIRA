@@ -1231,5 +1231,42 @@
       "truncated": true,
       "retail_value": "5416.47"
     }
+  },
+  "by_source": {
+    "available": true,
+    "reason": null,
+    "data": {
+      "tenant": "animanga_knox",
+      "currency": "USD",
+      "timezone": "America/New_York",
+      "period_start": "2026-08-26",
+      "period_end": "2026-09-24",
+      "caveats": [],
+      "dimension": "source",
+      "rows": [
+        {
+          "key": "registerone",
+          "label": "RegisterOne (counter and booth)",
+          "gross_sales": "5694.00",
+          "discounts": "0.00",
+          "net_sales": "5694.00",
+          "units_sold": "574",
+          "order_count": 160,
+          "share_of_net_sales": "0.7900"
+        },
+        {
+          "key": "animanga_knox_online",
+          "label": "CardNexus (online storefront)",
+          "gross_sales": "1513.59",
+          "discounts": "0.00",
+          "net_sales": "1513.59",
+          "units_sold": "96",
+          "order_count": 71,
+          "share_of_net_sales": "0.2100"
+        }
+      ],
+      "total_net_sales": "7207.59",
+      "truncated": false
+    }
   }
 }

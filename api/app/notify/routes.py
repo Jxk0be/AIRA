@@ -16,7 +16,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from app.canonical.enums import NotifyChannel
-from app.http import SessionDep, ShopDep
+from app.http import MANAGER_ONLY, SessionDep, ShopDep
 from app.notify import (
     recent_messages,
     recipients,
@@ -100,7 +100,7 @@ async def people(shop: ShopDep) -> list[RecipientOut]:
     ]
 
 
-@router.put("/tenants/{tenant}/notifications", response_model=uuid.UUID)
+@router.put("/tenants/{tenant}/notifications", response_model=uuid.UUID, dependencies=MANAGER_ONLY)
 async def save_person(shop: ShopDep, body: RecipientIn) -> uuid.UUID:
     quiet = (
         (body.quiet_hours_start, body.quiet_hours_end)

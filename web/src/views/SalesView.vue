@@ -1,6 +1,12 @@
 <script setup lang="ts">
 /**
- * The breakdowns: what sold, in what category, where, and through which till.
+ * The breakdowns: what sold, in what category, where, through which channel, and
+ * — for a shop whose tills are not all the same brand — out of which system.
+ *
+ * That last one is the section neither Square nor Shopify can ever show a shop,
+ * because showing it would mean adding a competitor's revenue to their own. It is
+ * rendered only for the shops that have more than one register, and it is
+ * rendered first, because for those shops it is the reason they are here.
  *
  * These lived on the dashboard, which made the first screen of the day a wall
  * of four charts you did not ask for. They are a monthly question, not a daily
@@ -72,6 +78,35 @@ const categoryChart = computed<ChartSpec | null>(() => {
     </div>
 
     <div v-else class="space-y-4">
+      <!--
+        First, and only for the shops it means anything to.
+
+        A shop running one till has nothing to consolidate, and a permanent
+        "connect another register" card on their Reports screen would be an advert
+        rather than a number. A shop running two has been reading two dashboards
+        and adding them up by hand, so for them this is the most useful thing on
+        the page and it goes at the top.
+      -->
+      <SectionCard
+        v-if="shop.hasMultipleSources"
+        title="All your registers"
+        :loading="loading"
+        :available="board?.by_source.available ?? true"
+        :reason="board?.by_source.reason"
+        :caveats="board?.by_source.data?.caveats"
+        :empty="!board?.by_source.data?.rows.length"
+      >
+        <p class="mb-3 text-sm text-ink-muted">
+          Every system {{ shop.name }} sells through, added together. The shares are
+          of the shop's whole net sales for the period.
+        </p>
+        <RankedList
+          v-if="board?.by_source.data"
+          :rows="board.by_source.data.rows"
+          :currency="board.currency"
+        />
+      </SectionCard>
+
       <SectionCard
         title="Top products"
         :subtitle="board ? `Best ${board.top_products.data?.rows.length ?? 0} by net sales` : ''"

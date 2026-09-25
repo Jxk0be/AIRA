@@ -13,7 +13,8 @@
       "supports_incremental": true,
       "has_vendors": true,
       "has_payments": true
-    }
+    },
+    "role": "owner"
   },
   {
     "tenant": "panel_and_pawn",
@@ -29,6 +30,7 @@
       "supports_incremental": false,
       "has_vendors": false,
       "has_payments": false
-    }
+    },
+    "role": "owner"
   }
 ]

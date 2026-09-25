@@ -33,17 +33,61 @@ export interface Capabilities {
   supports_incremental: boolean
 }
 
+/**
+ * What somebody may do at a shop. Ordered: an owner can do everything a manager
+ * can, a manager everything staff can. The API enforces it; the UI uses it to
+ * hide a button rather than offer one that will be refused.
+ */
+export type MemberRole = 'owner' | 'manager' | 'staff'
+
 export interface TenantSummary {
   tenant: string
   name: string
   timezone: string
   currency: string
   capabilities: Capabilities
+  role: MemberRole
+}
+
+export interface ShopMembership {
+  tenant: string
+  name: string
+  role: MemberRole
+}
+
+/** The signed-in person, and the shops they may open. */
+export interface Me {
+  email: string
+  display_name: string | null
+  shops: ShopMembership[]
+}
+
+export interface ShopMember {
+  id: string
+  email: string
+  display_name: string | null
+  role: MemberRole
+  /** True for the caller's own row. */
+  is_you: boolean
 }
 
 export interface ShopLocation {
   id: string
   name: string
+}
+
+/**
+ * One register a shop runs.
+ *
+ * `capabilities` is this register's own, not the shop's union. That distinction
+ * is the whole reason this is here: "the marketplace export has no costs" is the
+ * sentence that makes a partial margin figure make sense, and the union cannot
+ * say it.
+ */
+export interface ShopSource {
+  source: string
+  label: string
+  capabilities: Capabilities
 }
 
 export interface ShopProfile {
@@ -56,6 +100,8 @@ export interface ShopProfile {
   locations: ShopLocation[]
   channels: string[]
   categories: string[]
+  /** Every register this shop runs. One entry for most shops. */
+  sources: ShopSource[]
   data_from: string | null
   data_to: string | null
   /** The shop's own color, or null for the palette we ship. See lib/brand.ts. */
@@ -175,6 +221,12 @@ export interface Dashboard {
   category_mix: Widget<Breakdown>
   by_location: Widget<Breakdown>
   by_channel: Widget<Breakdown>
+  /**
+   * Net sales per register. Unavailable, with a sentence, for a shop whose tills
+   * are all the same system — which is most shops, and where a one-bar chart
+   * would be noise.
+   */
+  by_source: Widget<Breakdown>
   low_stock: Widget<StockList>
   dead_stock: Widget<StockList>
 }

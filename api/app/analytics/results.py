@@ -64,6 +64,11 @@ class Dimension(StrEnum):
     CATEGORY = "category"
     CHANNEL = "channel"
     LOCATION = "location"
+    # Which system the sale came out of. The only dimension that is about us
+    # rather than about the shop's merchandise, and the one neither Square nor
+    # Shopify can offer: it only means anything when a shop's tills are not all
+    # the same brand.
+    SOURCE = "source"
 
 
 class Grain(StrEnum):

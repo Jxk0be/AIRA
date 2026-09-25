@@ -6,6 +6,13 @@
  * back. FastAPI puts a sentence in `detail`, and that sentence is usually
  * written for the shop owner ("Panel & Pawn's system doesn't record costs"),
  * so it is kept rather than replaced with "Something went wrong".
+ *
+ * Every request carries the signed-in person's access token. It is fetched per
+ * request rather than held in a variable: `accessToken()` hands back a refreshed
+ * token when the old one has expired, so a tab left open over lunch keeps
+ * working. A 401 that survives that is a session that is genuinely gone, and
+ * `onUnauthorized` is how the auth store hears about it — this module does not
+ * know what a router is.
  */
 
 import type {
@@ -24,6 +31,8 @@ import type {
   Insight,
   InsightStatus,
   JobsScreen,
+  Me,
+  MemberRole,
   MonthEndPacket,
   NotificationRecipient,
   OutboundMessage,
@@ -33,6 +42,7 @@ import type {
   ReorderScreen,
   RescueAction,
   RescuePlay,
+  ShopMember,
   ShopProfile,
   StaffingScreen,
   StoredMessage,
@@ -40,6 +50,8 @@ import type {
   TenantSummary,
   ValueLedger,
 } from './types'
+
+import { accessToken } from '../lib/supabase'
 
 /** Dev goes through Vite's proxy; a deployed build talks to the API directly. */
 const BASE = import.meta.env.VITE_API_BASE ?? '/api'
@@ -55,16 +67,43 @@ export class ApiError extends Error {
   }
 }
 
+type UnauthorizedHandler = () => void | Promise<void>
+
+let unauthorized: UnauthorizedHandler | null = null
+
+/**
+ * Register what to do when the API says the session is no longer good.
+ *
+ * Called once, by the auth store. Kept as a callback rather than an import so
+ * that this module stays the bottom of the dependency graph: the store imports
+ * the client, never the other way round.
+ */
+export function onUnauthorized(handler: UnauthorizedHandler): void {
+  unauthorized = handler
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const token = await accessToken()
   let response: Response
   try {
     response = await fetch(`${BASE}${path}`, {
       ...init,
-      headers: { Accept: 'application/json', ...(init?.headers ?? {}) },
+      headers: {
+        Accept: 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(init?.headers ?? {}),
+      },
     })
   } catch (cause) {
     // No response at all: the API is not running, or the browser refused it.
     throw new ApiError(0, `Could not reach the API (${String(cause)})`, path)
+  }
+
+  if (response.status === 401) {
+    // The token was refreshed before this request if it needed to be, so a 401
+    // here means the session itself is over.
+    await unauthorized?.()
+    throw new ApiError(401, await errorMessage(response), path)
   }
 
   if (!response.ok) {
@@ -107,7 +146,36 @@ function query(params: Record<string, string | number | boolean | undefined | nu
 }
 
 export const api = {
+  /** Who is signed in, and which shops they may open. */
+  me: () => request<Me>('/me'),
+
+  setDisplayName: (name: string | null) =>
+    request<Me>('/me', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ display_name: name }),
+    }),
+
   tenants: () => request<TenantSummary[]>('/tenants'),
+
+  members: (tenant: string) => request<ShopMember[]>(`/tenants/${tenant}/members`),
+
+  addMember: (tenant: string, email: string, role: MemberRole) =>
+    request<ShopMember>(`/tenants/${tenant}/members`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, role }),
+    }),
+
+  setMemberRole: (tenant: string, membershipId: string, role: MemberRole) =>
+    request<ShopMember>(`/tenants/${tenant}/members/${membershipId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role }),
+    }),
+
+  removeMember: (tenant: string, membershipId: string) =>
+    request<void>(`/tenants/${tenant}/members/${membershipId}`, { method: 'DELETE' }),
 
   profile: (tenant: string) => request<ShopProfile>(`/tenants/${tenant}/profile`),
 

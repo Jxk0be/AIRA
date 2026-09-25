@@ -1,0 +1,8 @@
+{
+  "email": "owner@animangaknox.test",
+  "display_name": null,
+  "shops": [
+    { "tenant": "animanga_knox", "name": "Animanga Knox", "role": "owner" },
+    { "tenant": "panel_and_pawn", "name": "Panel & Pawn", "role": "owner" }
+  ]
+}

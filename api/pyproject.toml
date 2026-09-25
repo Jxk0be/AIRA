@@ -22,6 +22,9 @@ dependencies = [
     "voyageai==0.5.0",
     "pypdf==6.19.0",
     "python-multipart==0.0.32",
+    # Verifying Supabase Auth access tokens. The `crypto` extra is what brings
+    # the ES256 support their asymmetric signing keys need.
+    "pyjwt[crypto]==2.15.0",
 ]
 
 [dependency-groups]

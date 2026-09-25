@@ -11,10 +11,11 @@ one request, so every widget on the screen is cut from the same period and the
 same sync — a dashboard whose KPI row is a second newer than its chart is a
 dashboard people stop trusting.
 
-There is no authentication yet, so a tenant is named in the path and resolved
-here. No id ever arrives from the client, and nothing from the client is
-interpolated into SQL. Real auth, with row-level security behind it, comes with
-deployment.
+A tenant is named in the path and resolved here. No id ever arrives from the
+client, and nothing from the client is interpolated into SQL. The caller's right
+to this shop was already settled before any of these functions ran, by
+`app.accounts.guard`, which is installed across the whole app — so `_context`
+resolves a slug it already knows the caller is entitled to.
 """
 
 from __future__ import annotations
@@ -30,6 +31,8 @@ from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.accounts.roles import MemberRole
+from app.accounts.tables import Membership
 from app.agent.charts import ChartSpec
 from app.analytics import (
     METRICS,
@@ -55,11 +58,13 @@ from app.analytics import (
     low_stock,
     sales_series,
     sales_summary,
+    source_breakdown,
     top_products,
 )
 from app.analytics.queries import data_window
 from app.canonical import tables as t
 from app.db import get_session
+from app.http import MANAGER_ONLY, SessionDep, ViewerDep
 
 router = APIRouter(tags=["dashboard"])
 
@@ -131,6 +136,21 @@ class LocationOut(BaseModel):
     name: str
 
 
+class ShopSource(BaseModel):
+    """One register a shop runs, as a screen needs it.
+
+    `capabilities` is this register's own, not the shop's union: "the marketplace
+    export has no costs" is the sentence that makes a partial margin figure make
+    sense, and it cannot be said from the union.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    source: str
+    label: str
+    capabilities: dict[str, bool]
+
+
 class ShopProfile(BaseModel):
     """Everything the app shell needs to render a shop honestly."""
 
@@ -145,6 +165,9 @@ class ShopProfile(BaseModel):
     locations: list[LocationOut]
     channels: list[str]
     categories: list[str]
+    # Every register this shop runs. One entry for most shops; the screens use
+    # the length of this to decide whether consolidation is worth a headline.
+    sources: list[ShopSource]
     data_from: date | None
     data_to: date | None
     # The shop's own color, or None for the palette Direction A ships with.
@@ -169,6 +192,10 @@ class DashboardResponse(BaseModel):
     category_mix: Widget[Breakdown]
     by_location: Widget[Breakdown]
     by_channel: Widget[Breakdown]
+    # Net sales per register. Unavailable, with a sentence, for a shop whose tills
+    # are all the same system — there is nothing to consolidate and a one-bar
+    # chart claiming otherwise would be noise.
+    by_source: Widget[Breakdown]
     low_stock: Widget[StockList]
     dead_stock: Widget[StockList]
 
@@ -181,6 +208,9 @@ class TenantOut(BaseModel):
     timezone: str
     currency: str
     capabilities: dict[str, bool]
+    # What the caller may do here. The shop switcher shows it, and the screens
+    # use it to hide a button rather than offer one that will 403.
+    role: MemberRole
 
 
 class PinnedChart(BaseModel):
@@ -256,24 +286,28 @@ def _kpi(key: str, value: Decimal, previous: Decimal | None = None) -> Kpi:
 
 
 @router.get("/tenants", response_model=list[TenantOut])
-async def list_tenants(session: Annotated[AsyncSession, Depends(get_session)]) -> list[TenantOut]:
-    """Every shop this install knows about.
+async def list_tenants(viewer: ViewerDep, session: SessionDep) -> list[TenantOut]:
+    """The shops you may open, with what each one can do.
 
-    What the dev tenant switcher reads. With real authentication this becomes
-    "the shops you may see", which is the same query with a join on it.
+    What the shop switcher reads. An empty list is a normal answer: it means the
+    account is real but has not been added to a shop, and the UI says so rather
+    than showing a broken picker.
+
+    This is the only route where the tenant is not in the path, so it is also the
+    only one that has to do its own filtering — the join on `memberships` *is* the
+    access check here.
     """
     rows = (
-        (
-            await session.execute(
-                select(t.Tenant).where(t.Tenant.deleted_at.is_(None)).order_by(t.Tenant.name)
-            )
+        await session.execute(
+            select(t.Tenant, Membership.role)
+            .join(Membership, Membership.tenant_id == t.Tenant.id)
+            .where(Membership.user_id == viewer.id, t.Tenant.deleted_at.is_(None))
+            .order_by(t.Tenant.name)
         )
-        .scalars()
-        .all()
-    )
+    ).all()
 
     out: list[TenantOut] = []
-    for row in rows:
+    for row, role in rows:
         ctx = await load_context(session, row.slug)
         out.append(
             TenantOut(
@@ -282,6 +316,7 @@ async def list_tenants(session: Annotated[AsyncSession, Depends(get_session)]) -
                 timezone=row.timezone,
                 currency=row.currency,
                 capabilities=ctx.capabilities.model_dump(),
+                role=role,
             )
         )
     return out
@@ -318,6 +353,14 @@ async def shop_profile(
         locations=await _locations(session, ctx),
         channels=await _channels(session, ctx),
         categories=categories,
+        sources=[
+            ShopSource(
+                source=ref.source,
+                label=ref.label,
+                capabilities=ref.capabilities.model_dump(),
+            )
+            for ref in ctx.sources
+        ],
         data_from=first_at.astimezone(ctx.tz).date() if first_at else None,
         data_to=last_at.astimezone(ctx.tz).date() if last_at else None,
         brand_color=ctx.setting("brand_color", None),
@@ -351,7 +394,7 @@ class AppearanceOut(BaseModel):
     brand_color: str | None
 
 
-@router.put("/tenants/{slug}/appearance", response_model=AppearanceOut)
+@router.put("/tenants/{slug}/appearance", response_model=AppearanceOut, dependencies=MANAGER_ONLY)
 async def set_appearance(
     slug: str,
     body: AppearanceIn,
@@ -440,6 +483,25 @@ async def dashboard(
             )
         return await channel_breakdown(session, ctx, period)
 
+    async def source_split() -> Breakdown:
+        """One row per register, or a sentence saying there is only one.
+
+        The gate is deliberately here rather than in the metric. A dashboard has
+        to decide whether a section is worth the space, and for the great majority
+        of shops — everybody whose tills are all one brand — it is not.
+        `source_breakdown` itself always answers, because the month-end packet
+        prints the split unconditionally and a bookkeeper wants the row even when
+        there is one of it.
+        """
+        if not ctx.has_more_than_one_source:
+            only = ctx.sources[0].label if ctx.sources else "one system"
+            raise CapabilityUnavailable(
+                "multi_source",
+                f"Everything {ctx.name} sells goes through {only}, so there is nothing "
+                "to add together yet. Connect a second register and this splits by system.",
+            )
+        return await source_breakdown(session, ctx, period)
+
     return DashboardResponse(
         tenant=ctx.slug,
         name=ctx.name,
@@ -456,6 +518,7 @@ async def dashboard(
         ),
         by_location=await _widget(lambda: location_breakdown(session, ctx, period)),
         by_channel=await _widget(channel_split),
+        by_source=await _widget(source_split),
         low_stock=await _widget(lambda: low_stock(session, ctx, limit=TABLE_ROWS)),
         dead_stock=await _widget(lambda: dead_stock(session, ctx, limit=TABLE_ROWS)),
     )
@@ -518,7 +581,9 @@ async def pinned_charts(
     ]
 
 
-@router.post("/tenants/{slug}/charts", response_model=PinnedChart, status_code=201)
+@router.post(
+    "/tenants/{slug}/charts", response_model=PinnedChart, status_code=201, dependencies=MANAGER_ONLY
+)
 async def pin_chart(
     slug: str,
     body: PinRequest,
@@ -560,7 +625,7 @@ async def pin_chart(
     )
 
 
-@router.delete("/tenants/{slug}/charts/{chart_id}", status_code=204)
+@router.delete("/tenants/{slug}/charts/{chart_id}", status_code=204, dependencies=MANAGER_ONLY)
 async def unpin_chart(
     slug: str,
     chart_id: uuid.UUID,

@@ -15,7 +15,7 @@ from fastapi import APIRouter, Query, Response
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.canonical.enums import PurchaseOrderStatus
-from app.http import ShopDep, not_found
+from app.http import MANAGER_ONLY, ShopDep, not_found
 from app.reorder import (
     create_drafts,
     get_order,
@@ -168,7 +168,9 @@ async def reorder(shop: ShopDep, as_of: date | None = None) -> ReorderOut:
     )
 
 
-@router.post("/tenants/{tenant}/reorder/drafts", response_model=list[uuid.UUID])
+@router.post(
+    "/tenants/{tenant}/reorder/drafts", response_model=list[uuid.UUID], dependencies=MANAGER_ONLY
+)
 async def make_drafts(
     shop: ShopDep,
     as_of: date | None = None,
@@ -190,12 +192,18 @@ async def orders(shop: ShopDep, status: str | None = None) -> list[OrderOut]:
     ]
 
 
-@router.patch("/tenants/{tenant}/purchase-orders/lines/{line_id}", status_code=204)
+@router.patch(
+    "/tenants/{tenant}/purchase-orders/lines/{line_id}", status_code=204, dependencies=MANAGER_ONLY
+)
 async def edit_line(shop: ShopDep, line_id: uuid.UUID, body: LineUpdate) -> None:
     await update_line(shop.session, shop.ctx, line_id, quantity=body.quantity, remove=body.remove)
 
 
-@router.post("/tenants/{tenant}/purchase-orders/{order_id}/status", response_model=OrderOut)
+@router.post(
+    "/tenants/{tenant}/purchase-orders/{order_id}/status",
+    response_model=OrderOut,
+    dependencies=MANAGER_ONLY,
+)
 async def change_status(shop: ShopDep, order_id: uuid.UUID, body: StatusUpdate) -> OrderOut:
     await set_order_status(shop.session, shop.ctx, order_id, PurchaseOrderStatus(body.status))
     order = await get_order(shop.session, shop.ctx, order_id)
