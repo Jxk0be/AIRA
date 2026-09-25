@@ -31,38 +31,38 @@ onMounted(async () => {
 <template>
   <main class="mx-auto flex min-h-screen max-w-lg flex-col justify-center px-6 py-16">
     <h1 class="display text-3xl font-semibold tracking-tight text-ink">
-      AIRA<span class="text-brand">.</span>
+      AIRA<span class="text-primary">.</span>
     </h1>
     <p class="mt-1 text-sm text-ink-muted">The shop's analyst, whatever the shop runs on.</p>
 
-    <p v-if="loading" class="mt-8 text-sm text-ink-faint">Looking for connected shops…</p>
+    <p v-if="loading" class="mt-8 text-sm text-ink-muted">Looking for connected shops…</p>
 
-    <div v-else-if="error" class="mt-8 border border-rule bg-panel p-5">
+    <div v-else-if="error" class="mt-8 border border-border bg-surface p-5">
       <p class="text-sm text-ink">The API did not answer.</p>
-      <p class="mt-1 text-xs text-ink-muted">{{ error }}</p>
+      <p class="mt-1 text-sm text-ink-muted">{{ error }}</p>
       <pre
-        class="tabular mt-3 overflow-x-auto border-l-2 border-rule bg-sunk px-3 py-2 text-xs text-ink-muted"
+        class="tabular mt-3 overflow-x-auto border-l-2 border-border bg-raised px-3 py-2 text-sm text-ink-muted"
 >python tasks.py db
 python tasks.py api</pre
       >
     </div>
 
-    <ul v-else-if="tenants.length" class="mt-8 border border-rule bg-panel">
-      <li v-for="tenant in tenants" :key="tenant.tenant" class="border-b border-rule last:border-0">
+    <ul v-else-if="tenants.length" class="mt-8 border border-border bg-surface">
+      <li v-for="tenant in tenants" :key="tenant.tenant" class="border-b border-border last:border-0">
         <RouterLink
-          :to="{ name: 'dashboard', params: { tenant: tenant.tenant } }"
-          class="flex items-baseline justify-between px-4 py-3 hover:bg-sunk"
+          :to="{ name: 'home', params: { tenant: tenant.tenant } }"
+          class="flex items-baseline justify-between px-4 py-3 hover:bg-raised"
         >
           <span class="font-medium text-ink">{{ tenant.name }}</span>
-          <span class="tabular text-xs text-ink-faint">{{ tenant.timezone }}</span>
+          <span class="tabular text-sm text-ink-muted">{{ tenant.timezone }}</span>
         </RouterLink>
       </li>
     </ul>
 
-    <div v-else class="mt-8 border border-rule bg-panel p-5">
+    <div v-else class="mt-8 border border-border bg-surface p-5">
       <p class="text-sm text-ink">No shops are connected yet.</p>
       <pre
-        class="tabular mt-3 overflow-x-auto border-l-2 border-rule bg-sunk px-3 py-2 text-xs text-ink-muted"
+        class="tabular mt-3 overflow-x-auto border-l-2 border-border bg-raised px-3 py-2 text-sm text-ink-muted"
 >python tasks.py sources
 python tasks.py seed
 python tasks.py backfill</pre

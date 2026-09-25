@@ -1,74 +1,172 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   AIRA reads like a ledger, not a SaaS template: warm paper, hairline rules,
-   figures set in a mono face so a column of money lines up. Colour is spent on
-   three things only — the shop's mark, whether a number moved up or down, and
-   a caveat that has to be read.
+   Direction A — "Counter". Airy, one accent, near-neutral surfaces.
+
+   Two rules about this file.
+
+   Every color below passed `node web/scripts/check-contrast.ts` before it was
+   written here, and that script parses THIS file — so the gate tests what
+   actually ships rather than a copy of it. Text clears 4.5:1 on every surface
+   it is used on, interactive borders and the focus ring clear 3:1, and the six
+   chart colors clear 3:1 on their surface while staying 20 CIEDE2000 apart
+   from each other (11 under protanopia, deuteranopia and tritanopia).
+
+   Components use semantic names only. There are no raw hex values outside the
+   two palette blocks, and `python tasks.py ui-check` fails the build if one
+   appears in a component.
    --------------------------------------------------------------------------- */
 
 :root {
-  --paper: #faf7f2;
-  --panel: #ffffff;
-  --sunk: #f3eee5;
-  --ink: #17150f;
-  --ink-muted: #6f675a;
-  --ink-faint: #9a9284;
-  --rule: #e4ddd0;
-  --rule-strong: #cdc4b3;
-  --brand: #1b4d3e;
-  --brand-soft: #e6efe9;
-  --up: #1b7a4b;
-  --down: #b23a28;
-  --note: #fbf1d6;
-  --note-ink: #6b4e00;
-  --note-rule: #e0c266;
-  --grain: rgba(23, 21, 15, 0.022);
   color-scheme: light;
+
+  --bg: #fbfbf9;
+  --surface: #ffffff;
+  --raised: #f4f4f1;
+
+  --ink: #1a1a17;
+  --ink-muted: #5c5c55;
+
+  --border: #e4e4df;
+  --border-strong: #8a8a82;
+
+  --primary: #3d46b8;
+  --primary-fg: #ffffff;
+  --primary-subtle: #edeefb;
+
+  --success: #1c6b42;
+  --success-fg: #ffffff;
+  --success-subtle: #e6f2eb;
+  --warning: #8a5a00;
+  --warning-fg: #ffffff;
+  --warning-subtle: #fbf0d9;
+  --danger: #b3301f;
+  --danger-fg: #ffffff;
+  --danger-subtle: #fbe9e6;
+  --info: #1f5c8a;
+  --info-fg: #ffffff;
+  --info-subtle: #e6eff6;
+
+  --focus: #3d46b8;
+
+  --chart-1: #3d46b8;
+  --chart-2: #794060;
+  --chart-3: #bb754b;
+  --chart-4: #9280b1;
+  --chart-5: #605535;
+  --chart-6: #119681;
+
+  --shadow-1: 0 1px 2px rgba(26, 26, 23, 0.06);
+  --shadow-2: 0 1px 2px rgba(26, 26, 23, 0.06), 0 8px 24px -12px rgba(26, 26, 23, 0.18);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #14120f;
-    --panel: #1c1a16;
-    --sunk: #221f1a;
-    --ink: #f2ede4;
-    --ink-muted: #a79d8e;
-    --ink-faint: #7c7365;
-    --rule: #302c25;
-    --rule-strong: #453f35;
-    --brand: #79c4a1;
-    --brand-soft: #1e2e27;
-    --up: #5bc98a;
-    --down: #e4785f;
-    --note: #332a12;
-    --note-ink: #f0dfa8;
-    --note-rule: #7a6426;
-    --grain: rgba(242, 237, 228, 0.028);
-    color-scheme: dark;
-  }
+/* Dark is a designed palette, not an inversion: surfaces are warm-neutral
+   grays rather than black, and every accent is desaturated so it does not
+   glow against them. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #15161a;
+  --surface: #1c1e23;
+  --raised: #24272d;
+
+  --ink: #ecedf0;
+  --ink-muted: #a9adb6;
+
+  --border: #2e3138;
+  --border-strong: #7c818c;
+
+  --primary: #949bf5;
+  --primary-fg: #13141a;
+  --primary-subtle: #23253a;
+
+  --success: #5fd196;
+  --success-fg: #10130f;
+  --success-subtle: #17291f;
+  --warning: #e0a83c;
+  --warning-fg: #181206;
+  --warning-subtle: #2c2413;
+  --danger: #f1836c;
+  --danger-fg: #1a0f0c;
+  --danger-subtle: #2f1c18;
+  --info: #69b6e8;
+  --info-fg: #0b1218;
+  --info-subtle: #16242e;
+
+  --focus: #949bf5;
+
+  --chart-1: #949bf5;
+  --chart-2: #c4a963;
+  --chart-3: #db7b88;
+  --chart-4: #75e2c2;
+  --chart-5: #ffc2f9;
+  --chart-6: #23a2b0;
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -12px rgba(0, 0, 0, 0.6);
 }
 
 @theme inline {
-  --color-paper: var(--paper);
-  --color-panel: var(--panel);
-  --color-sunk: var(--sunk);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+
+  /* `ink` rather than `text`, so the utility reads `text-ink`, not `text-text`. */
   --color-ink: var(--ink);
   --color-ink-muted: var(--ink-muted);
-  --color-ink-faint: var(--ink-faint);
-  --color-rule: var(--rule);
-  --color-rule-strong: var(--rule-strong);
-  --color-brand: var(--brand);
-  --color-brand-soft: var(--brand-soft);
-  --color-up: var(--up);
-  --color-down: var(--down);
-  --color-note: var(--note);
-  --color-note-ink: var(--note-ink);
-  --color-note-rule: var(--note-rule);
 
-  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
-  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+  --color-primary-subtle: var(--primary-subtle);
+
+  --color-success: var(--success);
+  --color-success-fg: var(--success-fg);
+  --color-success-subtle: var(--success-subtle);
+  --color-warning: var(--warning);
+  --color-warning-fg: var(--warning-fg);
+  --color-warning-subtle: var(--warning-subtle);
+  --color-danger: var(--danger);
+  --color-danger-fg: var(--danger-fg);
+  --color-danger-subtle: var(--danger-subtle);
+  --color-info: var(--info);
+  --color-info-fg: var(--info-fg);
+  --color-info-subtle: var(--info-subtle);
+
+  --color-focus: var(--focus);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+
+  /* Direction A is one sans throughout; figures are set tabular rather than in
+     a second face. */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+
+  --text-xs: 0.8125rem;   /* 13px — the floor. Badges and dense metadata only. */
+  --text-sm: 0.875rem;    /* 14px */
+  --text-base: 1rem;      /* 16px — body */
+  --text-lg: 1.0625rem;   /* 17px — list titles */
+  --text-xl: 1.3125rem;   /* 21px — page titles */
+  --text-2xl: 1.6875rem;  /* 27px — figures */
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --shadow-raised: var(--shadow-1);
+  --shadow-float: var(--shadow-2);
+
+  --ease-out: cubic-bezier(0.2, 0.7, 0.3, 1);
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 250ms;
 }
 
 html,
@@ -77,21 +175,17 @@ body,
   min-height: 100%;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  background-color: var(--paper);
-  /* A little tooth in the paper. Two hairline grids at an angle read as grain
-     rather than as a pattern, and cost nothing to paint. */
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 3px,
-      var(--grain) 3px 4px
-    ),
-    repeating-linear-gradient(90deg, transparent 0 3px, var(--grain) 3px 4px);
+  background-color: var(--bg);
   color: var(--ink);
   font-family: var(--font-sans);
-  font-size: 15px;
+  /* 16px. The old 15px was below the floor the complaints asked for. */
+  font-size: 1rem;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -99,32 +193,30 @@ body {
 
 /* Figures line up in a column or they are not a table. */
 .tabular {
-  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.004em;
 }
 
+/* Page and shop titles. Not a second typeface — just the tighter tracking a
+   large size wants. */
 .display {
-  font-family: var(--font-display);
-  font-optical-sizing: auto;
-  font-variation-settings: "SOFT" 0, "WONK" 1;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
 }
 
+/* Its own token rather than the primary color: a focused primary button would
+   otherwise be ringed in its own background. */
 :focus-visible {
-  outline: 2px solid var(--brand);
+  outline: 3px solid var(--focus);
   outline-offset: 2px;
-  border-radius: 2px;
+  border-radius: 3px;
 }
 
 ::selection {
-  background: var(--brand-soft);
+  background: var(--primary-subtle);
   color: var(--ink);
 }
 
-/* The first paint settles in rather than appearing. Staggered by index in the
-   markup, and off entirely for anyone who asked for less movement. */
 @keyframes rise {
   from {
     opacity: 0;
@@ -137,21 +229,21 @@ body {
 }
 
 .rise {
-  animation: rise 0.42s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
+  animation: rise var(--duration-slow) var(--ease-out) backwards;
 }
 
 @keyframes pulse-rule {
   0%,
   100% {
-    opacity: 0.35;
+    opacity: 1;
   }
   50% {
-    opacity: 1;
+    opacity: 0.45;
   }
 }
 
 .working {
-  animation: pulse-rule 1.4s ease-in-out infinite;
+  animation: pulse-rule 1.6s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -162,11 +254,26 @@ body {
   html {
     scroll-behavior: auto;
   }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
 
-/* Scrollbars, kept in the palette so a long table does not sprout a blue bar. */
+/* Set by lib/theme.ts for one frame while the palette swaps. Without it, every
+   element carrying a color transition cross-fades between the two themes at
+   once, which looks like a fault rather than a change. */
+:root.theme-switching *,
+:root.theme-switching *::before,
+:root.theme-switching *::after {
+  transition: none !important;
+}
+
 * {
-  scrollbar-color: var(--rule-strong) transparent;
+  scrollbar-color: var(--border-strong) transparent;
   scrollbar-width: thin;
 }
 
@@ -208,10 +315,10 @@ body {
 .answer h1,
 .answer h2,
 .answer h3 {
-  font-family: var(--font-display);
   font-size: 1.02rem;
   font-weight: 600;
   margin: 1rem 0 0.4rem;
+  letter-spacing: -0.01em;
 }
 
 .answer strong {
@@ -221,9 +328,9 @@ body {
 .answer code {
   font-family: var(--font-mono);
   font-size: 0.86em;
-  background: var(--sunk);
+  background: var(--raised);
   padding: 0.05em 0.3em;
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
 }
 
 .answer table {
@@ -236,11 +343,11 @@ body {
 .answer td {
   text-align: left;
   padding: 0.3rem 0.6rem 0.3rem 0;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid var(--border);
 }
 
 .answer a {
-  color: var(--brand);
+  color: var(--primary);
   text-decoration: underline;
   text-underline-offset: 2px;
 }

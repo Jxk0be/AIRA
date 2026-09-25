@@ -1,0 +1,1095 @@
+{
+  "tenant": "tsundoku",
+  "as_of": "2026-09-24",
+  "total_cash": "27283.14",
+  "planned_cash": "15691.98",
+  "item_count": 175,
+  "cost_coverage": "0.89",
+  "counts": {
+    "slowing": 98,
+    "stale": 39,
+    "dead": 38
+  },
+  "items": [
+    {
+      "variant_id": "dcd79422-8b97-47aa-b11a-4399e5ac952c",
+      "label": "Astral Clash: Gilded Static Booster Box",
+      "sku": "SLD-AC04-BOO-00189",
+      "category": "Sealed Product",
+      "kind": "slowing",
+      "units_on_hand": "34.0000",
+      "days_since_last_sale": 32,
+      "never_sold": false,
+      "cash_tied_up": "3005.26",
+      "cash_at_cost": "3005.26",
+      "price": "129.9900",
+      "cost": "88.3900",
+      "play": "bundle",
+      "headline": "Bundle it with Matte Card Sleeves, 100ct",
+      "why": "5 customers bought both in the last year, and Matte Card Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "detail": {
+        "partner_variant_id": "47f4c884-8221-4617-ad4b-538a5f7beefc",
+        "partner_label": "Matte Card Sleeves, 100ct",
+        "baskets": 5,
+        "suggested_bundle_price": "123.99"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "110.49",
+          "margin_per_unit": "22.10",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "90.99",
+          "margin_per_unit": "2.60",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "65.00",
+          "margin_per_unit": "-23.39",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "874e9b8b-55d1-48c2-b36b-8c97b0eb8493",
+      "label": "Loomkeeper Hana 1/7 Scale Figure — Standard",
+      "sku": "FIG-LOOM-09-00102",
+      "category": "Scale Figures",
+      "kind": "stale",
+      "units_on_hand": "16.0000",
+      "days_since_last_sale": 68,
+      "never_sold": false,
+      "cash_tied_up": "1587.04",
+      "cash_at_cost": "1587.04",
+      "price": "159.9900",
+      "cost": "99.1900",
+      "play": "markdown",
+      "headline": "Mark it down 15% to $135.99",
+      "why": "16 copies on the shelf, nothing sold in 68 days. At $135.99 that is still $36.80 a copy over cost.",
+      "detail": {
+        "discount": "0.15",
+        "new_price": "135.99",
+        "margin_per_unit": "36.80",
+        "break_even_price": "99.1900",
+        "units": "16.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "135.99",
+          "margin_per_unit": "36.80",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "111.99",
+          "margin_per_unit": "12.80",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "80.00",
+          "margin_per_unit": "-19.19",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "3142e67a-cb70-4f9b-8960-949616017564",
+      "label": "Astral Clash: Gilded Static Collector Bundle",
+      "sku": "SLD-AC04-COL-00260",
+      "category": "Sealed Product",
+      "kind": "stale",
+      "units_on_hand": "36.0000",
+      "days_since_last_sale": 60,
+      "never_sold": false,
+      "cash_tied_up": "1346.04",
+      "cash_at_cost": "1346.04",
+      "price": "54.9900",
+      "cost": "37.3900",
+      "play": "move",
+      "headline": "Move it to Tsundoku & Tabletop — Gay St",
+      "why": "83% of this category's sales happen at Tsundoku & Tabletop — Gay St. The stock is in the wrong room, not the wrong shop.",
+      "detail": {
+        "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+        "location_name": "Tsundoku & Tabletop — Gay St",
+        "category_share": "0.83",
+        "units": "36.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "46.74",
+          "margin_per_unit": "9.35",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "38.49",
+          "margin_per_unit": "1.10",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "27.50",
+          "margin_per_unit": "-9.89",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "fd4f9821-5400-4cd2-9682-a901ba6e048e",
+      "label": "Clockwork Vandal (AC03) — NM",
+      "sku": "SGL-AC03-CLOC-NM-00282",
+      "category": "Singles",
+      "kind": "slowing",
+      "units_on_hand": "12.0000",
+      "days_since_last_sale": 41,
+      "never_sold": false,
+      "cash_tied_up": "1077.00",
+      "cash_at_cost": null,
+      "price": "89.7500",
+      "cost": null,
+      "play": "bundle",
+      "headline": "Bundle it with Matte Card Sleeves, 100ct",
+      "why": "5 customers bought both in the last year, and Matte Card Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "detail": {
+        "partner_variant_id": "47f4c884-8221-4617-ad4b-538a5f7beefc",
+        "partner_label": "Matte Card Sleeves, 100ct",
+        "baskets": 5,
+        "suggested_bundle_price": "87.99"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "76.29",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "62.83",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "44.88",
+          "margin_per_unit": null,
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "8169e1ba-6e9b-482f-bd35-9a89a976d871",
+      "label": "Vending Oracle (AC03) — LP",
+      "sku": "SGL-AC03-VEND-LP-00317",
+      "category": "Singles",
+      "kind": "stale",
+      "units_on_hand": "22.0000",
+      "days_since_last_sale": 71,
+      "never_sold": false,
+      "cash_tied_up": "789.14",
+      "cash_at_cost": "789.14",
+      "price": "71.7500",
+      "cost": "35.8700",
+      "play": "markdown",
+      "headline": "Mark it down 15% to $60.99",
+      "why": "22 copies on the shelf, nothing sold in 71 days. At $60.99 that is still $25.12 a copy over cost.",
+      "detail": {
+        "discount": "0.15",
+        "new_price": "60.99",
+        "margin_per_unit": "25.12",
+        "break_even_price": "35.8700",
+        "units": "22.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "60.99",
+          "margin_per_unit": "25.12",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "50.23",
+          "margin_per_unit": "14.36",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "35.88",
+          "margin_per_unit": "0.01",
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "960e9062-8a36-4dd7-aff6-1e244f61ad32",
+      "label": "Saltwind Duelist (AC01) — LP",
+      "sku": "SGL-AC01-SALT-LP-00166",
+      "category": "Singles",
+      "kind": "slowing",
+      "units_on_hand": "10.0000",
+      "days_since_last_sale": 52,
+      "never_sold": false,
+      "cash_tied_up": "717.50",
+      "cash_at_cost": null,
+      "price": "71.7500",
+      "cost": null,
+      "play": "bundle",
+      "headline": "Bundle it with Matte Card Sleeves, 100ct",
+      "why": "3 customers bought both in the last year, and Matte Card Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "detail": {
+        "partner_variant_id": "47f4c884-8221-4617-ad4b-538a5f7beefc",
+        "partner_label": "Matte Card Sleeves, 100ct",
+        "baskets": 3,
+        "suggested_bundle_price": "71.99"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "60.99",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "50.23",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "35.88",
+          "margin_per_unit": null,
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "28aca7ee-0b08-4f71-826d-112eacd4ddc3",
+      "label": "Loomshadow (AC02) — LP",
+      "sku": "SGL-AC02-LOOM-LP-00306",
+      "category": "Singles",
+      "kind": "slowing",
+      "units_on_hand": "15.0000",
+      "days_since_last_sale": 53,
+      "never_sold": false,
+      "cash_tied_up": "596.25",
+      "cash_at_cost": null,
+      "price": "39.7500",
+      "cost": null,
+      "play": "bundle",
+      "headline": "Bundle it with Perfect Fit Sleeves, 100ct",
+      "why": "4 customers bought both in the last year, and Perfect Fit Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "detail": {
+        "partner_variant_id": "15dac2c8-d35e-47db-a056-f26ac6c13db3",
+        "partner_label": "Perfect Fit Sleeves, 100ct",
+        "baskets": 4,
+        "suggested_bundle_price": "39.99"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "33.79",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "27.83",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "19.88",
+          "margin_per_unit": null,
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "497a3748-eb9e-4d08-a698-981e9ea11430",
+      "label": "Clockwork Vandal (AC03) — LP",
+      "sku": "SGL-AC03-CLOC-LP-00283",
+      "category": "Singles",
+      "kind": "slowing",
+      "units_on_hand": "16.0000",
+      "days_since_last_sale": 47,
+      "never_sold": false,
+      "cash_tied_up": "573.92",
+      "cash_at_cost": "573.92",
+      "price": "71.7500",
+      "cost": "35.8700",
+      "play": "bundle",
+      "headline": "Bundle it with Perfect Fit Sleeves, 100ct",
+      "why": "5 customers bought both in the last year, and Perfect Fit Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "detail": {
+        "partner_variant_id": "15dac2c8-d35e-47db-a056-f26ac6c13db3",
+        "partner_label": "Perfect Fit Sleeves, 100ct",
+        "baskets": 5,
+        "suggested_bundle_price": "68.99"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "60.99",
+          "margin_per_unit": "25.12",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "50.23",
+          "margin_per_unit": "14.36",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "35.88",
+          "margin_per_unit": "0.01",
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "fb1e90ae-d108-4998-86ae-c89a6ec46e42",
+      "label": "Paper Crane Envoy (AC02) — LP",
+      "sku": "SGL-AC02-PAPE-LP-00196",
+      "category": "Singles",
+      "kind": "slowing",
+      "units_on_hand": "14.0000",
+      "days_since_last_sale": 48,
+      "never_sold": false,
+      "cash_tied_up": "502.18",
+      "cash_at_cost": "502.18",
+      "price": "71.7500",
+      "cost": "35.8700",
+      "play": "markdown",
+      "headline": "Mark it down 15% to $60.99",
+      "why": "14 copies on the shelf, nothing sold in 48 days. At $60.99 that is still $25.12 a copy over cost.",
+      "detail": {
+        "discount": "0.15",
+        "new_price": "60.99",
+        "margin_per_unit": "25.12",
+        "break_even_price": "35.8700",
+        "units": "14.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "60.99",
+          "margin_per_unit": "25.12",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "50.23",
+          "margin_per_unit": "14.36",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "35.88",
+          "margin_per_unit": "0.01",
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "792b0995-0792-46d9-abb4-63a6ae2fb1cc",
+      "label": "Saltwind Duelist (AC01) — NM",
+      "sku": "SGL-AC01-SALT-NM-00165",
+      "category": "Singles",
+      "kind": "slowing",
+      "units_on_hand": "11.0000",
+      "days_since_last_sale": -4,
+      "never_sold": false,
+      "cash_tied_up": "493.57",
+      "cash_at_cost": "493.57",
+      "price": "89.7500",
+      "cost": "44.8700",
+      "play": "bundle",
+      "headline": "Bundle it with Perfect Fit Sleeves, 100ct",
+      "why": "5 customers bought both in the last year, and Perfect Fit Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "detail": {
+        "partner_variant_id": "15dac2c8-d35e-47db-a056-f26ac6c13db3",
+        "partner_label": "Perfect Fit Sleeves, 100ct",
+        "baskets": 5,
+        "suggested_bundle_price": "84.99"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "76.29",
+          "margin_per_unit": "31.42",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "62.83",
+          "margin_per_unit": "17.96",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "44.88",
+          "margin_per_unit": "0.01",
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "7fc0be90-76ce-417e-9b04-50acb7cd0d97",
+      "label": "Paper Crane Envoy (AC02) — MP",
+      "sku": "SGL-AC02-PAPE-MP-00197",
+      "category": "Singles",
+      "kind": "stale",
+      "units_on_hand": "16.0000",
+      "days_since_last_sale": 68,
+      "never_sold": false,
+      "cash_tied_up": "429.92",
+      "cash_at_cost": "429.92",
+      "price": "53.7500",
+      "cost": "26.8700",
+      "play": "move",
+      "headline": "Move it to Tsundoku & Tabletop — Gay St",
+      "why": "92% of this category's sales happen at Tsundoku & Tabletop — Gay St. The stock is in the wrong room, not the wrong shop.",
+      "detail": {
+        "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+        "location_name": "Tsundoku & Tabletop — Gay St",
+        "category_share": "0.92",
+        "units": "16.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "45.69",
+          "margin_per_unit": "18.82",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "37.63",
+          "margin_per_unit": "10.76",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "26.88",
+          "margin_per_unit": "0.01",
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "581fc1a6-3498-45d4-945f-03daa800917b",
+      "label": "Astral Clash: Veil of Nine Collector Bundle",
+      "sku": "SLD-AC03-COL-00285",
+      "category": "Sealed Product",
+      "kind": "dead",
+      "units_on_hand": "11.0000",
+      "days_since_last_sale": null,
+      "never_sold": true,
+      "cash_tied_up": "411.29",
+      "cash_at_cost": "411.29",
+      "price": "54.9900",
+      "cost": "37.3900",
+      "play": "markdown",
+      "headline": "Mark it down 15% to $46.74",
+      "why": "11 copies on the shelf, nothing sold in since it arrived — it has never sold. At $46.74 that is still $9.35 a copy over cost.",
+      "detail": {
+        "discount": "0.15",
+        "new_price": "46.74",
+        "margin_per_unit": "9.35",
+        "break_even_price": "37.3900",
+        "units": "11.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "46.74",
+          "margin_per_unit": "9.35",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "38.49",
+          "margin_per_unit": "1.10",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "27.50",
+          "margin_per_unit": "-9.89",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "363ea2bb-f956-4262-923a-50909fb4ce88",
+      "label": "Kettle Paladin (AC02) — NM",
+      "sku": "SGL-AC02-KETT-NM-00069",
+      "category": "Singles",
+      "kind": "slowing",
+      "units_on_hand": "16.0000",
+      "days_since_last_sale": 33,
+      "never_sold": false,
+      "cash_tied_up": "397.92",
+      "cash_at_cost": "397.92",
+      "price": "49.7500",
+      "cost": "24.8700",
+      "play": "move",
+      "headline": "Move it to Tsundoku & Tabletop — Gay St",
+      "why": "92% of this category's sales happen at Tsundoku & Tabletop — Gay St. The stock is in the wrong room, not the wrong shop.",
+      "detail": {
+        "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+        "location_name": "Tsundoku & Tabletop — Gay St",
+        "category_share": "0.92",
+        "units": "16.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "42.29",
+          "margin_per_unit": "17.42",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "34.83",
+          "margin_per_unit": "9.96",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "24.88",
+          "margin_per_unit": "0.01",
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "31ae6e4b-16d8-4890-806e-2152da4b7b46",
+      "label": "Tsundoku & Tabletop House Tee — M",
+      "sku": "APP-TSUN-M-00289",
+      "category": "Apparel",
+      "kind": "slowing",
+      "units_on_hand": "16.0000",
+      "days_since_last_sale": 35,
+      "never_sold": false,
+      "cash_tied_up": "367.84",
+      "cash_at_cost": null,
+      "price": "22.9900",
+      "cost": null,
+      "play": "move",
+      "headline": "Move it to Tsundoku & Tabletop — Gay St",
+      "why": "80% of this category's sales happen at Tsundoku & Tabletop — Gay St. The stock is in the wrong room, not the wrong shop.",
+      "detail": {
+        "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+        "location_name": "Tsundoku & Tabletop — Gay St",
+        "category_share": "0.80",
+        "units": "16.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "19.54",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "16.09",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "11.50",
+          "margin_per_unit": null,
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "c2abdcd1-0a07-48b3-b85e-83fdabac275b",
+      "label": "Veiled Cartographer (AC01) — NM",
+      "sku": "SGL-AC01-VEIL-NM-00308",
+      "category": "Singles",
+      "kind": "slowing",
+      "units_on_hand": "14.0000",
+      "days_since_last_sale": 40,
+      "never_sold": false,
+      "cash_tied_up": "346.50",
+      "cash_at_cost": null,
+      "price": "24.7500",
+      "cost": null,
+      "play": "bundle",
+      "headline": "Bundle it with Perfect Fit Sleeves, 100ct",
+      "why": "7 customers bought both in the last year, and Perfect Fit Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "detail": {
+        "partner_variant_id": "15dac2c8-d35e-47db-a056-f26ac6c13db3",
+        "partner_label": "Perfect Fit Sleeves, 100ct",
+        "baskets": 7,
+        "suggested_bundle_price": "26.99"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "21.04",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "17.33",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "12.38",
+          "margin_per_unit": null,
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "f4568968-7143-4815-a6c5-13f6ac52edd1",
+      "label": "Tidepool Slime Plush (Small) — Small",
+      "sku": "PLU-TIDE-S-00185",
+      "category": "Plush",
+      "kind": "stale",
+      "units_on_hand": "20.0000",
+      "days_since_last_sale": 100,
+      "never_sold": false,
+      "cash_tied_up": "339.80",
+      "cash_at_cost": null,
+      "price": "16.9900",
+      "cost": null,
+      "play": "bundle",
+      "headline": "Bundle it with Matte Card Sleeves, 100ct",
+      "why": "3 customers bought both in the last year, and Matte Card Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "detail": {
+        "partner_variant_id": "47f4c884-8221-4617-ad4b-538a5f7beefc",
+        "partner_label": "Matte Card Sleeves, 100ct",
+        "baskets": 3,
+        "suggested_bundle_price": "21.99"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "14.44",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "11.89",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "8.50",
+          "margin_per_unit": null,
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "3cdcd33c-63c1-4dbe-bc19-685b098d35ce",
+      "label": "Mochi the Fox Plush (Large) — Large",
+      "sku": "PLU-MOCH-L-00148",
+      "category": "Plush",
+      "kind": "slowing",
+      "units_on_hand": "20.0000",
+      "days_since_last_sale": 38,
+      "never_sold": false,
+      "cash_tied_up": "329.80",
+      "cash_at_cost": "329.80",
+      "price": "32.9900",
+      "cost": "16.4900",
+      "play": "move",
+      "headline": "Move it to Tsundoku & Tabletop — Gay St",
+      "why": "97% of this category's sales happen at Tsundoku & Tabletop — Gay St. The stock is in the wrong room, not the wrong shop.",
+      "detail": {
+        "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+        "location_name": "Tsundoku & Tabletop — Gay St",
+        "category_share": "0.97",
+        "units": "20.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "28.04",
+          "margin_per_unit": "11.55",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "23.09",
+          "margin_per_unit": "6.60",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "16.50",
+          "margin_per_unit": "0.01",
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "a51cb4d3-9d4e-4003-ad4d-7a7b0444aa3b",
+      "label": "Bento Cat Plush (Large) — Large",
+      "sku": "PLU-BENT-L-00125",
+      "category": "Plush",
+      "kind": "stale",
+      "units_on_hand": "20.0000",
+      "days_since_last_sale": 65,
+      "never_sold": false,
+      "cash_tied_up": "329.80",
+      "cash_at_cost": "329.80",
+      "price": "32.9900",
+      "cost": "16.4900",
+      "play": "move",
+      "headline": "Move it to Tsundoku & Tabletop — Gay St",
+      "why": "97% of this category's sales happen at Tsundoku & Tabletop — Gay St. The stock is in the wrong room, not the wrong shop.",
+      "detail": {
+        "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+        "location_name": "Tsundoku & Tabletop — Gay St",
+        "category_share": "0.97",
+        "units": "20.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "28.04",
+          "margin_per_unit": "11.55",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "23.09",
+          "margin_per_unit": "6.60",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "16.50",
+          "margin_per_unit": "0.01",
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "b48afd5e-118e-4bf7-9da3-3ec3d7663b5c",
+      "label": "Manga Shelf Dividers, 6ct",
+      "sku": "SUP-MANGA-00097",
+      "category": "Supplies",
+      "kind": "dead",
+      "units_on_hand": "42.0000",
+      "days_since_last_sale": 160,
+      "never_sold": false,
+      "cash_tied_up": "327.18",
+      "cash_at_cost": "327.18",
+      "price": "14.9900",
+      "cost": "7.7900",
+      "play": "return_to_vendor",
+      "headline": "Ask Blue Kettle Distribution to take it back",
+      "why": "Nothing has sold in 160 days and Blue Kettle Distribution is on file as the supplier. A return gets the cost back rather than a fraction of it.",
+      "detail": {
+        "vendor_id": "1e7eee1d-0296-4d21-a46d-8a8df7be9c0d",
+        "vendor_name": "Blue Kettle Distribution",
+        "vendor_email": "orders@bluekettledist.example",
+        "units": "42.0000",
+        "value_at_cost": "327.18"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "12.74",
+          "margin_per_unit": "4.95",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "10.49",
+          "margin_per_unit": "2.70",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "7.50",
+          "margin_per_unit": "-0.29",
+          "clears_cost": false
+        }
+      ]
+    },
+    {
+      "variant_id": "a60c0ec2-1cf2-4078-955e-1c64bf1c93c8",
+      "label": "Tidebreaker Mk II Basic Grade Model Kit",
+      "sku": "KIT-TIDE-BA-00280",
+      "category": "Model Kits",
+      "kind": "slowing",
+      "units_on_hand": "7.0000",
+      "days_since_last_sale": 46,
+      "never_sold": false,
+      "cash_tied_up": "321.93",
+      "cash_at_cost": null,
+      "price": "45.9900",
+      "cost": null,
+      "play": "bundle",
+      "headline": "Bundle it with Matte Card Sleeves, 100ct",
+      "why": "3 customers bought both in the last year, and Matte Card Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "detail": {
+        "partner_variant_id": "47f4c884-8221-4617-ad4b-538a5f7beefc",
+        "partner_label": "Matte Card Sleeves, 100ct",
+        "baskets": 3,
+        "suggested_bundle_price": "48.99"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "39.09",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "32.19",
+          "margin_per_unit": null,
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "23.00",
+          "margin_per_unit": null,
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "31f2048c-7396-4a15-8d24-a287d0719bef",
+      "label": "Ash Herald (AC02) — NM",
+      "sku": "SGL-AC02-ASH -NM-00277",
+      "category": "Singles",
+      "kind": "stale",
+      "units_on_hand": "12.0000",
+      "days_since_last_sale": 89,
+      "never_sold": false,
+      "cash_tied_up": "298.44",
+      "cash_at_cost": "298.44",
+      "price": "49.7500",
+      "cost": "24.8700",
+      "play": "bundle",
+      "headline": "Bundle it with Perfect Fit Sleeves, 100ct",
+      "why": "6 customers bought both in the last year, and Perfect Fit Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "detail": {
+        "partner_variant_id": "15dac2c8-d35e-47db-a056-f26ac6c13db3",
+        "partner_label": "Perfect Fit Sleeves, 100ct",
+        "baskets": 6,
+        "suggested_bundle_price": "48.99"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "42.29",
+          "margin_per_unit": "17.42",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "34.83",
+          "margin_per_unit": "9.96",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "24.88",
+          "margin_per_unit": "0.01",
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "f805f15c-ef78-4fdb-a363-81949db4f0cb",
+      "label": "Tidewalker Sage (AC03) — NM",
+      "sku": "SGL-AC03-TIDE-NM-00047",
+      "category": "Singles",
+      "kind": "slowing",
+      "units_on_hand": "12.0000",
+      "days_since_last_sale": 32,
+      "never_sold": false,
+      "cash_tied_up": "298.44",
+      "cash_at_cost": "298.44",
+      "price": "49.7500",
+      "cost": "24.8700",
+      "play": "bundle",
+      "headline": "Bundle it with Perfect Fit Sleeves, 100ct",
+      "why": "6 customers bought both in the last year, and Perfect Fit Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "detail": {
+        "partner_variant_id": "15dac2c8-d35e-47db-a056-f26ac6c13db3",
+        "partner_label": "Perfect Fit Sleeves, 100ct",
+        "baskets": 6,
+        "suggested_bundle_price": "48.99"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "42.29",
+          "margin_per_unit": "17.42",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "34.83",
+          "margin_per_unit": "9.96",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "24.88",
+          "margin_per_unit": "0.01",
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "c2f9e4cc-aa7b-49ae-a7a4-45466b124a5c",
+      "label": "Tsundoku & Tabletop House Tee — S",
+      "sku": "APP-TSUN-S-00288",
+      "category": "Apparel",
+      "kind": "stale",
+      "units_on_hand": "26.0000",
+      "days_since_last_sale": 76,
+      "never_sold": false,
+      "cash_tied_up": "268.84",
+      "cash_at_cost": "268.84",
+      "price": "22.9900",
+      "cost": "10.3400",
+      "play": "bundle",
+      "headline": "Bundle it with Matte Card Sleeves, 100ct",
+      "why": "4 customers bought both in the last year, and Matte Card Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "detail": {
+        "partner_variant_id": "47f4c884-8221-4617-ad4b-538a5f7beefc",
+        "partner_label": "Matte Card Sleeves, 100ct",
+        "baskets": 4,
+        "suggested_bundle_price": "27.99"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "19.54",
+          "margin_per_unit": "9.20",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "16.09",
+          "margin_per_unit": "5.75",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "11.50",
+          "margin_per_unit": "1.16",
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "8bf24849-2164-4e22-a3e7-00c7b8db3149",
+      "label": "Vending Oracle (AC03) — MP",
+      "sku": "SGL-AC03-VEND-MP-00318",
+      "category": "Singles",
+      "kind": "slowing",
+      "units_on_hand": "10.0000",
+      "days_since_last_sale": 59,
+      "never_sold": false,
+      "cash_tied_up": "268.70",
+      "cash_at_cost": "268.70",
+      "price": "53.7500",
+      "cost": "26.8700",
+      "play": "bundle",
+      "headline": "Bundle it with Matte Card Sleeves, 100ct",
+      "why": "3 customers bought both in the last year, and Matte Card Sleeves, 100ct is still selling. A bundle moves the slow half without marking either down on the shelf.",
+      "detail": {
+        "partner_variant_id": "47f4c884-8221-4617-ad4b-538a5f7beefc",
+        "partner_label": "Matte Card Sleeves, 100ct",
+        "baskets": 3,
+        "suggested_bundle_price": "55.99"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "45.69",
+          "margin_per_unit": "18.82",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "37.63",
+          "margin_per_unit": "10.76",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "26.88",
+          "margin_per_unit": "0.01",
+          "clears_cost": true
+        }
+      ]
+    },
+    {
+      "variant_id": "22cfa25f-7204-401d-9dd4-058f8009cc4d",
+      "label": "Loomkeeper Hana Prize Figure — Standard",
+      "sku": "FIG-LOOM-09-00248",
+      "category": "Prize Figures",
+      "kind": "slowing",
+      "units_on_hand": "16.0000",
+      "days_since_last_sale": 41,
+      "never_sold": false,
+      "cash_tied_up": "267.68",
+      "cash_at_cost": "267.68",
+      "price": "26.9900",
+      "cost": "16.7300",
+      "play": "move",
+      "headline": "Move it to Tsundoku & Tabletop — Gay St",
+      "why": "88% of this category's sales happen at Tsundoku & Tabletop — Gay St. The stock is in the wrong room, not the wrong shop.",
+      "detail": {
+        "location_id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+        "location_name": "Tsundoku & Tabletop — Gay St",
+        "category_share": "0.88",
+        "units": "16.0000"
+      },
+      "ladder": [
+        {
+          "discount": "0.15",
+          "price": "22.94",
+          "margin_per_unit": "6.21",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.30",
+          "price": "18.89",
+          "margin_per_unit": "2.16",
+          "clears_cost": true
+        },
+        {
+          "discount": "0.50",
+          "price": "13.50",
+          "margin_per_unit": "-3.23",
+          "clears_cost": false
+        }
+      ]
+    }
+  ]
+}

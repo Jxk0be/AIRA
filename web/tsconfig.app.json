@@ -4,6 +4,10 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
+    // `lib/color.ts` and `lib/brand.ts` are imported both by the app and by
+    // `scripts/check-contrast.ts`, which node runs directly. Node needs the
+    // extension on the specifier; Vite is happy either way.
+    "allowImportingTsExtensions": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
     "strict": true,

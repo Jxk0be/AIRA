@@ -17,7 +17,7 @@ There is no `make` on Windows, so this stdlib-only script plays its part:
     python tasks.py backfill    # sync a tenant from its source system
     python tasks.py incremental
     python tasks.py conformance # the suite every adapter must pass
-    python tasks.py ingest      # embed a tenant's catalogue and documents
+    python tasks.py ingest      # embed a tenant's catalog and documents
     python tasks.py documents   # upload the fake shops' policies and FAQs
     python tasks.py reembed
     python tasks.py eval        # golden questions through the agent, graded
@@ -38,6 +38,8 @@ There is no `make` on Windows, so this stdlib-only script plays its part:
 
 from __future__ import annotations
 
+import os
+import re
 import shutil
 import subprocess
 import sys
@@ -147,7 +149,7 @@ def task_incremental(argv: list[str]) -> int:
 
 
 def task_ingest(argv: list[str]) -> int:
-    """Embed a tenant's catalogue and documents. Cheap to repeat: unchanged
+    """Embed a tenant's catalog and documents. Cheap to repeat: unchanged
     chunks are skipped and cost nothing."""
     tenant = argv[0] if argv and not argv[0].startswith("-") else "tsundoku"
     rest = argv[1:] if argv and not argv[0].startswith("-") else argv
@@ -257,7 +259,80 @@ def task_web(argv: list[str]) -> int:
 
 
 def task_test(argv: list[str]) -> int:
-    return uv(["run", "pytest", *argv])
+    """Both sides. The UI checks run too, so a token that fails AA fails here."""
+    code = uv(["run", "pytest", *argv])
+    return task_ui_check([]) or code
+
+
+def task_ui_check(argv: list[str]) -> int:
+    """The whole UI gate: contrast, then raw colors, then Playwright and axe.
+
+    Every check runs even when an earlier one fails, for the same reason `lint`
+    does it: one command should tell you everything that is wrong rather than
+    the first thing.
+
+    Needs no database. The API is replayed from `web/tests/fixtures`, recorded
+    by `ui-fixtures`, so this runs on a machine with nothing else started.
+    """
+    code = run(["node", "scripts/check-contrast.ts"], cwd=WEB)
+    code = _check_no_raw_colors() or code
+    return npm(["run", "test:e2e", "--", *argv]) or code
+
+
+def task_ui_shots(argv: list[str]) -> int:
+    """Full-page screenshots of every screen into docs/ui/after/.
+
+    Separate from `ui-check` on purpose: writing 40 PNGs into the repo is
+    something you ask for, not a side effect of running the tests.
+    """
+    os.environ["UI_SHOTS"] = "1"
+    print("\n  writing screenshots into docs/ui/after", flush=True)
+    return npm(["run", "test:e2e", "--", "shots.spec.ts", *argv])
+
+
+def task_ui_fixtures(argv: list[str]) -> int:
+    """Re-record the API responses the UI tests replay. Needs `tasks.py api`."""
+    return run(["node", "scripts/record-fixtures.ts", *argv], cwd=WEB)
+
+
+# Hex, rgb()/hsl() and Tailwind's own palette are all ways of smuggling a color
+# past the gate. Components get semantic tokens; style.css holds the palette.
+_COLOR_PATTERNS = (
+    re.compile(r"#[0-9a-fA-F]{3,8}"),
+    re.compile(r"(?:rgb|rgba|hsl|hsla)\("),
+    re.compile(
+        r"(?:bg|text|border|ring|from|to|via|fill|stroke|divide|outline|shadow)-"
+        r"(?:slate|gray|grey|zinc|neutral|stone|red|orange|amber|yellow|lime|green|"
+        r"emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}"
+    ),
+)
+
+
+def _check_no_raw_colors() -> int:
+    """A color written into a component is a color no theme can reach."""
+    offenders: list[str] = []
+    for path in sorted((WEB / "src").rglob("*")):
+        if path.suffix not in {".vue", ".ts"} or not path.is_file():
+            continue
+        # Three files are color machinery rather than components:
+        # `ChartRenderer.vue` carries the fallbacks that keep a chart drawable
+        # before the CSS has loaded, and `lib/color.ts` and `lib/brand.ts` are
+        # the maths that decides whether a shop's chosen color is readable —
+        # they have to name real values to do it. Everything else gets tokens.
+        if path.name in {"ChartRenderer.vue", "color.ts", "brand.ts"}:
+            continue
+        for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            if any(pattern.search(line) for pattern in _COLOR_PATTERNS):
+                offenders.append(f"{path.relative_to(ROOT)}:{number}: {line.strip()[:96]}")
+
+    if offenders:
+        print("\nRaw colors in components — use a semantic token instead:\n", flush=True)
+        for line in offenders:
+            print(f"  {line}", flush=True)
+        print(f"\n{len(offenders)} to fix.", flush=True)
+        return 1
+    print("\n  ok   no raw colors in components", flush=True)
+    return 0
 
 
 def task_build(argv: list[str]) -> int:
@@ -312,6 +387,9 @@ TASKS = {
     "web": task_web,
     "build": task_build,
     "test": task_test,
+    "ui-check": task_ui_check,
+    "ui-shots": task_ui_shots,
+    "ui-fixtures": task_ui_fixtures,
     "lint": task_lint,
     "typecheck": task_typecheck,
 }

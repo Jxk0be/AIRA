@@ -1,0 +1,28 @@
+[
+  {
+    "id": "739a6578-7ee1-4c15-9fed-b95a1545101f",
+    "name": "Tsundoku & Tabletop (owner)",
+    "email": "owner@tsundoku.example",
+    "phone": null,
+    "channels": [
+      "email"
+    ],
+    "quiet_hours_start": null,
+    "quiet_hours_end": null,
+    "max_per_day": 3,
+    "wants_digest": true
+  },
+  {
+    "id": "6e6c74c2-f8ab-4995-a2c6-8d27be944871",
+    "name": "Jake",
+    "email": "jakeshoffner27@gmail.com",
+    "phone": null,
+    "channels": [
+      "email"
+    ],
+    "quiet_hours_start": null,
+    "quiet_hours_end": null,
+    "max_per_day": 3,
+    "wants_digest": true
+  }
+]

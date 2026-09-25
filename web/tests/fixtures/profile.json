@@ -1,0 +1,48 @@
+{
+  "tenant": "tsundoku",
+  "name": "Tsundoku & Tabletop",
+  "timezone": "America/New_York",
+  "currency": "USD",
+  "today": "2026-09-24",
+  "capabilities": {
+    "has_costs": true,
+    "has_customers": true,
+    "has_inventory_history": true,
+    "multi_location": true,
+    "has_online_channel": true,
+    "supports_incremental": true,
+    "has_vendors": true,
+    "has_payments": true
+  },
+  "locations": [
+    {
+      "id": "970aac9a-b4ae-474c-be4c-c6d9dca6c43d",
+      "name": "Con Booth"
+    },
+    {
+      "id": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+      "name": "Tsundoku & Tabletop — Gay St"
+    }
+  ],
+  "channels": [
+    "event",
+    "in_store",
+    "online"
+  ],
+  "categories": [
+    "Apparel",
+    "Figures",
+    "Manga",
+    "Model Kits",
+    "Plush",
+    "Prize Figures",
+    "Scale Figures",
+    "Sealed Product",
+    "Singles",
+    "Supplies",
+    "Trading Cards"
+  ],
+  "data_from": "2025-03-25",
+  "data_to": "2026-10-01",
+  "brand_color": null
+}

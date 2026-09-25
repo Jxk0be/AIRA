@@ -1,0 +1,34 @@
+[
+  {
+    "tenant": "panel_and_pawn",
+    "name": "Panel & Pawn",
+    "timezone": "America/New_York",
+    "currency": "USD",
+    "capabilities": {
+      "has_costs": true,
+      "has_customers": false,
+      "has_inventory_history": false,
+      "multi_location": false,
+      "has_online_channel": false,
+      "supports_incremental": false,
+      "has_vendors": false,
+      "has_payments": false
+    }
+  },
+  {
+    "tenant": "tsundoku",
+    "name": "Tsundoku & Tabletop",
+    "timezone": "America/New_York",
+    "currency": "USD",
+    "capabilities": {
+      "has_costs": true,
+      "has_customers": true,
+      "has_inventory_history": true,
+      "multi_location": true,
+      "has_online_channel": true,
+      "supports_incremental": true,
+      "has_vendors": true,
+      "has_payments": true
+    }
+  }
+]

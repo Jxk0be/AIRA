@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction B — Ledger</title>
+<style>
+/* ===========================================================================
+   DIRECTION B — "Ledger"
+   Denser and more structured. Warm paper, hairline rules, figures set in a
+   mono face so a column of money lines up. An evolution of AIRA's current
+   identity rather than a replacement for it.
+
+   Every color is a token that passed the step-2 contrast gate: text >= 4.5:1,
+   UI/borders >= 3:1, chart series >= 3:1 on their surface and >= 20 CIEDE2000
+   apart (>= 11 under protanopia, deuteranopia and tritanopia).
+   =========================================================================== */
+
+.t-light{
+  --bg:#F6F4EF; --surface:#FFFFFF; --raised:#EFECE4;
+  --text:#14130F; --text-muted:#5B5649;
+  --border:#DFD9CC; --border-strong:#8B8474;
+  --accent:#0F5547; --accent-fg:#FFFFFF; --accent-subtle:#E2EFEA;
+  --success:#1B6B41; --warning:#7E5400; --danger:#A93122; --info:#1C5580;
+  --focus:#A33E18;
+  --c1:#0F5547; --c2:#808A3C; --c3:#4E4380; --c4:#754115; --c5:#B75D73; --c6:#3F92A8;
+}
+.t-dark{
+  --bg:#131210; --surface:#1B1A16; --raised:#232119;
+  --text:#F1ECE2; --text-muted:#ADA491;
+  --border:#332F27; --border-strong:#857C6A;
+  --accent:#6FC5A3; --accent-fg:#0F110F; --accent-subtle:#1B2C26;
+  --success:#63CC8D; --warning:#DBA94A; --danger:#E8846A; --info:#6FB0DE;
+  --focus:#E8926A;
+  --c1:#6FC5A3; --c2:#798EDC; --c3:#C38AAD; --c4:#9D9272; --c5:#FAC785; --c6:#D0D1FE;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0; background:#E4E0D6; color:#14130F;
+  font:16px/1.55 "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.disp{font-family:"Fraunces","Iowan Old Style",Georgia,"Times New Roman",serif;letter-spacing:-.012em}
+.num{font-family:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+  font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;letter-spacing:-.01em}
+
+/* ---- showcase chrome (not part of the design) ---------------------------- */
+.page{max-width:1400px;margin:0 auto;padding:40px 24px 80px}
+.page h1{font-size:34px;line-height:1.15;margin:0 0 8px}
+.page .lede{max-width:70ch;margin:0 0 4px;color:#4A4539;font-size:17px}
+.page h2.sec{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#6B6455;
+  margin:48px 0 14px;font-weight:700}
+.pitch{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;
+  margin:24px 0 8px;padding:20px;background:#fff;border:1px solid #D2CBBC}
+.pitch h3{margin:0 0 6px;font-size:15px}
+.pitch p{margin:0;font-size:15px;color:#4A4539}
+.frames{display:flex;gap:28px;flex-wrap:wrap}
+.cap{font-size:13px;color:#6B6455;margin:0 0 8px}
+.deskwrap{overflow-x:auto;padding-bottom:8px}
+
+/* ---- device frames ------------------------------------------------------- */
+.phone{width:375px;height:760px;overflow:hidden;position:relative;border-radius:22px;
+  background:var(--bg);color:var(--text);border:1px solid var(--border-strong)}
+.desk{width:1280px;height:760px;overflow:hidden;position:relative;
+  background:var(--bg);color:var(--text);border:1px solid var(--border-strong)}
+
+/* ---- shared primitives --------------------------------------------------- */
+.panel{background:var(--surface);border:1px solid var(--border)}
+.panel > header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  padding:9px 14px;border-bottom:1px solid var(--border);background:var(--raised)}
+.panel > header h2,.panel > header p{margin:0;font-size:14px;font-weight:700;letter-spacing:.02em}
+.muted{color:var(--text-muted)}
+.btn{font:inherit;font-size:15px;font-weight:600;padding:8px 13px;cursor:pointer;border:1px solid var(--accent);
+  background:var(--accent);color:var(--accent-fg);min-height:44px;border-radius:2px}
+.btn.ghost{background:transparent;color:var(--text);border-color:var(--border-strong)}
+.linkbtn{font:inherit;font-size:14px;background:none;border:none;color:var(--text-muted);
+  cursor:pointer;padding:9px 8px;min-height:44px;min-width:44px;text-decoration:underline;text-underline-offset:3px}
+.focused{outline:3px solid var(--focus);outline-offset:2px}
+
+/* severity: fixed-width rail so every title starts at the same x (audit U6) */
+.row{display:grid;grid-template-columns:104px 1fr auto;gap:14px;padding:13px 14px;
+  border-top:1px solid var(--border);align-items:start}
+.row:first-of-type{border-top:none}
+.tag{font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  border:1px solid currentColor;padding:2px 0;text-align:center;border-radius:2px;white-space:nowrap}
+.tag.urgent{color:var(--danger)} .tag.look{color:var(--warning)}
+.row h4{margin:0 0 3px;font-size:16px;font-weight:700}
+.row p{margin:0;font-size:15px;color:var(--text-muted);line-height:1.5}
+.row .amt{font-size:16px;font-weight:700;white-space:nowrap;text-align:right}
+.acts{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px}
+
+/* KPI ledger line */
+.kpis{display:grid;border:1px solid var(--border);background:var(--surface)}
+.kpi{padding:12px 14px;border-right:1px solid var(--border)}
+.kpi:last-child{border-right:none}
+.kpi .lab{font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--text-muted);margin:0 0 5px;font-weight:600}
+.kpi .val{font-size:26px;font-weight:600;margin:0;line-height:1.05}
+.kpi .chg{font-size:14px;margin:5px 0 0;display:flex;gap:6px;align-items:baseline;flex-wrap:wrap}
+.up{color:var(--success);font-weight:700} .down{color:var(--danger);font-weight:700}
+
+.seg{display:inline-flex;border:1px solid var(--border-strong);border-radius:2px;overflow:hidden}
+.seg button{font:inherit;font-size:14px;font-weight:600;border:none;border-right:1px solid var(--border-strong);
+  background:var(--surface);color:var(--text-muted);padding:9px 12px;cursor:pointer;min-height:44px}
+.seg button:last-child{border-right:none}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}
+
+.caveat{border-top:1px solid var(--border);background:var(--raised);padding:9px 14px;
+  font-size:14px;color:var(--text);display:flex;gap:9px;align-items:flex-start}
+.caveat svg{flex:none;margin-top:2px;color:var(--warning)}
+
+.skel{background:var(--raised);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+@media (prefers-reduced-motion: reduce){.skel{animation:none}}
+
+/* ---- phone layout -------------------------------------------------------- */
+.ph-top{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 14px;border-bottom:2px solid var(--text)}
+.ph-top h1{margin:0;font-size:23px;font-weight:600}
+.ph-top .shop{font-size:13px;color:var(--text-muted);margin:1px 0 0}
+.iconbtn{width:44px;height:44px;border:1px solid var(--border-strong);border-radius:2px;
+  background:var(--surface);color:var(--text);display:grid;place-items:center;cursor:pointer;flex:none}
+.ph-body{position:absolute;inset:64px 0 74px;overflow:hidden;padding:12px 12px 0}
+.ph-tabs{position:absolute;left:0;right:0;bottom:0;height:74px;padding-bottom:14px;
+  display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--border)}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  font-size:13px;font-weight:600;color:var(--text-muted);border:none;background:none;cursor:pointer;
+  position:relative;padding-top:5px}
+.tab[aria-current="page"]{color:var(--accent);font-weight:750}
+.tab[aria-current="page"]::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent)}
+.badge{position:absolute;top:1px;right:50%;transform:translateX(19px);background:var(--danger);
+  color:#fff;font-size:12px;font-weight:700;min-width:19px;height:19px;border-radius:10px;
+  display:grid;place-items:center;padding:0 5px}
+
+/* ---- desktop layout ------------------------------------------------------ */
+.dk{display:grid;grid-template-columns:226px 1fr;height:100%}
+.side{background:var(--surface);border-right:1px solid var(--border);padding:18px 12px;display:flex;flex-direction:column}
+.brandrow{padding:0 8px 16px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.brandrow .nm{font-size:19px;font-weight:600}
+.brandrow .sub{font-size:13px;color:var(--text-muted);margin-top:2px}
+.navitem{display:flex;align-items:center;gap:10px;padding:9px 10px;font-size:15px;font-weight:600;
+  color:var(--text-muted);cursor:pointer;border-left:3px solid transparent}
+.navitem[aria-current="page"]{color:var(--text);border-left-color:var(--accent);background:var(--raised)}
+.navitem .cnt{margin-left:auto;background:var(--danger);color:#fff;font-size:12px;font-weight:700;
+  border-radius:2px;min-width:20px;height:19px;display:grid;place-items:center;padding:0 5px}
+.dk-top{display:flex;align-items:center;gap:16px;padding:11px 22px;border-bottom:2px solid var(--text);background:var(--bg)}
+.dk-top h1{margin:0;font-size:22px;font-weight:600}
+.search{flex:1;max-width:320px;display:flex;align-items:center;gap:9px;background:var(--surface);
+  border:1px solid var(--border-strong);border-radius:2px;padding:7px 10px;color:var(--text-muted);font-size:14px}
+.kbd{margin-left:auto;font-size:12px;border:1px solid var(--border-strong);padding:1px 5px;border-radius:2px}
+.dk-body{padding:18px 22px;overflow:hidden;height:calc(100% - 55px)}
+.grid2{display:grid;grid-template-columns:1fr 400px;gap:18px;align-items:start}
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1 class="disp">Direction B — “Ledger”</h1>
+<p class="lede">Denser and more structured. Warm paper, hairline rules, a serif for headings and a mono
+face for every figure, so a column of money lines up and a heading never reads as a row.</p>
+
+<div class="pitch">
+  <div>
+    <h3>Who it suits</h3>
+    <p>An owner who reads numbers all day and wants more of them on screen at once — the whole KPI line,
+    three findings and the chart without scrolling. It signals “specialist tool,” not “app.”</p>
+  </div>
+  <div>
+    <h3>What you give up</h3>
+    <p>Calm. More rules, more type sizes and more information per screen means more to take in at a
+    glance, and it is less forgiving if a page gets crowded later.</p>
+  </div>
+  <div>
+    <h3>The tradeoff in one line</h3>
+    <p>Information per screen at the cost of breathing room; it keeps the equity in AIRA’s existing look
+    instead of starting the visual identity over.</p>
+  </div>
+</div>
+
+<h2 class="sec">Mobile — 375 × 812</h2>
+<div class="frames">
+
+  <div>
+    <p class="cap">Light — the default</p>
+    <div class="phone t-light">
+      <div class="ph-top">
+        <div>
+          <h1 class="disp">Home</h1>
+          <p class="shop">Tsundoku &amp; Tabletop</p>
+        </div>
+        <button class="iconbtn" aria-label="Check for new findings">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M16.5 10a6.5 6.5 0 1 1-1.9-4.6"/><path d="M16.5 3.5V7H13"/></svg>
+        </button>
+      </div>
+
+      <div class="ph-body">
+        <div class="kpis" style="grid-template-columns:1fr 1fr">
+          <div class="kpi" style="border-bottom:1px solid var(--border)">
+            <p class="lab">Net sales</p>
+            <p class="val num">$12,160</p>
+            <p class="chg"><span class="up num">▲ 6.2%</span></p>
+          </div>
+          <div class="kpi" style="border-bottom:1px solid var(--border)">
+            <p class="lab">Orders</p>
+            <p class="val num">412</p>
+            <p class="chg"><span class="down num">▼ 2.1%</span></p>
+          </div>
+          <div class="kpi">
+            <p class="lab">Avg order</p>
+            <p class="val num">$29.52</p>
+            <p class="chg"><span class="up num">▲ 8.5%</span></p>
+          </div>
+          <div class="kpi">
+            <p class="lab">Stock</p>
+            <p class="val num">$84,730</p>
+            <p class="chg"><span class="muted">last sync</span></p>
+          </div>
+        </div>
+
+        <section class="panel" style="margin-top:12px">
+          <header><h2>Worth doing</h2><p class="muted" style="font-weight:400">5 open</p></header>
+          <div class="row" style="grid-template-columns:1fr auto">
+            <div>
+              <span class="tag urgent" style="display:inline-block;padding:2px 6px;margin-bottom:5px">Urgent</span>
+              <h4>$20 of stock left without a sale</h4>
+              <p>1 item shows stock leaving with nothing behind it: Astral Clash: Veil of Nine Booster Pack (6).</p>
+              <div class="acts">
+                <button class="btn">Count these items</button>
+                <button class="linkbtn">Dismiss</button>
+              </div>
+            </div>
+            <span class="amt num">$20.34</span>
+          </div>
+          <div class="row" style="grid-template-columns:1fr auto">
+            <div>
+              <span class="tag look" style="display:inline-block;padding:2px 6px;margin-bottom:5px">Worth a look</span>
+              <h4>$27,102 tied up in 178 items</h4>
+              <p>40 dead, 44 stale, 94 slowing, valued at cost.</p>
+              <div class="acts">
+                <button class="btn ghost">See what to do</button>
+              </div>
+            </div>
+            <span class="amt num">$27,102</span>
+          </div>
+        </section>
+        <p style="text-align:center;margin:8px 0 0"><button class="linkbtn">3 more things worth doing</button></p>
+      </div>
+
+      <nav class="ph-tabs" aria-label="Main">
+        <button class="tab" aria-current="page">
+          <span class="badge">3</span>
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/></svg>
+          Home
+        </button>
+        <button class="tab"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 1 1-3.2-6.4"/><path d="M12 8v4l3 2"/></svg> Ask</button>
+        <button class="tab"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v13H4z"/><path d="M4 7l2-3h12l2 3"/><path d="M9 11h6"/></svg> Stock</button>
+        <button class="tab"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h10l4 4v14H5z"/><path d="M8 13h8M8 17h5"/></svg> Reports</button>
+        <button class="tab"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg> Settings</button>
+      </nav>
+    </div>
+  </div>
+
+  <div>
+    <p class="cap">Dark — its own palette, not an inversion</p>
+    <div class="phone t-dark">
+      <div class="ph-top">
+        <div>
+          <h1 class="disp">Home</h1>
+          <p class="shop">Tsundoku &amp; Tabletop</p>
+        </div>
+        <button class="iconbtn" aria-label="Check for new findings">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M16.5 10a6.5 6.5 0 1 1-1.9-4.6"/><path d="M16.5 3.5V7H13"/></svg>
+        </button>
+      </div>
+
+      <div class="ph-body">
+        <section class="panel">
+          <header>
+            <h2>Net sales</h2>
+            <div class="seg" role="group" aria-label="Bucket size">
+              <button>Day</button><button aria-pressed="true">Week</button><button>Month</button>
+            </div>
+          </header>
+          <div style="padding:10px 12px 4px">
+            <svg viewBox="0 0 676 190" width="100%" role="img"
+                 aria-label="Net sales by week, 6 July to 21 September 2026. Ranges from $2,140 to a peak of $5,240 in the week of 24 August.">
+              <g stroke="var(--border)" stroke-width="1">
+                <line x1="46" y1="158" x2="630" y2="158"/>
+                <line x1="46" y1="122" x2="630" y2="122" stroke-dasharray="2 4"/>
+                <line x1="46" y1="86"  x2="630" y2="86"  stroke-dasharray="2 4"/>
+                <line x1="46" y1="50"  x2="630" y2="50"  stroke-dasharray="2 4"/>
+                <line x1="46" y1="14"  x2="630" y2="14"  stroke-dasharray="2 4"/>
+              </g>
+              <g fill="var(--text-muted)" font-size="13" text-anchor="end"
+                 font-family="IBM Plex Mono, ui-monospace, monospace">
+                <text x="38" y="162">$0</text><text x="38" y="126">$1.5k</text>
+                <text x="38" y="90">$3k</text><text x="38" y="54">$4.5k</text><text x="38" y="18">$6k</text>
+              </g>
+              <g fill="var(--c1)">
+                <rect x="30.0" y="106.6" width="32" height="51.4"/><rect x="83.1" y="86.5" width="32" height="71.5"/>
+                <rect x="136.2" y="99.0" width="32" height="59.0"/><rect x="189.3" y="78.6" width="32" height="79.4"/>
+                <rect x="242.4" y="89.1" width="32" height="68.9"/><rect x="295.5" y="104.0" width="32" height="54.0"/>
+                <rect x="348.5" y="64.6" width="32" height="93.4"/><rect x="401.6" y="32.2" width="32" height="125.8"/>
+                <rect x="454.7" y="83.1" width="32" height="74.9"/><rect x="507.8" y="93.7" width="32" height="64.3"/>
+                <rect x="560.9" y="75.2" width="32" height="82.8"/><rect x="614.0" y="88.2" width="32" height="69.8"/>
+              </g>
+              <g fill="var(--text-muted)" font-size="13" text-anchor="middle"
+                 font-family="IBM Plex Mono, ui-monospace, monospace">
+                <text x="46" y="180">Jul 6</text><text x="205.3" y="180">Jul 27</text>
+                <text x="364.5" y="180">Aug 17</text><text x="523.8" y="180">Sep 7</text>
+                <text x="626" y="180" text-anchor="end">Sep 21</text>
+              </g>
+            </svg>
+          </div>
+          <div class="caveat">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5 18.5 17H1.5z" stroke-linejoin="round"/><path d="M10 8v3.4M10 14h.01" stroke-linecap="round"/></svg>
+            <span>2.9% of sales ($171.00) were rung up as a custom amount, so they count here but not to any one product.</span>
+          </div>
+        </section>
+
+        <section class="panel" style="margin-top:12px">
+          <header><h2>Pinned</h2><p class="muted" style="font-weight:400">loading</p></header>
+          <div style="padding:12px 14px">
+            <div class="skel" style="height:12px;width:42%"></div>
+            <div class="skel" style="height:12px;width:61%;margin-top:8px"></div>
+            <div class="skel" style="height:52px;margin-top:12px"></div>
+          </div>
+        </section>
+      </div>
+
+      <nav class="ph-tabs" aria-label="Main">
+        <button class="tab" aria-current="page">
+          <span class="badge">3</span>
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/></svg>
+          Home
+        </button>
+        <button class="tab"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 1 1-3.2-6.4"/><path d="M12 8v4l3 2"/></svg> Ask</button>
+        <button class="tab"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v13H4z"/><path d="M4 7l2-3h12l2 3"/><path d="M9 11h6"/></svg> Stock</button>
+        <button class="tab"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h10l4 4v14H5z"/><path d="M8 13h8M8 17h5"/></svg> Reports</button>
+        <button class="tab"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg> Settings</button>
+      </nav>
+    </div>
+  </div>
+
+</div>
+
+<h2 class="sec">Desktop — 1280 × 800, light</h2>
+<div class="deskwrap">
+<div class="desk t-light">
+  <div class="dk">
+    <aside class="side">
+      <div class="brandrow">
+        <div class="nm disp">Tsundoku &amp; Tabletop<span style="color:var(--accent)">.</span></div>
+        <div class="sub">Gay St · Knoxville · ET</div>
+      </div>
+      <nav aria-label="Main">
+        <div class="navitem" aria-current="page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/></svg> Home <span class="cnt">3</span></div>
+        <div class="navitem"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 1 1-3.2-6.4"/><path d="M12 8v4l3 2"/></svg> Ask</div>
+        <div class="navitem"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v13H4z"/><path d="M4 7l2-3h12l2 3"/><path d="M9 11h6"/></svg> Stock</div>
+        <div class="navitem"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h10l4 4v14H5z"/><path d="M8 13h8M8 17h5"/></svg> Reports</div>
+        <div class="navitem"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg> Settings</div>
+      </nav>
+      <div style="margin-top:auto;padding-top:12px;border-top:1px solid var(--border)">
+        <div class="seg" role="group" aria-label="Theme" style="width:100%">
+          <button aria-pressed="true" style="flex:1">Light</button>
+          <button style="flex:1">Dark</button>
+          <button style="flex:1">System</button>
+        </div>
+        <p class="muted num" style="font-size:13px;margin:10px 2px 0">Synced 14 min ago</p>
+      </div>
+    </aside>
+
+    <div>
+      <div class="dk-top">
+        <h1 class="disp">Home</h1>
+        <div class="search">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="9" r="6"/><path d="m13.5 13.5 4 4" stroke-linecap="round"/></svg>
+          Search products, findings, pages
+          <span class="kbd">Ctrl K</span>
+        </div>
+        <span class="muted num" style="font-size:14px;margin-left:auto">Aug 26 – Sep 24, 2026</span>
+      </div>
+
+      <div class="dk-body">
+        <div class="kpis" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px">
+          <div class="kpi">
+            <p class="lab">Net sales</p><p class="val num">$12,160.45</p>
+            <p class="chg"><span class="up num">▲ 6.2%</span><span class="muted num">vs $11,450.90</span></p>
+          </div>
+          <div class="kpi">
+            <p class="lab">Orders</p><p class="val num">412</p>
+            <p class="chg"><span class="down num">▼ 2.1%</span><span class="muted num">vs 421</span></p>
+          </div>
+          <div class="kpi">
+            <p class="lab">Average order</p><p class="val num">$29.52</p>
+            <p class="chg"><span class="up num">▲ 8.5%</span><span class="muted num">vs $27.20</span></p>
+          </div>
+          <div class="kpi">
+            <p class="lab">Stock on hand</p><p class="val num">$84,730.00</p>
+            <p class="chg"><span class="muted">as of the last sync</span></p>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <section class="panel">
+            <header>
+              <h2>Worth doing</h2>
+              <div style="display:flex;gap:8px;align-items:center">
+                <span class="muted" style="font-weight:400;font-size:14px">5 open</span>
+                <button class="linkbtn" style="padding:2px 0">Acted on · Dismissed</button>
+              </div>
+            </header>
+
+            <div class="row">
+              <span class="tag urgent">Urgent</span>
+              <div>
+                <h4>$20 of stock left without a sale</h4>
+                <p>Over the last 14 days, 1 item shows stock leaving with no sale, refund or recorded
+                   adjustment behind it: Astral Clash: Veil of Nine Booster Pack (6). Worth a count
+                   before assuming anything — a miskeyed adjustment looks identical.</p>
+                <div class="acts">
+                  <button class="btn">Count these items</button>
+                  <button class="linkbtn">Dismiss</button>
+                  <button class="linkbtn">Snooze a week</button>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <div class="amt num">$20.34</div>
+                <div class="muted num" style="font-size:13px;margin-top:3px">3h ago</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <span class="tag look">Worth a look</span>
+              <div>
+                <h4>$27,102 tied up in 178 items</h4>
+                <p>178 items have stopped moving — 40 dead, 44 stale, 94 slowing — valued at cost.
+                   The five worth starting on are all Astral Clash sealed product.</p>
+                <div class="acts">
+                  <button class="btn ghost">See what to do</button>
+                  <button class="linkbtn">Dismiss</button>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <div class="amt num">$27,102</div>
+                <div class="muted num" style="font-size:13px;margin-top:3px">1d ago</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <span class="tag look">Worth a look</span>
+              <div>
+                <h4>11 lines worth ordering from Riverbend Hobby Supply</h4>
+                <p>3 of them sell faster than the 14-day lead time covers, so they go first.</p>
+                <div class="acts">
+                  <button class="btn ghost focused">Make a draft</button>
+                  <button class="linkbtn">Dismiss</button>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <div class="amt num">$73.11</div>
+                <div class="muted num" style="font-size:13px;margin-top:3px">1d ago</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <header>
+              <h2>Net sales</h2>
+              <div class="seg" role="group" aria-label="Bucket size">
+                <button>Day</button><button aria-pressed="true">Week</button><button>Month</button>
+              </div>
+            </header>
+            <div style="padding:12px 14px 4px">
+              <svg viewBox="0 0 676 190" width="100%" role="img"
+                   aria-label="Net sales by week, 6 July to 21 September 2026. Ranges from $2,140 to a peak of $5,240 in the week of 24 August.">
+                <g stroke="var(--border)" stroke-width="1">
+                  <line x1="46" y1="158" x2="630" y2="158"/>
+                  <line x1="46" y1="122" x2="630" y2="122" stroke-dasharray="2 4"/>
+                  <line x1="46" y1="86"  x2="630" y2="86"  stroke-dasharray="2 4"/>
+                  <line x1="46" y1="50"  x2="630" y2="50"  stroke-dasharray="2 4"/>
+                  <line x1="46" y1="14"  x2="630" y2="14"  stroke-dasharray="2 4"/>
+                </g>
+                <g fill="var(--text-muted)" font-size="13" text-anchor="end"
+                   font-family="IBM Plex Mono, ui-monospace, monospace">
+                  <text x="38" y="162">$0</text><text x="38" y="126">$1.5k</text>
+                  <text x="38" y="90">$3k</text><text x="38" y="54">$4.5k</text><text x="38" y="18">$6k</text>
+                </g>
+                <g fill="var(--c1)">
+                  <rect x="30.0" y="106.6" width="32" height="51.4"/><rect x="83.1" y="86.5" width="32" height="71.5"/>
+                  <rect x="136.2" y="99.0" width="32" height="59.0"/><rect x="189.3" y="78.6" width="32" height="79.4"/>
+                  <rect x="242.4" y="89.1" width="32" height="68.9"/><rect x="295.5" y="104.0" width="32" height="54.0"/>
+                  <rect x="348.5" y="64.6" width="32" height="93.4"/><rect x="401.6" y="32.2" width="32" height="125.8"/>
+                  <rect x="454.7" y="83.1" width="32" height="74.9"/><rect x="507.8" y="93.7" width="32" height="64.3"/>
+                  <rect x="560.9" y="75.2" width="32" height="82.8"/><rect x="614.0" y="88.2" width="32" height="69.8"/>
+                </g>
+                <g fill="var(--text-muted)" font-size="13" text-anchor="middle"
+                   font-family="IBM Plex Mono, ui-monospace, monospace">
+                  <text x="46" y="180">Jul 6</text><text x="205.3" y="180">Jul 27</text>
+                  <text x="364.5" y="180">Aug 17</text><text x="523.8" y="180">Sep 7</text>
+                  <text x="626" y="180" text-anchor="end">Sep 21</text>
+                </g>
+              </svg>
+              <p class="muted" style="font-size:14px;margin:2px 0 4px">Drag across the chart to zoom.
+                <button class="linkbtn" style="padding:4px 0">View as table</button></p>
+            </div>
+            <div class="caveat">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5 18.5 17H1.5z" stroke-linejoin="round"/><path d="M10 8v3.4M10 14h.01" stroke-linecap="round"/></svg>
+              <span>2.9% of sales ($171.00) were rung up as a custom amount with no product attached.</span>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<h2 class="sec">Desktop — 1280 × 800, dark</h2>
+<div class="deskwrap">
+<div class="desk t-dark">
+  <div class="dk">
+    <aside class="side">
+      <div class="brandrow">
+        <div class="nm disp">Tsundoku &amp; Tabletop<span style="color:var(--accent)">.</span></div>
+        <div class="sub">Gay St · Knoxville · ET</div>
+      </div>
+      <nav aria-label="Main">
+        <div class="navitem" aria-current="page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/></svg> Home <span class="cnt">3</span></div>
+        <div class="navitem"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 1 1-3.2-6.4"/><path d="M12 8v4l3 2"/></svg> Ask</div>
+        <div class="navitem"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v13H4z"/><path d="M4 7l2-3h12l2 3"/><path d="M9 11h6"/></svg> Stock</div>
+        <div class="navitem"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h10l4 4v14H5z"/><path d="M8 13h8M8 17h5"/></svg> Reports</div>
+        <div class="navitem"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg> Settings</div>
+      </nav>
+      <div style="margin-top:auto;padding-top:12px;border-top:1px solid var(--border)">
+        <div class="seg" role="group" aria-label="Theme" style="width:100%">
+          <button style="flex:1">Light</button>
+          <button aria-pressed="true" style="flex:1">Dark</button>
+          <button style="flex:1">System</button>
+        </div>
+        <p class="muted num" style="font-size:13px;margin:10px 2px 0">Synced 14 min ago</p>
+      </div>
+    </aside>
+
+    <div>
+      <div class="dk-top">
+        <h1 class="disp">Home</h1>
+        <div class="search">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="9" r="6"/><path d="m13.5 13.5 4 4" stroke-linecap="round"/></svg>
+          Search products, findings, pages
+          <span class="kbd">Ctrl K</span>
+        </div>
+        <span class="muted num" style="font-size:14px;margin-left:auto">Aug 26 – Sep 24, 2026</span>
+      </div>
+
+      <div class="dk-body">
+        <div class="kpis" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px">
+          <div class="kpi">
+            <p class="lab">Net sales</p><p class="val num">$12,160.45</p>
+            <p class="chg"><span class="up num">▲ 6.2%</span><span class="muted num">vs $11,450.90</span></p>
+          </div>
+          <div class="kpi">
+            <p class="lab">Orders</p><p class="val num">412</p>
+            <p class="chg"><span class="down num">▼ 2.1%</span><span class="muted num">vs 421</span></p>
+          </div>
+          <div class="kpi">
+            <p class="lab">Average order</p><p class="val num">$29.52</p>
+            <p class="chg"><span class="up num">▲ 8.5%</span><span class="muted num">vs $27.20</span></p>
+          </div>
+          <div class="kpi">
+            <p class="lab">Stock on hand</p><p class="val num">$84,730.00</p>
+            <p class="chg"><span class="muted">as of the last sync</span></p>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <section class="panel">
+            <header>
+              <h2>Worth doing</h2>
+              <div style="display:flex;gap:8px;align-items:center">
+                <span class="muted" style="font-weight:400;font-size:14px">5 open</span>
+                <button class="linkbtn" style="padding:2px 0">Acted on · Dismissed</button>
+              </div>
+            </header>
+
+            <div class="row">
+              <span class="tag urgent">Urgent</span>
+              <div>
+                <h4>$20 of stock left without a sale</h4>
+                <p>Over the last 14 days, 1 item shows stock leaving with no sale, refund or recorded
+                   adjustment behind it: Astral Clash: Veil of Nine Booster Pack (6). Worth a count
+                   before assuming anything — a miskeyed adjustment looks identical.</p>
+                <div class="acts">
+                  <button class="btn">Count these items</button>
+                  <button class="linkbtn">Dismiss</button>
+                  <button class="linkbtn">Snooze a week</button>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <div class="amt num">$20.34</div>
+                <div class="muted num" style="font-size:13px;margin-top:3px">3h ago</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <span class="tag look">Worth a look</span>
+              <div>
+                <h4>$27,102 tied up in 178 items</h4>
+                <p>178 items have stopped moving — 40 dead, 44 stale, 94 slowing — valued at cost.
+                   The five worth starting on are all Astral Clash sealed product.</p>
+                <div class="acts">
+                  <button class="btn ghost">See what to do</button>
+                  <button class="linkbtn">Dismiss</button>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <div class="amt num">$27,102</div>
+                <div class="muted num" style="font-size:13px;margin-top:3px">1d ago</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <span class="tag look">Worth a look</span>
+              <div>
+                <h4>11 lines worth ordering from Riverbend Hobby Supply</h4>
+                <p>3 of them sell faster than the 14-day lead time covers, so they go first.</p>
+                <div class="acts">
+                  <button class="btn ghost focused">Make a draft</button>
+                  <button class="linkbtn">Dismiss</button>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <div class="amt num">$73.11</div>
+                <div class="muted num" style="font-size:13px;margin-top:3px">1d ago</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <header>
+              <h2>Net sales</h2>
+              <div class="seg" role="group" aria-label="Bucket size">
+                <button>Day</button><button aria-pressed="true">Week</button><button>Month</button>
+              </div>
+            </header>
+            <div style="padding:12px 14px 4px">
+              <svg viewBox="0 0 676 190" width="100%" role="img"
+                   aria-label="Net sales by week, 6 July to 21 September 2026. Ranges from $2,140 to a peak of $5,240 in the week of 24 August.">
+                <g stroke="var(--border)" stroke-width="1">
+                  <line x1="46" y1="158" x2="630" y2="158"/>
+                  <line x1="46" y1="122" x2="630" y2="122" stroke-dasharray="2 4"/>
+                  <line x1="46" y1="86"  x2="630" y2="86"  stroke-dasharray="2 4"/>
+                  <line x1="46" y1="50"  x2="630" y2="50"  stroke-dasharray="2 4"/>
+                  <line x1="46" y1="14"  x2="630" y2="14"  stroke-dasharray="2 4"/>
+                </g>
+                <g fill="var(--text-muted)" font-size="13" text-anchor="end"
+                   font-family="IBM Plex Mono, ui-monospace, monospace">
+                  <text x="38" y="162">$0</text><text x="38" y="126">$1.5k</text>
+                  <text x="38" y="90">$3k</text><text x="38" y="54">$4.5k</text><text x="38" y="18">$6k</text>
+                </g>
+                <g fill="var(--c1)">
+                  <rect x="30.0" y="106.6" width="32" height="51.4"/><rect x="83.1" y="86.5" width="32" height="71.5"/>
+                  <rect x="136.2" y="99.0" width="32" height="59.0"/><rect x="189.3" y="78.6" width="32" height="79.4"/>
+                  <rect x="242.4" y="89.1" width="32" height="68.9"/><rect x="295.5" y="104.0" width="32" height="54.0"/>
+                  <rect x="348.5" y="64.6" width="32" height="93.4"/><rect x="401.6" y="32.2" width="32" height="125.8"/>
+                  <rect x="454.7" y="83.1" width="32" height="74.9"/><rect x="507.8" y="93.7" width="32" height="64.3"/>
+                  <rect x="560.9" y="75.2" width="32" height="82.8"/><rect x="614.0" y="88.2" width="32" height="69.8"/>
+                </g>
+                <g fill="var(--text-muted)" font-size="13" text-anchor="middle"
+                   font-family="IBM Plex Mono, ui-monospace, monospace">
+                  <text x="46" y="180">Jul 6</text><text x="205.3" y="180">Jul 27</text>
+                  <text x="364.5" y="180">Aug 17</text><text x="523.8" y="180">Sep 7</text>
+                  <text x="626" y="180" text-anchor="end">Sep 21</text>
+                </g>
+              </svg>
+              <p class="muted" style="font-size:14px;margin:2px 0 4px">Drag across the chart to zoom.
+                <button class="linkbtn" style="padding:4px 0">View as table</button></p>
+            </div>
+            <div class="caveat">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5 18.5 17H1.5z" stroke-linejoin="round"/><path d="M10 8v3.4M10 14h.01" stroke-linecap="round"/></svg>
+              <span>2.9% of sales ($171.00) were rung up as a custom amount with no product attached.</span>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<h2 class="sec">Chart palette — six series, both themes</h2>
+<div class="frames">
+  <div class="t-light panel" style="padding:18px;flex:1;min-width:300px">
+    <p class="cap" style="font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--text-muted)">Light</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <span style="display:flex;align-items:center;gap:7px;font-size:14px"><i style="width:15px;height:15px;background:var(--c1)"></i>Trading Cards</span>
+      <span style="display:flex;align-items:center;gap:7px;font-size:14px"><i style="width:15px;height:15px;background:var(--c2)"></i>Manga</span>
+      <span style="display:flex;align-items:center;gap:7px;font-size:14px"><i style="width:15px;height:15px;background:var(--c3)"></i>Figures</span>
+      <span style="display:flex;align-items:center;gap:7px;font-size:14px"><i style="width:15px;height:15px;background:var(--c4)"></i>Supplies</span>
+      <span style="display:flex;align-items:center;gap:7px;font-size:14px"><i style="width:15px;height:15px;background:var(--c5)"></i>Model Kits</span>
+      <span style="display:flex;align-items:center;gap:7px;font-size:14px"><i style="width:15px;height:15px;background:var(--c6)"></i>Apparel</span>
+    </div>
+  </div>
+  <div class="t-dark panel" style="padding:18px;flex:1;min-width:300px;color:var(--text)">
+    <p class="cap" style="font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--text-muted)">Dark</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <span style="display:flex;align-items:center;gap:7px;font-size:14px"><i style="width:15px;height:15px;background:var(--c1)"></i>Trading Cards</span>
+      <span style="display:flex;align-items:center;gap:7px;font-size:14px"><i style="width:15px;height:15px;background:var(--c2)"></i>Manga</span>
+      <span style="display:flex;align-items:center;gap:7px;font-size:14px"><i style="width:15px;height:15px;background:var(--c3)"></i>Figures</span>
+      <span style="display:flex;align-items:center;gap:7px;font-size:14px"><i style="width:15px;height:15px;background:var(--c4)"></i>Supplies</span>
+      <span style="display:flex;align-items:center;gap:7px;font-size:14px"><i style="width:15px;height:15px;background:var(--c5)"></i>Model Kits</span>
+      <span style="display:flex;align-items:center;gap:7px;font-size:14px"><i style="width:15px;height:15px;background:var(--c6)"></i>Apparel</span>
+    </div>
+  </div>
+</div>
+
+<p class="cap" style="margin-top:32px">Data is Tsundoku &amp; Tabletop’s seeded catalog. Figures are internally
+consistent: $12,160.45 net over 412 orders is the $29.52 average shown.</p>
+
+</div>
+</body>
+</html>

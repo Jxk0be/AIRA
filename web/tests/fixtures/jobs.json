@@ -1,0 +1,169 @@
+{
+  "tenant": "tsundoku",
+  "timezone": "America/New_York",
+  "schedules": [
+    {
+      "job": "sync",
+      "when": "every hour, at 05 past, America/New York",
+      "last_due": "2026-09-24T20:05:00Z",
+      "last_succeeded_at": "2026-09-24T20:05:54.533475Z",
+      "overdue": false
+    },
+    {
+      "job": "detectors",
+      "when": "every day at 06:30, America/New York",
+      "last_due": "2026-09-24T10:30:00Z",
+      "last_succeeded_at": "2026-09-24T16:07:31.914917Z",
+      "overdue": false
+    },
+    {
+      "job": "digest",
+      "when": "Mondays at 07:00, America/New York",
+      "last_due": "2026-09-21T11:00:00Z",
+      "last_succeeded_at": null,
+      "overdue": true
+    },
+    {
+      "job": "outcomes",
+      "when": "every day at 02:15, America/New York",
+      "last_due": "2026-09-24T06:15:00Z",
+      "last_succeeded_at": "2026-09-24T16:07:31.939418Z",
+      "overdue": false
+    },
+    {
+      "job": "month_end",
+      "when": "the 1st of each month at 06:00, America/New York",
+      "last_due": "2026-09-01T10:00:00Z",
+      "last_succeeded_at": null,
+      "overdue": true
+    }
+  ],
+  "runs": [
+    {
+      "id": "326146fb-9fb4-4423-ac05-57dba1b7ead9",
+      "job": "sync",
+      "status": "succeeded",
+      "due_at": "2026-09-24T20:05:00Z",
+      "started_at": "2026-09-24T20:05:50.407475Z",
+      "finished_at": "2026-09-24T20:05:54.533475Z",
+      "duration_ms": 4126,
+      "detail": {
+        "fetched": 595,
+        "upserted": 595,
+        "duration_ms": 4089,
+        "chunks_embedded": 0,
+        "customers_merged": 0
+      },
+      "error": null
+    },
+    {
+      "id": "c451e550-bdb5-4db1-998a-2bfa29cdac73",
+      "job": "sync",
+      "status": "succeeded",
+      "due_at": "2026-09-24T19:05:00Z",
+      "started_at": "2026-09-24T19:05:42.434378Z",
+      "finished_at": "2026-09-24T19:05:47.547735Z",
+      "duration_ms": 5113,
+      "detail": {
+        "fetched": 595,
+        "upserted": 595,
+        "duration_ms": 4092,
+        "chunks_embedded": 0,
+        "customers_merged": 0
+      },
+      "error": null
+    },
+    {
+      "id": "8b62a454-a19e-4e97-a6d8-873a21678802",
+      "job": "sync",
+      "status": "succeeded",
+      "due_at": "2026-09-24T18:05:00Z",
+      "started_at": "2026-09-24T18:05:34.244187Z",
+      "finished_at": "2026-09-24T18:05:39.523187Z",
+      "duration_ms": 5279,
+      "detail": {
+        "fetched": 595,
+        "upserted": 595,
+        "duration_ms": 4166,
+        "chunks_embedded": 0,
+        "customers_merged": 0
+      },
+      "error": null
+    },
+    {
+      "id": "42e8499a-2ca6-4d9d-9fc4-bfb9e8ba45ea",
+      "job": "sync",
+      "status": "succeeded",
+      "due_at": "2026-09-24T17:05:00Z",
+      "started_at": "2026-09-24T17:05:05.004500Z",
+      "finished_at": "2026-09-24T17:05:30.710048Z",
+      "duration_ms": 25705,
+      "detail": {
+        "fetched": 594,
+        "upserted": 594,
+        "duration_ms": 4239,
+        "chunks_embedded": 0,
+        "customers_merged": 0
+      },
+      "error": null
+    },
+    {
+      "id": "01aba0a6-967f-4652-bd63-b5e757415d7f",
+      "job": "outcomes",
+      "status": "succeeded",
+      "due_at": "2026-09-24T06:15:00Z",
+      "started_at": "2026-09-24T16:07:31.922418Z",
+      "finished_at": "2026-09-24T16:07:31.939418Z",
+      "duration_ms": 17,
+      "detail": {
+        "cash_recovered": "0",
+        "rescues_measured": 0,
+        "attributed_revenue": "0",
+        "purchase_orders_measured": 0
+      },
+      "error": null
+    },
+    {
+      "id": "915eaecf-be97-4689-a23e-0cb420dfbdb5",
+      "job": "detectors",
+      "status": "succeeded",
+      "due_at": "2026-09-24T10:30:00Z",
+      "started_at": "2026-09-24T16:07:16.031417Z",
+      "finished_at": "2026-09-24T16:07:31.914917Z",
+      "duration_ms": 15883,
+      "detail": {
+        "created": 5,
+        "expired": 0,
+        "updated": 0,
+        "detectors": {
+          "reorder": "1 new, 0 updated",
+          "staffing": "0 new, 0 updated",
+          "dead_stock": "1 new, 0 updated",
+          "stale_data": "0 new, 0 updated",
+          "refund_spike": "1 new, 0 updated",
+          "sales_anomaly": "1 new, 0 updated",
+          "possible_shrink": "1 new, 0 updated",
+          "impossible_values": "0 new, 0 updated"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "ad72a9da-303f-45a2-bfff-4655dff1eeb3",
+      "job": "sync",
+      "status": "succeeded",
+      "due_at": "2026-09-24T16:05:00Z",
+      "started_at": "2026-09-24T16:07:11.681416Z",
+      "finished_at": "2026-09-24T16:07:16.023917Z",
+      "duration_ms": 4342,
+      "detail": {
+        "fetched": 594,
+        "upserted": 594,
+        "duration_ms": 4250,
+        "chunks_embedded": 0,
+        "customers_merged": 0
+      },
+      "error": null
+    }
+  ]
+}

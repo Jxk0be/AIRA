@@ -232,6 +232,67 @@ async def test_data_screen_reports_the_connection(
     assert all(finding["message"] for finding in body["quality"]["findings"])
 
 
+async def test_appearance_round_trips_and_clears(
+    db: AsyncSession, client: httpx.AsyncClient
+) -> None:
+    """The shop's color survives a write, a read and a reset.
+
+    It goes into `Tenant.settings`, which is a JSONB column with no mutation
+    tracking, so this is really a test that the route reassigns the dict rather
+    than poking at it in place - the failure mode is a 200 that commits nothing.
+    """
+    tenant = await synced(db, POS_SHOP)
+    before = dict(tenant.settings or {})
+
+    try:
+        saved = await client.put(f"/tenants/{POS_SHOP}/appearance", json={"brand_color": "#C2410C"})
+        assert saved.status_code == 200
+        # Stored lowercase, so the UI never has to compare case-insensitively.
+        assert saved.json() == {"tenant": POS_SHOP, "brand_color": "#c2410c"}
+
+        profile = (await client.get(f"/tenants/{POS_SHOP}/profile")).json()
+        assert profile["brand_color"] == "#c2410c"
+
+        cleared = await client.put(f"/tenants/{POS_SHOP}/appearance", json={"brand_color": None})
+        assert cleared.json()["brand_color"] is None
+        assert (await client.get(f"/tenants/{POS_SHOP}/profile")).json()["brand_color"] is None
+    finally:
+        # Other tests read this shop's settings; leave them as they were.
+        await db.refresh(tenant)
+        tenant.settings = before
+        await db.commit()
+
+
+async def test_appearance_rejects_anything_that_is_not_a_hex(
+    db: AsyncSession, client: httpx.AsyncClient
+) -> None:
+    """Whether the color is *readable* is settled in the browser against the
+    real palette; this endpoint only refuses things that are not colors."""
+    await synced(db, POS_SHOP)
+    for bad in ("red", "#abc", "#12345g", "3d46b8", "#3d46b8ff"):
+        response = await client.put(f"/tenants/{POS_SHOP}/appearance", json={"brand_color": bad})
+        assert response.status_code == 422, bad
+
+
+async def test_appearance_is_isolated_between_shops(
+    db: AsyncSession, client: httpx.AsyncClient
+) -> None:
+    tenant = await synced(db, POS_SHOP)
+    other = await synced(db, SPREADSHEET_SHOP)
+    before = dict(tenant.settings or {})
+
+    try:
+        await client.put(f"/tenants/{POS_SHOP}/appearance", json={"brand_color": "#0f766e"})
+        assert (await client.get(f"/tenants/{SPREADSHEET_SHOP}/profile")).json()["brand_color"] != (
+            "#0f766e"
+        )
+        assert other.id != tenant.id
+    finally:
+        await db.refresh(tenant)
+        tenant.settings = before
+        await db.commit()
+
+
 async def test_unknown_tenant_is_a_404_everywhere(client: httpx.AsyncClient) -> None:
     for path in ("profile", "dashboard", "inventory", "charts", "data"):
         response = await client.get(f"/tenants/not-a-shop/{path}")

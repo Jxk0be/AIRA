@@ -147,6 +147,10 @@ class ShopProfile(BaseModel):
     categories: list[str]
     data_from: date | None
     data_to: date | None
+    # The shop's own color, or None for the palette Direction A ships with.
+    # Whether it is *usable* is decided in the browser against the real
+    # surfaces; see `web/src/lib/brand.ts`.
+    brand_color: str | None
 
 
 class DashboardResponse(BaseModel):
@@ -316,7 +320,68 @@ async def shop_profile(
         categories=categories,
         data_from=first_at.astimezone(ctx.tz).date() if first_at else None,
         data_to=last_at.astimezone(ctx.tz).date() if last_at else None,
+        brand_color=ctx.setting("brand_color", None),
     )
+
+
+class AppearanceIn(BaseModel):
+    """The shop's color, or null to go back to the one we ship.
+
+    Validated as a six-digit hex here and nothing more. The question this
+    endpoint cannot answer is the interesting one — whether text set in that
+    color can be read on the surfaces it lands on, in both themes — because
+    answering it means knowing the palette, and the palette lives in
+    `web/src/style.css`. Duplicating it in Python would give us two palettes
+    that drift, and the gate would start passing a palette nobody ships.
+
+    So the gate is in the browser, where the real values are. The client
+    refuses to *apply* a stored color that fails it, which closes the loop for
+    anything written past the picker.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    brand_color: Annotated[str, Field(pattern=r"^#[0-9a-fA-F]{6}$")] | None = None
+
+
+class AppearanceOut(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    tenant: str
+    brand_color: str | None
+
+
+@router.put("/tenants/{slug}/appearance", response_model=AppearanceOut)
+async def set_appearance(
+    slug: str,
+    body: AppearanceIn,
+    session: Annotated[AsyncSession, Depends(get_session)],
+) -> AppearanceOut:
+    """Store the shop's color on the tenant, not in the browser.
+
+    In `Tenant.settings` rather than a column of its own, which is where the
+    shop's other preferences already live (`low_stock_threshold`,
+    `dead_stock_days`) and means no migration. It follows the owner to the
+    phone behind the counter, which is the point: a color kept in
+    localStorage would be a different shop on every device.
+    """
+    ctx = await _context(session, slug)
+    tenant = await session.get(t.Tenant, ctx.tenant_id)
+    if tenant is None:  # pragma: no cover - _context already resolved it
+        raise HTTPException(status_code=404, detail=f"No shop called {slug!r}.")
+
+    color = body.brand_color.lower() if body.brand_color else None
+    settings = dict(tenant.settings or {})
+    if color is None:
+        settings.pop("brand_color", None)
+    else:
+        settings["brand_color"] = color
+    # Reassigned rather than mutated: a plain JSONB column does not track
+    # in-place changes, so mutating the dict would commit nothing.
+    tenant.settings = settings
+    await session.commit()
+
+    return AppearanceOut(tenant=ctx.slug, brand_color=color)
 
 
 @router.get("/tenants/{slug}/dashboard", response_model=DashboardResponse)
@@ -325,8 +390,20 @@ async def dashboard(
     session: Annotated[AsyncSession, Depends(get_session)],
     days: Annotated[int, Query(ge=1, le=400, description="length of the headline period")] = 30,
     weeks: Annotated[int, Query(ge=4, le=104, description="how far the chart looks back")] = 52,
+    grain: Annotated[Grain, Query(description="bucket size for the chart")] = Grain.WEEK,
 ) -> DashboardResponse:
-    """The whole first paint, cut from one period and one read of the data."""
+    """The whole first paint, cut from one period and one read of the data.
+
+    `grain` is additive and defaults to the weekly buckets every caller before
+    it assumed, so an old client asking without it gets exactly what it got
+    before. The analytics layer has always supported day and month — only this
+    route was hardcoded — so the owner can now ask "per day" of the same
+    definitions rather than a different query.
+
+    The window stays `weeks`, so a caller wanting daily detail asks for fewer of
+    them: 52 weeks of daily points is 364 marks on a phone-width axis, which is
+    a smear rather than a chart.
+    """
     ctx = await _context(session, slug)
     period = ctx.last_days(days)
     previous = period.previous()
@@ -372,7 +449,7 @@ async def dashboard(
         previous=Period.of(previous),
         kpis=kpis,
         kpi_caveats=kpi_caveats,
-        sales_over_time=await _widget(lambda: sales_series(session, ctx, chart_period, Grain.WEEK)),
+        sales_over_time=await _widget(lambda: sales_series(session, ctx, chart_period, grain)),
         top_products=await _widget(lambda: top_products(session, ctx, period, limit=RANKED_ROWS)),
         category_mix=await _widget(
             lambda: category_breakdown(session, ctx, period, limit=RANKED_ROWS)

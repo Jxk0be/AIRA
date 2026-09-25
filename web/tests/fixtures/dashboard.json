@@ -1,0 +1,1225 @@
+{
+  "tenant": "tsundoku",
+  "name": "Tsundoku & Tabletop",
+  "currency": "USD",
+  "timezone": "America/New_York",
+  "period": {
+    "start": "2026-08-26",
+    "end": "2026-09-24",
+    "days": 30,
+    "label": "2026-08-26 to 2026-09-24"
+  },
+  "previous": {
+    "start": "2026-07-27",
+    "end": "2026-08-25",
+    "days": 30,
+    "label": "2026-07-27 to 2026-08-25"
+  },
+  "kpis": [
+    {
+      "key": "net_sales",
+      "label": "Net sales",
+      "definition": "The headline sales figure, and the one a POS prints: what was sold, less discounts, less refunds. Tax and tips are excluded because neither is the shop's money. Sales are counted on the day they were rung up, in the shop's own timezone. Canceled orders are left out entirely; open and completed orders both count.",
+      "formula": "gross sales - discounts - refunds",
+      "unit": "money",
+      "value": "5849.60",
+      "previous": "7827.30",
+      "change": "-0.2527"
+    },
+    {
+      "key": "order_count",
+      "label": "Orders",
+      "definition": "How many separate transactions there were, however many items each one had.",
+      "formula": "count of distinct orders",
+      "unit": "count",
+      "value": "121",
+      "previous": "154",
+      "change": "-0.2143"
+    },
+    {
+      "key": "average_order_value",
+      "label": "Average order value",
+      "definition": "What a typical transaction was worth, after discounts but before refunds are netted off.",
+      "formula": "(gross sales - discounts) / orders",
+      "unit": "money",
+      "value": "49.46",
+      "previous": "51.76",
+      "change": "-0.0444"
+    },
+    {
+      "key": "inventory_value",
+      "label": "Inventory value",
+      "definition": "What is sitting on the shelves right now, valued two ways: at what it would sell for, and at what it cost to buy. Stock levels are as of the last sync, not live.",
+      "formula": "sum of on-hand x price, and sum of on-hand x cost",
+      "unit": "money",
+      "value": "85085.96",
+      "previous": null,
+      "change": null
+    }
+  ],
+  "kpi_caveats": [
+    {
+      "code": "custom_amount_sales",
+      "message": "2.9% of these sales ($171.00) were rung up as a custom amount with no product attached, so they count toward the total but not toward any one product."
+    },
+    {
+      "code": "partial_cost_coverage",
+      "message": "The cost figure covers 90% of what is on the shelves; the rest has no cost recorded."
+    },
+    {
+      "code": "unpriced_stock",
+      "message": "37 units have no price recorded (items priced at the register), so they add nothing to the retail figure."
+    }
+  ],
+  "sales_over_time": {
+    "available": true,
+    "reason": null,
+    "data": {
+      "tenant": "tsundoku",
+      "currency": "USD",
+      "timezone": "America/New_York",
+      "period_start": "2025-09-26",
+      "period_end": "2026-09-24",
+      "caveats": [],
+      "grain": "week",
+      "points": [
+        {
+          "bucket": "2025-09-22",
+          "label": "week of 2025-09-22",
+          "gross_sales": "338.90",
+          "discounts": "0.00",
+          "refunds": "19.22",
+          "net_sales": "319.68",
+          "units_sold": "14",
+          "order_count": 8
+        },
+        {
+          "bucket": "2025-09-29",
+          "label": "week of 2025-09-29",
+          "gross_sales": "2142.98",
+          "discounts": "15.31",
+          "refunds": "0.00",
+          "net_sales": "2127.67",
+          "units_sold": "131",
+          "order_count": 45
+        },
+        {
+          "bucket": "2025-10-06",
+          "label": "week of 2025-10-06",
+          "gross_sales": "1755.45",
+          "discounts": "6.17",
+          "refunds": "24.80",
+          "net_sales": "1724.48",
+          "units_sold": "107",
+          "order_count": 41
+        },
+        {
+          "bucket": "2025-10-13",
+          "label": "week of 2025-10-13",
+          "gross_sales": "2575.73",
+          "discounts": "32.37",
+          "refunds": "0.00",
+          "net_sales": "2543.36",
+          "units_sold": "137",
+          "order_count": 38
+        },
+        {
+          "bucket": "2025-10-20",
+          "label": "week of 2025-10-20",
+          "gross_sales": "3019.51",
+          "discounts": "26.53",
+          "refunds": "0.00",
+          "net_sales": "2992.98",
+          "units_sold": "158",
+          "order_count": 63
+        },
+        {
+          "bucket": "2025-10-27",
+          "label": "week of 2025-10-27",
+          "gross_sales": "1837.23",
+          "discounts": "17.51",
+          "refunds": "22.72",
+          "net_sales": "1797.00",
+          "units_sold": "109",
+          "order_count": 43
+        },
+        {
+          "bucket": "2025-11-03",
+          "label": "week of 2025-11-03",
+          "gross_sales": "2234.59",
+          "discounts": "24.04",
+          "refunds": "7.49",
+          "net_sales": "2203.06",
+          "units_sold": "131",
+          "order_count": 55
+        },
+        {
+          "bucket": "2025-11-10",
+          "label": "week of 2025-11-10",
+          "gross_sales": "2418.72",
+          "discounts": "38.33",
+          "refunds": "0.00",
+          "net_sales": "2380.39",
+          "units_sold": "141",
+          "order_count": 52
+        },
+        {
+          "bucket": "2025-11-17",
+          "label": "week of 2025-11-17",
+          "gross_sales": "2454.40",
+          "discounts": "21.50",
+          "refunds": "33.85",
+          "net_sales": "2399.05",
+          "units_sold": "115",
+          "order_count": 33
+        },
+        {
+          "bucket": "2025-11-24",
+          "label": "week of 2025-11-24",
+          "gross_sales": "3322.09",
+          "discounts": "22.79",
+          "refunds": "134.38",
+          "net_sales": "3164.92",
+          "units_sold": "167",
+          "order_count": 61
+        },
+        {
+          "bucket": "2025-12-01",
+          "label": "week of 2025-12-01",
+          "gross_sales": "4842.09",
+          "discounts": "51.75",
+          "refunds": "0.00",
+          "net_sales": "4790.34",
+          "units_sold": "252",
+          "order_count": 105
+        },
+        {
+          "bucket": "2025-12-08",
+          "label": "week of 2025-12-08",
+          "gross_sales": "2980.96",
+          "discounts": "46.16",
+          "refunds": "0.00",
+          "net_sales": "2934.80",
+          "units_sold": "154",
+          "order_count": 63
+        },
+        {
+          "bucket": "2025-12-15",
+          "label": "week of 2025-12-15",
+          "gross_sales": "4367.95",
+          "discounts": "14.03",
+          "refunds": "11.62",
+          "net_sales": "4342.30",
+          "units_sold": "237",
+          "order_count": 81
+        },
+        {
+          "bucket": "2025-12-22",
+          "label": "week of 2025-12-22",
+          "gross_sales": "3612.63",
+          "discounts": "30.74",
+          "refunds": "15.26",
+          "net_sales": "3566.63",
+          "units_sold": "204",
+          "order_count": 69
+        },
+        {
+          "bucket": "2025-12-29",
+          "label": "week of 2025-12-29",
+          "gross_sales": "1579.38",
+          "discounts": "31.47",
+          "refunds": "0.00",
+          "net_sales": "1547.91",
+          "units_sold": "86",
+          "order_count": 32
+        },
+        {
+          "bucket": "2026-01-05",
+          "label": "week of 2026-01-05",
+          "gross_sales": "1906.12",
+          "discounts": "11.01",
+          "refunds": "42.70",
+          "net_sales": "1852.41",
+          "units_sold": "88",
+          "order_count": 27
+        },
+        {
+          "bucket": "2026-01-12",
+          "label": "week of 2026-01-12",
+          "gross_sales": "1573.85",
+          "discounts": "11.18",
+          "refunds": "0.00",
+          "net_sales": "1562.67",
+          "units_sold": "93",
+          "order_count": 34
+        },
+        {
+          "bucket": "2026-01-19",
+          "label": "week of 2026-01-19",
+          "gross_sales": "2589.70",
+          "discounts": "27.63",
+          "refunds": "0.00",
+          "net_sales": "2562.07",
+          "units_sold": "136",
+          "order_count": 54
+        },
+        {
+          "bucket": "2026-01-26",
+          "label": "week of 2026-01-26",
+          "gross_sales": "1182.39",
+          "discounts": "5.47",
+          "refunds": "27.76",
+          "net_sales": "1149.16",
+          "units_sold": "57",
+          "order_count": 21
+        },
+        {
+          "bucket": "2026-02-02",
+          "label": "week of 2026-02-02",
+          "gross_sales": "2114.64",
+          "discounts": "12.99",
+          "refunds": "0.00",
+          "net_sales": "2101.65",
+          "units_sold": "95",
+          "order_count": 34
+        },
+        {
+          "bucket": "2026-02-09",
+          "label": "week of 2026-02-09",
+          "gross_sales": "1419.82",
+          "discounts": "3.55",
+          "refunds": "33.70",
+          "net_sales": "1382.57",
+          "units_sold": "74",
+          "order_count": 32
+        },
+        {
+          "bucket": "2026-02-16",
+          "label": "week of 2026-02-16",
+          "gross_sales": "2133.20",
+          "discounts": "10.85",
+          "refunds": "24.08",
+          "net_sales": "2098.27",
+          "units_sold": "89",
+          "order_count": 39
+        },
+        {
+          "bucket": "2026-02-23",
+          "label": "week of 2026-02-23",
+          "gross_sales": "2941.50",
+          "discounts": "24.09",
+          "refunds": "0.00",
+          "net_sales": "2917.41",
+          "units_sold": "127",
+          "order_count": 45
+        },
+        {
+          "bucket": "2026-03-02",
+          "label": "week of 2026-03-02",
+          "gross_sales": "1192.03",
+          "discounts": "18.37",
+          "refunds": "3.67",
+          "net_sales": "1169.99",
+          "units_sold": "68",
+          "order_count": 24
+        },
+        {
+          "bucket": "2026-03-09",
+          "label": "week of 2026-03-09",
+          "gross_sales": "1682.97",
+          "discounts": "11.53",
+          "refunds": "0.00",
+          "net_sales": "1671.44",
+          "units_sold": "84",
+          "order_count": 30
+        },
+        {
+          "bucket": "2026-03-16",
+          "label": "week of 2026-03-16",
+          "gross_sales": "3619.43",
+          "discounts": "16.87",
+          "refunds": "14.95",
+          "net_sales": "3587.61",
+          "units_sold": "182",
+          "order_count": 68
+        },
+        {
+          "bucket": "2026-03-23",
+          "label": "week of 2026-03-23",
+          "gross_sales": "1709.17",
+          "discounts": "28.69",
+          "refunds": "1.15",
+          "net_sales": "1679.33",
+          "units_sold": "93",
+          "order_count": 31
+        },
+        {
+          "bucket": "2026-03-30",
+          "label": "week of 2026-03-30",
+          "gross_sales": "1770.78",
+          "discounts": "22.48",
+          "refunds": "0.00",
+          "net_sales": "1748.30",
+          "units_sold": "83",
+          "order_count": 35
+        },
+        {
+          "bucket": "2026-04-06",
+          "label": "week of 2026-04-06",
+          "gross_sales": "1358.56",
+          "discounts": "8.19",
+          "refunds": "0.00",
+          "net_sales": "1350.37",
+          "units_sold": "71",
+          "order_count": 24
+        },
+        {
+          "bucket": "2026-04-13",
+          "label": "week of 2026-04-13",
+          "gross_sales": "2028.71",
+          "discounts": "27.22",
+          "refunds": "19.34",
+          "net_sales": "1982.15",
+          "units_sold": "108",
+          "order_count": 41
+        },
+        {
+          "bucket": "2026-04-20",
+          "label": "week of 2026-04-20",
+          "gross_sales": "2096.02",
+          "discounts": "13.18",
+          "refunds": "5.68",
+          "net_sales": "2077.16",
+          "units_sold": "106",
+          "order_count": 32
+        },
+        {
+          "bucket": "2026-04-27",
+          "label": "week of 2026-04-27",
+          "gross_sales": "3881.66",
+          "discounts": "15.29",
+          "refunds": "0.00",
+          "net_sales": "3866.37",
+          "units_sold": "180",
+          "order_count": 60
+        },
+        {
+          "bucket": "2026-05-04",
+          "label": "week of 2026-05-04",
+          "gross_sales": "1598.76",
+          "discounts": "25.97",
+          "refunds": "0.00",
+          "net_sales": "1572.79",
+          "units_sold": "68",
+          "order_count": 30
+        },
+        {
+          "bucket": "2026-05-11",
+          "label": "week of 2026-05-11",
+          "gross_sales": "1951.57",
+          "discounts": "10.55",
+          "refunds": "42.57",
+          "net_sales": "1898.45",
+          "units_sold": "95",
+          "order_count": 34
+        },
+        {
+          "bucket": "2026-05-18",
+          "label": "week of 2026-05-18",
+          "gross_sales": "2115.55",
+          "discounts": "9.00",
+          "refunds": "0.00",
+          "net_sales": "2106.55",
+          "units_sold": "92",
+          "order_count": 33
+        },
+        {
+          "bucket": "2026-05-25",
+          "label": "week of 2026-05-25",
+          "gross_sales": "1912.95",
+          "discounts": "15.58",
+          "refunds": "0.00",
+          "net_sales": "1897.37",
+          "units_sold": "87",
+          "order_count": 34
+        },
+        {
+          "bucket": "2026-06-01",
+          "label": "week of 2026-06-01",
+          "gross_sales": "1592.82",
+          "discounts": "19.03",
+          "refunds": "0.00",
+          "net_sales": "1573.79",
+          "units_sold": "90",
+          "order_count": 28
+        },
+        {
+          "bucket": "2026-06-08",
+          "label": "week of 2026-06-08",
+          "gross_sales": "1895.85",
+          "discounts": "59.62",
+          "refunds": "172.81",
+          "net_sales": "1663.42",
+          "units_sold": "95",
+          "order_count": 35
+        },
+        {
+          "bucket": "2026-06-15",
+          "label": "week of 2026-06-15",
+          "gross_sales": "2199.64",
+          "discounts": "29.18",
+          "refunds": "18.86",
+          "net_sales": "2151.60",
+          "units_sold": "91",
+          "order_count": 37
+        },
+        {
+          "bucket": "2026-06-22",
+          "label": "week of 2026-06-22",
+          "gross_sales": "3661.19",
+          "discounts": "26.81",
+          "refunds": "0.00",
+          "net_sales": "3634.38",
+          "units_sold": "137",
+          "order_count": 50
+        },
+        {
+          "bucket": "2026-06-29",
+          "label": "week of 2026-06-29",
+          "gross_sales": "2589.71",
+          "discounts": "33.12",
+          "refunds": "34.69",
+          "net_sales": "2521.90",
+          "units_sold": "135",
+          "order_count": 52
+        },
+        {
+          "bucket": "2026-07-06",
+          "label": "week of 2026-07-06",
+          "gross_sales": "1983.31",
+          "discounts": "10.03",
+          "refunds": "0.00",
+          "net_sales": "1973.28",
+          "units_sold": "101",
+          "order_count": 35
+        },
+        {
+          "bucket": "2026-07-13",
+          "label": "week of 2026-07-13",
+          "gross_sales": "3323.92",
+          "discounts": "46.86",
+          "refunds": "0.00",
+          "net_sales": "3277.06",
+          "units_sold": "163",
+          "order_count": 63
+        },
+        {
+          "bucket": "2026-07-20",
+          "label": "week of 2026-07-20",
+          "gross_sales": "1010.84",
+          "discounts": "14.61",
+          "refunds": "0.00",
+          "net_sales": "996.23",
+          "units_sold": "64",
+          "order_count": 26
+        },
+        {
+          "bucket": "2026-07-27",
+          "label": "week of 2026-07-27",
+          "gross_sales": "1575.73",
+          "discounts": "20.73",
+          "refunds": "0.00",
+          "net_sales": "1555.00",
+          "units_sold": "106",
+          "order_count": 37
+        },
+        {
+          "bucket": "2026-08-03",
+          "label": "week of 2026-08-03",
+          "gross_sales": "1563.00",
+          "discounts": "31.31",
+          "refunds": "0.00",
+          "net_sales": "1531.69",
+          "units_sold": "72",
+          "order_count": 31
+        },
+        {
+          "bucket": "2026-08-10",
+          "label": "week of 2026-08-10",
+          "gross_sales": "2388.81",
+          "discounts": "25.97",
+          "refunds": "0.00",
+          "net_sales": "2362.84",
+          "units_sold": "140",
+          "order_count": 44
+        },
+        {
+          "bucket": "2026-08-17",
+          "label": "week of 2026-08-17",
+          "gross_sales": "2251.14",
+          "discounts": "28.66",
+          "refunds": "144.48",
+          "net_sales": "2078.00",
+          "units_sold": "96",
+          "order_count": 35
+        },
+        {
+          "bucket": "2026-08-24",
+          "label": "week of 2026-08-24",
+          "gross_sales": "2107.94",
+          "discounts": "22.09",
+          "refunds": "0.00",
+          "net_sales": "2085.85",
+          "units_sold": "109",
+          "order_count": 37
+        },
+        {
+          "bucket": "2026-08-31",
+          "label": "week of 2026-08-31",
+          "gross_sales": "1205.78",
+          "discounts": "4.07",
+          "refunds": "16.37",
+          "net_sales": "1185.34",
+          "units_sold": "67",
+          "order_count": 22
+        },
+        {
+          "bucket": "2026-09-07",
+          "label": "week of 2026-09-07",
+          "gross_sales": "1257.98",
+          "discounts": "9.17",
+          "refunds": "3.79",
+          "net_sales": "1245.02",
+          "units_sold": "71",
+          "order_count": 32
+        },
+        {
+          "bucket": "2026-09-14",
+          "label": "week of 2026-09-14",
+          "gross_sales": "1502.95",
+          "discounts": "11.52",
+          "refunds": "8.26",
+          "net_sales": "1483.17",
+          "units_sold": "87",
+          "order_count": 29
+        },
+        {
+          "bucket": "2026-09-21",
+          "label": "week of 2026-09-21",
+          "gross_sales": "256.91",
+          "discounts": "0.00",
+          "refunds": "106.92",
+          "net_sales": "149.99",
+          "units_sold": "13",
+          "order_count": 8
+        }
+      ]
+    }
+  },
+  "top_products": {
+    "available": true,
+    "reason": null,
+    "data": {
+      "tenant": "tsundoku",
+      "currency": "USD",
+      "timezone": "America/New_York",
+      "period_start": "2026-08-26",
+      "period_end": "2026-09-24",
+      "caveats": [
+        {
+          "code": "breakdown_before_refunds",
+          "message": "These rows are before refunds: a refund is recorded against a whole order, so it cannot be charged to one item."
+        },
+        {
+          "code": "custom_amount_sales",
+          "message": "2.9% of these sales ($171.00) were rung up as a custom amount with no product attached, so they count toward the total but not toward any one product."
+        }
+      ],
+      "dimension": "product",
+      "rows": [
+        {
+          "key": "87d71fd7-9094-425e-bda3-7642212a02f3",
+          "label": "Astral Clash: Veil of Nine Booster Box",
+          "gross_sales": "259.98",
+          "discounts": "0.00",
+          "net_sales": "259.98",
+          "units_sold": "2",
+          "order_count": 2,
+          "share_of_net_sales": "0.0447"
+        },
+        {
+          "key": "b2916d2b-b428-41c2-a120-8c44cfdb209d",
+          "label": "Astral Clash: Tidebreak Booster Box",
+          "gross_sales": "259.98",
+          "discounts": "0.00",
+          "net_sales": "259.98",
+          "units_sold": "2",
+          "order_count": 2,
+          "share_of_net_sales": "0.0447"
+        },
+        {
+          "key": "7984a793-fec7-474c-b52e-a8637c45ea5f",
+          "label": "Lanternkeeper (AC01)",
+          "gross_sales": "189.00",
+          "discounts": "0.00",
+          "net_sales": "189.00",
+          "units_sold": "4",
+          "order_count": 4,
+          "share_of_net_sales": "0.0325"
+        },
+        {
+          "key": "bc39ec6a-fb9b-42ea-9f45-7aa23ccb86a9",
+          "label": "Paper Crane Envoy (AC02)",
+          "gross_sales": "179.50",
+          "discounts": "0.00",
+          "net_sales": "179.50",
+          "units_sold": "2",
+          "order_count": 2,
+          "share_of_net_sales": "0.0309"
+        },
+        {
+          "key": "ed4b36ce-db0f-44d9-acaa-d6d96055e101",
+          "label": "Vending Oracle (AC03)",
+          "gross_sales": "179.50",
+          "discounts": "0.00",
+          "net_sales": "179.50",
+          "units_sold": "2",
+          "order_count": 2,
+          "share_of_net_sales": "0.0309"
+        },
+        {
+          "key": "c8d2a2da-a062-4848-8c92-1f425b49e97e",
+          "label": "Matte Card Sleeves, 100ct",
+          "gross_sales": "151.81",
+          "discounts": "0.00",
+          "net_sales": "151.81",
+          "units_sold": "19",
+          "order_count": 15,
+          "share_of_net_sales": "0.0261"
+        },
+        {
+          "key": "ab91bb10-af7c-459e-ba6d-a1c939f4c615",
+          "label": "Astral Clash: Ember Accord Booster Box",
+          "gross_sales": "129.99",
+          "discounts": "0.00",
+          "net_sales": "129.99",
+          "units_sold": "1",
+          "order_count": 1,
+          "share_of_net_sales": "0.0224"
+        },
+        {
+          "key": "cb0248ec-a8de-4ef3-8c67-2fd03a208f9d",
+          "label": "Yuzuha 1/7 Scale Figure",
+          "gross_sales": "129.99",
+          "discounts": "0.00",
+          "net_sales": "129.99",
+          "units_sold": "1",
+          "order_count": 1,
+          "share_of_net_sales": "0.0224"
+        },
+        {
+          "key": "2030c8c5-411b-46a4-88cd-3f7e67519c73",
+          "label": "Little Ash 1/7 Scale Figure",
+          "gross_sales": "129.99",
+          "discounts": "0.00",
+          "net_sales": "129.99",
+          "units_sold": "1",
+          "order_count": 1,
+          "share_of_net_sales": "0.0224"
+        },
+        {
+          "key": "f4ea00a5-74da-4f25-818d-6db349f299b2",
+          "label": "Astral Clash: Gilded Static Starter Deck",
+          "gross_sales": "131.94",
+          "discounts": "4.39",
+          "net_sales": "127.55",
+          "units_sold": "6",
+          "order_count": 5,
+          "share_of_net_sales": "0.0219"
+        }
+      ],
+      "total_net_sales": "5813.94",
+      "truncated": true
+    }
+  },
+  "category_mix": {
+    "available": true,
+    "reason": null,
+    "data": {
+      "tenant": "tsundoku",
+      "currency": "USD",
+      "timezone": "America/New_York",
+      "period_start": "2026-08-26",
+      "period_end": "2026-09-24",
+      "caveats": [
+        {
+          "code": "breakdown_before_refunds",
+          "message": "These rows are before refunds: a refund is recorded against a whole order, so it cannot be charged to one item."
+        },
+        {
+          "code": "custom_amount_sales",
+          "message": "2.9% of these sales ($171.00) were rung up as a custom amount with no product attached, so they count toward the total but not toward any one product."
+        }
+      ],
+      "dimension": "category",
+      "rows": [
+        {
+          "key": "ad557d07-5b56-44c0-8847-f575dbad2c9f",
+          "label": "Manga",
+          "gross_sales": "1643.75",
+          "discounts": "18.77",
+          "net_sales": "1624.98",
+          "units_sold": "125",
+          "order_count": 63,
+          "share_of_net_sales": "0.2795"
+        },
+        {
+          "key": "677b12f4-186a-46a8-b9cd-dde29628cc88",
+          "label": "Singles",
+          "gross_sales": "1561.75",
+          "discounts": "6.28",
+          "net_sales": "1555.47",
+          "units_sold": "82",
+          "order_count": 60,
+          "share_of_net_sales": "0.2675"
+        },
+        {
+          "key": "38a8b900-3d1d-41e8-b057-1264e6c18844",
+          "label": "Sealed Product",
+          "gross_sales": "1096.73",
+          "discounts": "5.13",
+          "net_sales": "1091.60",
+          "units_sold": "27",
+          "order_count": 22,
+          "share_of_net_sales": "0.1878"
+        },
+        {
+          "key": "39de0fe7-c8e2-4fe3-9316-545c2bb3bb74",
+          "label": "Prize Figures",
+          "gross_sales": "386.83",
+          "discounts": "8.21",
+          "net_sales": "378.62",
+          "units_sold": "17",
+          "order_count": 17,
+          "share_of_net_sales": "0.0651"
+        },
+        {
+          "key": "b0a29b4b-0974-498e-85c7-b08c32494d55",
+          "label": "Supplies",
+          "gross_sales": "364.60",
+          "discounts": "3.88",
+          "net_sales": "360.72",
+          "units_sold": "40",
+          "order_count": 31,
+          "share_of_net_sales": "0.0620"
+        },
+        {
+          "key": "a717a67e-e6e0-4451-b14d-1b265db7a02f",
+          "label": "Scale Figures",
+          "gross_sales": "259.98",
+          "discounts": "0.00",
+          "net_sales": "259.98",
+          "units_sold": "2",
+          "order_count": 2,
+          "share_of_net_sales": "0.0447"
+        },
+        {
+          "key": "261bfc69-5d85-4b8e-8357-4379a2bd0395",
+          "label": "Model Kits",
+          "gross_sales": "259.68",
+          "discounts": "0.00",
+          "net_sales": "259.68",
+          "units_sold": "7",
+          "order_count": 6,
+          "share_of_net_sales": "0.0447"
+        },
+        {
+          "key": "38e23183-1832-44f2-9e39-c5638979755a",
+          "label": "Plush",
+          "gross_sales": "199.92",
+          "discounts": "0.00",
+          "net_sales": "199.92",
+          "units_sold": "8",
+          "order_count": 8,
+          "share_of_net_sales": "0.0344"
+        },
+        {
+          "key": "700b77f8-1040-47c1-863a-2e883359b5b7",
+          "label": "Apparel",
+          "gross_sales": "82.97",
+          "discounts": "0.00",
+          "net_sales": "82.97",
+          "units_sold": "3",
+          "order_count": 3,
+          "share_of_net_sales": "0.0143"
+        }
+      ],
+      "total_net_sales": "5813.94",
+      "truncated": false
+    }
+  },
+  "by_location": {
+    "available": true,
+    "reason": null,
+    "data": {
+      "tenant": "tsundoku",
+      "currency": "USD",
+      "timezone": "America/New_York",
+      "period_start": "2026-08-26",
+      "period_end": "2026-09-24",
+      "caveats": [],
+      "dimension": "location",
+      "rows": [
+        {
+          "key": "2a01bfc3-8ed7-4a38-89b1-876b81619100",
+          "label": "Tsundoku & Tabletop — Gay St",
+          "gross_sales": "6027.21",
+          "discounts": "42.27",
+          "net_sales": "5849.60",
+          "units_sold": "326",
+          "order_count": 121,
+          "share_of_net_sales": "1.0000"
+        }
+      ],
+      "total_net_sales": "5849.60",
+      "truncated": false
+    }
+  },
+  "by_channel": {
+    "available": true,
+    "reason": null,
+    "data": {
+      "tenant": "tsundoku",
+      "currency": "USD",
+      "timezone": "America/New_York",
+      "period_start": "2026-08-26",
+      "period_end": "2026-09-24",
+      "caveats": [],
+      "dimension": "channel",
+      "rows": [
+        {
+          "key": "in_store",
+          "label": "In store",
+          "gross_sales": "5710.86",
+          "discounts": "41.06",
+          "net_sales": "5534.46",
+          "units_sold": "306",
+          "order_count": 114,
+          "share_of_net_sales": "0.9461"
+        },
+        {
+          "key": "online",
+          "label": "Online",
+          "gross_sales": "316.35",
+          "discounts": "1.21",
+          "net_sales": "315.14",
+          "units_sold": "20",
+          "order_count": 7,
+          "share_of_net_sales": "0.0539"
+        }
+      ],
+      "total_net_sales": "5849.60",
+      "truncated": false
+    }
+  },
+  "low_stock": {
+    "available": true,
+    "reason": null,
+    "data": {
+      "tenant": "tsundoku",
+      "currency": "USD",
+      "timezone": "America/New_York",
+      "period_start": "2026-08-28",
+      "period_end": "2026-09-24",
+      "caveats": [
+        {
+          "code": "low_stock_rule",
+          "message": "Low stock here means something that has sold in the last 28 days and has 3 or fewer left, or under 14 days of cover at that rate."
+        }
+      ],
+      "rows": [
+        {
+          "variant_id": "c7177894-06d6-431c-a19c-6088ab093e25",
+          "product_name": "Saltwind Duelist (AC02)",
+          "variant_name": "LP",
+          "sku": "SGL-AC02-SALT-LP-00191",
+          "category": "Singles",
+          "units_on_hand": "0",
+          "price": "3.00",
+          "cost": null,
+          "retail_value": "0.00",
+          "daily_units": "0.036",
+          "days_of_cover": "0.0",
+          "last_sold_at": "2026-08-31T17:28:53Z",
+          "days_since_last_sale": 24,
+          "reason": "0 left"
+        },
+        {
+          "variant_id": "742f912d-9e86-4cdb-8d5c-b0dc56e8aa84",
+          "product_name": "Moonlit Cram School Vol. 6",
+          "variant_name": "Paperback",
+          "sku": "MNG-MOON-06-00266",
+          "category": "Manga",
+          "units_on_hand": "0",
+          "price": "11.99",
+          "cost": null,
+          "retail_value": "0.00",
+          "daily_units": "0.036",
+          "days_of_cover": "0.0",
+          "last_sold_at": "2026-09-02T21:30:05Z",
+          "days_since_last_sale": 21,
+          "reason": "0 left"
+        },
+        {
+          "variant_id": "f0423071-b9cb-4994-8fb0-12f4b6ca7804",
+          "product_name": "Saltwater Samurai Vol. 1",
+          "variant_name": "Paperback",
+          "sku": "MNG-SALT-01-00245",
+          "category": "Manga",
+          "units_on_hand": "1",
+          "price": "11.99",
+          "cost": "6.59",
+          "retail_value": "11.99",
+          "daily_units": "0.179",
+          "days_of_cover": "5.6",
+          "last_sold_at": "2026-09-20T20:49:22Z",
+          "days_since_last_sale": 3,
+          "reason": "1 left"
+        },
+        {
+          "variant_id": "c1dc0356-9cce-4dce-a10a-482b5abc86be",
+          "product_name": "9-Pocket Binder",
+          "variant_name": null,
+          "sku": "SUP-9-POCK-00073",
+          "category": "Supplies",
+          "units_on_hand": "1",
+          "price": "24.99",
+          "cost": "12.99",
+          "retail_value": "24.99",
+          "daily_units": "0.107",
+          "days_of_cover": "9.3",
+          "last_sold_at": "2026-09-02T18:42:12Z",
+          "days_since_last_sale": 22,
+          "reason": "1 left"
+        },
+        {
+          "variant_id": "fa5e06fd-df19-45dc-92f8-82f58a9f02f8",
+          "product_name": "Moonlit Cram School Vol. 5",
+          "variant_name": "Paperback",
+          "sku": "MNG-MOON-05-00315",
+          "category": "Manga",
+          "units_on_hand": "1",
+          "price": "11.99",
+          "cost": "6.59",
+          "retail_value": "11.99",
+          "daily_units": "0.071",
+          "days_of_cover": "14.0",
+          "last_sold_at": "2026-09-15T15:25:06Z",
+          "days_since_last_sale": 9,
+          "reason": "1 left"
+        },
+        {
+          "variant_id": "5c1cf2f2-d43b-423d-b6a7-753167101375",
+          "product_name": "Gilded Roost (AC01)",
+          "variant_name": "NM",
+          "sku": "SGL-AC01-GILD-NM-00345",
+          "category": "Singles",
+          "units_on_hand": "2",
+          "price": "3.75",
+          "cost": "1.87",
+          "retail_value": "7.50",
+          "daily_units": "0.071",
+          "days_of_cover": "28.0",
+          "last_sold_at": "2026-09-17T15:33:39Z",
+          "days_since_last_sale": 7,
+          "reason": "2 left"
+        },
+        {
+          "variant_id": "6f7cba1b-55cf-40b2-9f68-da4945a08431",
+          "product_name": "Paper Crane Envoy (AC03)",
+          "variant_name": "NM",
+          "sku": "SGL-AC03-PAPE-NM-00199",
+          "category": "Singles",
+          "units_on_hand": "2",
+          "price": "3.75",
+          "cost": "1.87",
+          "retail_value": "7.50",
+          "daily_units": "0.036",
+          "days_of_cover": "56.0",
+          "last_sold_at": "2026-09-15T15:49:48Z",
+          "days_since_last_sale": 9,
+          "reason": "2 left"
+        },
+        {
+          "variant_id": "e33ada6d-1783-4b2b-9c4d-2247ff8b8249",
+          "product_name": "Saltwater Samurai Vol. 4",
+          "variant_name": "Paperback",
+          "sku": "MNG-SALT-04-00072",
+          "category": "Manga",
+          "units_on_hand": "2",
+          "price": "11.99",
+          "cost": "6.59",
+          "retail_value": "23.98",
+          "daily_units": "0.036",
+          "days_of_cover": "56.0",
+          "last_sold_at": "2026-09-27T16:09:00Z",
+          "days_since_last_sale": -3,
+          "reason": "2 left"
+        }
+      ],
+      "row_count": 13,
+      "truncated": true,
+      "retail_value": "87.95"
+    }
+  },
+  "dead_stock": {
+    "available": true,
+    "reason": null,
+    "data": {
+      "tenant": "tsundoku",
+      "currency": "USD",
+      "timezone": "America/New_York",
+      "period_start": "2026-06-27",
+      "period_end": "2026-09-24",
+      "caveats": [
+        {
+          "code": "dead_stock_rule",
+          "message": "Dead stock here means still on the shelf with no sale since 2026-06-27 (90 days)."
+        }
+      ],
+      "rows": [
+        {
+          "variant_id": "b48afd5e-118e-4bf7-9da3-3ec3d7663b5c",
+          "product_name": "Manga Shelf Dividers, 6ct",
+          "variant_name": null,
+          "sku": "SUP-MANGA-00097",
+          "category": "Supplies",
+          "units_on_hand": "42",
+          "price": "14.99",
+          "cost": "7.79",
+          "retail_value": "629.58",
+          "daily_units": "0.000",
+          "days_of_cover": null,
+          "last_sold_at": "2026-04-17T22:34:23Z",
+          "days_since_last_sale": 159,
+          "reason": "no sale in 159 days"
+        },
+        {
+          "variant_id": "581fc1a6-3498-45d4-945f-03daa800917b",
+          "product_name": "Astral Clash: Veil of Nine Collector Bundle",
+          "variant_name": null,
+          "sku": "SLD-AC03-COL-00285",
+          "category": "Sealed Product",
+          "units_on_hand": "11",
+          "price": "54.99",
+          "cost": "37.39",
+          "retail_value": "604.89",
+          "daily_units": "0.000",
+          "days_of_cover": null,
+          "last_sold_at": null,
+          "days_since_last_sale": null,
+          "reason": "never sold"
+        },
+        {
+          "variant_id": "f35245ff-98f1-4f7c-b45c-5364979e5c5c",
+          "product_name": "Ronin Barista Apron",
+          "variant_name": "XL",
+          "sku": "APP-RONI-XL-00095",
+          "category": "Apparel",
+          "units_on_hand": "13",
+          "price": "32.99",
+          "cost": "14.84",
+          "retail_value": "428.87",
+          "daily_units": "0.000",
+          "days_of_cover": null,
+          "last_sold_at": "2026-03-06T19:17:19Z",
+          "days_since_last_sale": 202,
+          "reason": "no sale in 202 days"
+        },
+        {
+          "variant_id": "f4568968-7143-4815-a6c5-13f6ac52edd1",
+          "product_name": "Tidepool Slime Plush (Small)",
+          "variant_name": "Small",
+          "sku": "PLU-TIDE-S-00185",
+          "category": "Plush",
+          "units_on_hand": "20",
+          "price": "16.99",
+          "cost": null,
+          "retail_value": "339.80",
+          "daily_units": "0.000",
+          "days_of_cover": null,
+          "last_sold_at": "2026-06-16T19:19:26Z",
+          "days_since_last_sale": 100,
+          "reason": "no sale in 100 days"
+        },
+        {
+          "variant_id": "e794e98c-9741-4f9f-96c4-cd78ce434b2f",
+          "product_name": "Hollow Lantern Crest Tee",
+          "variant_name": "S",
+          "sku": "APP-HOLL-S-00012",
+          "category": "Apparel",
+          "units_on_hand": "11",
+          "price": "24.99",
+          "cost": "11.24",
+          "retail_value": "274.89",
+          "daily_units": "0.000",
+          "days_of_cover": null,
+          "last_sold_at": null,
+          "days_since_last_sale": null,
+          "reason": "never sold"
+        },
+        {
+          "variant_id": "2001362a-d325-485d-8b94-bc3cd41eae99",
+          "product_name": "Clockwork Vandal (AC03)",
+          "variant_name": "MP",
+          "sku": "SGL-AC03-CLOC-MP-00284",
+          "category": "Singles",
+          "units_on_hand": "5",
+          "price": "53.75",
+          "cost": "26.87",
+          "retail_value": "268.75",
+          "daily_units": "0.000",
+          "days_of_cover": null,
+          "last_sold_at": null,
+          "days_since_last_sale": null,
+          "reason": "never sold"
+        },
+        {
+          "variant_id": "99b6fe39-4291-4988-9534-9f4caf39a02e",
+          "product_name": "Veiled Cartographer (AC03)",
+          "variant_name": "NM",
+          "sku": "SGL-AC03-VEIL-NM-00080",
+          "category": "Singles",
+          "units_on_hand": "20",
+          "price": "12.75",
+          "cost": "6.37",
+          "retail_value": "255.00",
+          "daily_units": "0.000",
+          "days_of_cover": null,
+          "last_sold_at": null,
+          "days_since_last_sale": null,
+          "reason": "never sold"
+        },
+        {
+          "variant_id": "c1836d50-2560-48d8-802c-1e78754cf647",
+          "product_name": "Vending Oracle (AC01)",
+          "variant_name": "LP",
+          "sku": "SGL-AC01-VEND-LP-00114",
+          "category": "Singles",
+          "units_on_hand": "24",
+          "price": "10.25",
+          "cost": "5.12",
+          "retail_value": "246.00",
+          "daily_units": "0.000",
+          "days_of_cover": null,
+          "last_sold_at": null,
+          "days_since_last_sale": null,
+          "reason": "never sold"
+        }
+      ],
+      "row_count": 44,
+      "truncated": true,
+      "retail_value": "3047.78"
+    }
+  }
+}
