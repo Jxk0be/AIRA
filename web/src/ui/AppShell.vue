@@ -25,7 +25,7 @@
  *   has no scroll position to restore, so this records one per history entry.
  */
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { RouterLink, useRoute, type RouteLocationRaw } from 'vue-router'
 
 import { useTenantStore } from '../stores/tenant'
 import { api } from '../api/client'
@@ -59,6 +59,27 @@ const DESTINATIONS: Destination[] = [
 /** Stock, Reports and Settings are one destination each, tabs and all. */
 function isCurrent(name: string): boolean {
   return route.name === name
+}
+
+/**
+ * Where a nav link points, including before there is a shop to point at.
+ *
+ * The shell paints before the router has resolved a tenant. On a cold load the
+ * first navigation is still inside `beforeEach` waiting on the API, so `route`
+ * is the start location and `route.params` is empty. Building a link as
+ * `{ name, params: { tenant: '' } }` then is not something vue-router can
+ * resolve: it throws `Missing required param "tenant"` from `RouterLink`'s own
+ * setup — a render error, not a warning — once per link, on every cold load.
+ * The app recovers when the real route arrives, which is exactly what makes it
+ * worth fixing: a console that cries wolf on every load is a console nobody
+ * reads.
+ *
+ * Point at `/` for that one frame instead. The nav keeps its shape, and `/` is
+ * where an early click belongs anyway — the guard sends it to the same shop the
+ * pending navigation is already on its way to.
+ */
+function to(name: string): RouteLocationRaw {
+  return slug.value ? { name, params: { tenant: slug.value } } : '/'
 }
 
 // ---------------------------------------------------------------- the badge
@@ -174,7 +195,7 @@ onMounted(() => {
         <div class="flex items-center gap-2 px-3 py-4" :class="sidebarOpen ? '' : 'justify-center'">
           <RouterLink
             v-if="sidebarOpen"
-            :to="{ name: 'home', params: { tenant: slug } }"
+            :to="to('home')"
             class="display min-w-0 truncate text-base font-bold text-ink"
           >
             {{ shop.name }}
@@ -196,7 +217,7 @@ onMounted(() => {
           <RouterLink
             v-for="destination in DESTINATIONS"
             :key="destination.name"
-            :to="{ name: destination.name, params: { tenant: slug } }"
+            :to="to(destination.name)"
             class="mb-0.5 flex min-h-11 items-center gap-3 rounded-md px-3 text-base font-medium transition-colors"
             :class="
               isCurrent(destination.name)
@@ -290,7 +311,7 @@ onMounted(() => {
         <RouterLink
           v-for="destination in DESTINATIONS"
           :key="destination.name"
-          :to="{ name: destination.name, params: { tenant: slug } }"
+          :to="to(destination.name)"
           class="relative flex min-h-[3.25rem] flex-col items-center justify-center gap-0.5 pt-1.5 text-xs"
           :class="isCurrent(destination.name) ? 'font-bold text-primary' : 'font-medium text-ink-muted'"
           :aria-current="isCurrent(destination.name) ? 'page' : undefined"

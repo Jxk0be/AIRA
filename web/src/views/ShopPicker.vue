@@ -50,7 +50,7 @@ python tasks.py api</pre
     <ul v-else-if="tenants.length" class="mt-8 border border-border bg-surface">
       <li v-for="tenant in tenants" :key="tenant.tenant" class="border-b border-border last:border-0">
         <RouterLink
-          :to="{ name: 'dashboard', params: { tenant: tenant.tenant } }"
+          :to="{ name: 'home', params: { tenant: tenant.tenant } }"
           class="flex items-baseline justify-between px-4 py-3 hover:bg-raised"
         >
           <span class="font-medium text-ink">{{ tenant.name }}</span>
