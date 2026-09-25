@@ -8,7 +8,7 @@
  * its own tab and a real control.
  *
  * An upload is searchable straight away: only its own passages are embedded, so
- * adding one policy does not re-embed the catalogue.
+ * adding one policy does not re-embed the catalog.
  */
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
@@ -117,7 +117,7 @@ watch(slug, load)
 
     <p class="mt-3 text-sm text-ink-muted">
       Markdown, plain text or PDF. An upload is searchable straight away — only its own passages are
-      embedded, so adding one policy does not re-embed the catalogue.
+      embedded, so adding one policy does not re-embed the catalog.
     </p>
   </div>
 </template>

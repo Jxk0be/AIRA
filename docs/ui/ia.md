@@ -35,7 +35,7 @@ stops being a directory of other screens.
 
 *"I have a question nobody built a screen for."*
 
-The assistant, unchanged in behaviour. Conversation history becomes a drawer over
+The assistant, unchanged in behavior. Conversation history becomes a drawer over
 the content instead of a block that shoves it (U14), grouped by date, with
 in-place rename and a proper confirm dialog instead of `window.prompt` /
 `window.confirm` (U17).
@@ -73,14 +73,14 @@ Primary action: Build last month.
 
 ### 5. Settings — `/:tenant/settings`
 
-*"Is my data current, who gets emailed, what colour is my shop?"*
+*"Is my data current, who gets emailed, what color is my shop?"*
 
 | Tab | Is today |
 |---|---|
 | Data & sync | Connected system, last sync, data quality, sync history, the worker, job history |
 | Documents | Upload and list |
 | Notifications | Recipients, Monday's email preview, what we actually sent |
-| Appearance | Light / Dark / System toggle, and the business colour (F1) |
+| Appearance | Light / Dark / System toggle, and the business color (F1) |
 | Shop | The dev-only shop switcher, moved out of the global nav |
 
 Primary action: Sync now.
@@ -123,7 +123,7 @@ Nothing is deleted. Every screen that exists today has a home.
 
 - **Bottom tab bar**, fixed, five items: Home · Ask · Stock · Reports ·
   Settings. Icon plus text label. Active state is a filled icon, heavier label
-  and a top rule — never colour alone (A4). `padding-bottom:
+  and a top rule — never color alone (A4). `padding-bottom:
   env(safe-area-inset-bottom)` for the iPhone home indicator.
 - **Top bar**, compact: page title, and at most one contextual action.
 - **Sub-navigation** (Stock's three tabs, Reports' three, Settings' five) is a
@@ -132,7 +132,7 @@ Nothing is deleted. Every screen that exists today has a home.
   scrollable — unlike today's nav (U1).
 - The shop switcher leaves the top of the screen entirely (U2), giving back
   ~56px on every page.
-- Unread findings show as a badge on Home, labelled "3 new actions".
+- Unread findings show as a badge on Home, labeled "3 new actions".
 
 ### Desktop (≥ 1024px)
 
@@ -276,7 +276,7 @@ already exists. **Both approved.**
 exist and `sales_series` already accepts a grain. Add one optional query param,
 `grain=day|week|month`, defaulting to `week`.
 
-**2. Business colour (F1).** Stored in the existing `Tenant.settings` JSONB
+**2. Business color (F1).** Stored in the existing `Tenant.settings` JSONB
 column (`api/app/canonical/tables.py:81`) — **no migration needed**. This is
 already the pattern for per-shop config: `low_stock_threshold` and
 `dead_stock_days` both read through `ctx.setting(key, default)`
@@ -291,10 +291,53 @@ Per-shop and per-account, so it follows the owner to their phone, which is what
 the complaint asks for: *"the main color for my current business I am looking
 at."*
 
-Because a shop owner can pick any colour, step 3's contrast gate has to run at
+Because a shop owner can pick any color, step 3's contrast gate has to run at
 **runtime** for this token, not just in CI: derive `--color-primary-fg` from the
-chosen colour, and refuse a colour that cannot clear 4.5:1 against both themes'
+chosen color, and refuse a color that cannot clear 4.5:1 against both themes'
 surfaces rather than shipping the dark-mode failure described in audit A2.
+
+### Built, with one correction to the plan above
+
+The paragraph before this one asks for a color that clears 4.5:1 against
+*both* themes' surfaces. **No color can.** Light needs 4.5:1 against `#fbfbf9`
+and dark needs it against `#15161a`; anything dark enough for one is invisible
+on the other. The palette we ship already knew this — `--primary` is `#3d46b8`
+in light and `#949bf5` in dark, one blue at two lightnesses — but the plan
+above did not.
+
+So the rule became: **one hue, two lightnesses, both shown.** `lib/brand.ts`
+keeps the hue and chroma the owner picked and moves lightness in OKLab, per
+theme, only as far as it takes to clear AA on `bg`, `surface` and `raised`.
+Settings draws both derived shades in their own theme's surfaces with the
+measured ratio under each, because a correction the owner cannot see is a
+correction they will eventually report as a bug.
+
+What is still refused, with the reason on screen: anything that is not a hex
+value, and anything with no hue to preserve (chroma under 0.04 in OKLab) —
+a grey lightened to be readable is just a different grey, and the interface
+reads it as switched off.
+
+| | |
+|---|---|
+| Storage | `Tenant.settings["brand_color"]`, no migration |
+| Read | `brand_color` on `ShopProfile` |
+| Write | `PUT /tenants/{slug}/appearance`, validates the hex and nothing more |
+| Gate | `web/src/lib/brand.ts`, in the browser, against the loaded stylesheet |
+| Applied as | inline `--primary`, `--primary-fg`, `--primary-subtle`, `--focus` on `<html>` |
+| Not applied to | the six chart colors — see below |
+
+The endpoint deliberately does *not* judge readability. Answering that means
+knowing the palette, and the palette lives in `web/src/style.css`; a second copy
+in Python would drift, and the copy that drifted quietly would be the one
+deciding. Instead the client refuses to **apply** a stored color that fails the
+gate, falling back to the shipped palette — which closes the loop for anything
+written straight to the API.
+
+The charts keep their own colors. Those six were found by a search that holds
+every pair 20 CIEDE2000 apart and 11 apart under each of three dichromacies;
+dropping the shop's color into series 1 would break a promise the build gate
+makes, and nothing about a brand color says the first slice of a pie should
+be it.
 
 ---
 
@@ -305,7 +348,7 @@ surfaces rather than shipping the dark-mode failure described in audit A2.
 | "Not selling" over "Dead stock" | **Settled** — plain language wins. |
 | Staffing lives under Reports › Busy hours | **Settled** — no sixth destination. |
 | `grain` param on `/dashboard` | **Approved.** |
-| Business colour in `Tenant.settings` + a write endpoint | **Approved.** |
+| Business color in `Tenant.settings` + a write endpoint | **Approved, and built.** |
 | Supabase Auth | Deployment-time, not part of this overhaul. |
 
 **Still open: the desktop command palette (Cmd/Ctrl+K).** Recommendation is to

@@ -4,7 +4,7 @@
  *
  * Two of the complaints land here. The figures are tabular so a column of money
  * lines up, and the change against the previous period carries an arrow and a
- * sign as well as a colour — red and green alone is the most common way a
+ * sign as well as a color — red and green alone is the most common way a
  * dashboard loses the only reader who needed the hint (audit A4).
  *
  * Each label carries its definition from the semantic layer, readable rather
@@ -61,7 +61,7 @@ function direction(kpi: Kpi): 'up' | 'down' | 'flat' {
             'text-ink-muted': direction(kpi) === 'flat',
           }"
         >
-          <!-- The glyph and the sign carry the meaning; the colour agrees. -->
+          <!-- The glyph and the sign carry the meaning; the color agrees. -->
           <span aria-hidden="true">{{ direction(kpi) === 'up' ? '▲' : direction(kpi) === 'down' ? '▼' : '—' }}</span>
           {{ signedPercent(kpi.change) }}
         </span>

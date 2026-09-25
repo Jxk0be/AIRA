@@ -13,8 +13,8 @@
  *   pushed their titles to different places and the list read as ragged
  *   (audit U6).
  *
- *   Severity is a word — "Urgent", "Worth a look" — not a colour. The old badge
- *   showed the *kind* and left the ranking to a border colour, so for anyone who
+ *   Severity is a word — "Urgent", "Worth a look" — not a color. The old badge
+ *   showed the *kind* and left the ranking to a border color, so for anyone who
  *   could not see the difference the ordering simply vanished (audit A4).
  *
  *   A failure says so. The dashboard's old three-row preview swallowed its own

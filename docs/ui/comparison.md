@@ -24,7 +24,7 @@ left and "Staffing" cut in half on the right — and nothing indicating either.
 
 Now: five destinations in a fixed bottom tab bar, all visible, thumb-height, with
 the active one marked by a filled icon, a heavier label *and* a rule rather than
-colour alone. The shop switcher left the top of the screen entirely, which gave
+color alone. The shop switcher left the top of the screen entirely, which gave
 back about 56px on every page.
 
 ### 2. The conversation jumped when you opened History
@@ -53,7 +53,7 @@ showing five columns of money and dates and **no item names at all** — every c
 unidentifiable — with Previous/Next below fifty rows.
 
 Now the table is a table on a desktop and a stack of cards on a phone: item name
-as the heading, everything else as labelled pairs. Paging sits above the rows as
+as the heading, everything else as labeled pairs. Paging sits above the rows as
 well as below.
 
 ### 4. Headings looked like rows, and columns did not line up
@@ -69,7 +69,7 @@ sat inside the item cell at 9.6px, wrapping the name onto three lines and
 knocking every figure out of line with its header.
 
 Now each supplier is a section with a real heading on its own rule, "Gone first"
-is a labelled badge under the name, and Order / On hand / At cost hold fixed
+is a labeled badge under the name, and Order / On hand / At cost hold fixed
 columns.
 
 ### 5. Rows started in different places

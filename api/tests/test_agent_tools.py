@@ -39,6 +39,12 @@ from tests.fake_embedder import FakeEmbedder
 POS_SHOP = "tsundoku"
 SPREADSHEET_SHOP = "panel_and_pawn"
 
+# The tools that return no shop data, so the sweeps below have nothing to look
+# at: `make_chart` echoes rows a data tool already returned, and the two action
+# tools only ever hand back the button they registered. Their own tests are in
+# `test_agent_actions.py` and `test_agent_assistant.py`.
+NOT_DATA_TOOLS = {"make_chart", "offer_action", "draft_email"}
+
 # Arguments that exercise each tool without depending on the fixture's contents.
 CALLS: dict[str, dict[str, object]] = {
     "search_catalog": {"query": "card sleeves", "limit": 3},
@@ -198,7 +204,7 @@ async def test_no_tool_can_be_made_to_return_another_shops_data(
 
         ctx = context_for(db, shop)
         for tool in tools_for(shop):
-            if tool.name == "make_chart":
+            if tool.name in NOT_DATA_TOOLS:
                 continue
             try:
                 result = await tool.call(ctx, CALLS[tool.name])
@@ -216,7 +222,7 @@ def test_every_tool_has_arguments_to_call_it_with() -> None:
     about something else entirely, which is a poor way to learn that the new
     tool is untested.
     """
-    registered = {tool.name for tool in ALL_TOOLS} - {"make_chart"}
+    registered = {tool.name for tool in ALL_TOOLS} - NOT_DATA_TOOLS
     missing = sorted(registered - set(CALLS))
     assert not missing, f"no CALLS entry for: {missing}. Add one so these tests cover it."
 
@@ -228,7 +234,7 @@ async def test_a_tool_result_is_small_enough_to_put_in_a_prompt(
     fat one is a bill that keeps arriving."""
     ctx = context_for(db, pos)
     for tool in tools_for(pos):
-        if tool.name == "make_chart":
+        if tool.name in NOT_DATA_TOOLS:
             continue
         result = await tool.call(ctx, CALLS[tool.name])
         size = len(json.dumps(result, default=str))

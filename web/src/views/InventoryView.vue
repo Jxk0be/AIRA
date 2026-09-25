@@ -4,7 +4,7 @@
  *
  * Searching, sorting and paging all happen in Postgres rather than in the
  * browser: a shop with forty thousand SKUs is a normal shop, and a table that
- * only works because the catalogue was small is a table that breaks on the
+ * only works because the catalog was small is a table that breaks on the
  * first real customer.
  *
  * The margin column is the honest one. An item with no cost recorded shows a
@@ -111,12 +111,12 @@ const hasMore = computed(() => !!page.value && offset.value + PAGE < page.value.
 <template>
   <div class="mx-auto max-w-5xl px-4 py-5 sm:px-6">
     <p class="mb-3 text-sm text-ink-muted">
-      Stock as of the last sync, priced from {{ shop.name }}'s own catalogue.
+      Stock as of the last sync, priced from {{ shop.name }}'s own catalog.
     </p>
 
     <div class="mb-3 flex flex-wrap items-center gap-2">
       <label class="min-w-0 flex-1">
-        <span class="sr-only">Search the catalogue</span>
+        <span class="sr-only">Search the catalog</span>
         <input
           v-model="search"
           type="search"
@@ -143,7 +143,7 @@ const hasMore = computed(() => !!page.value && offset.value + PAGE < page.value.
          scroll to reach Next, and a long way back (audit U9). -->
     <nav
       v-if="page && page.total > PAGE"
-      aria-label="Catalogue pages"
+      aria-label="Catalog pages"
       class="mb-3 flex items-center justify-between gap-3"
     >
       <UiButton
@@ -162,7 +162,7 @@ const hasMore = computed(() => !!page.value && offset.value + PAGE < page.value.
     <p v-else class="tabular mb-3 text-sm text-ink-muted">{{ showing }}</p>
 
     <div v-if="error" class="rounded-lg border border-danger bg-danger-subtle p-4" role="alert">
-      <p class="font-medium text-ink">We could not load the catalogue.</p>
+      <p class="font-medium text-ink">We could not load the catalog.</p>
       <p class="mt-1 text-sm text-ink-muted">{{ error }}</p>
       <UiButton class="mt-3" size="sm" variant="secondary" @click="load">Try again</UiButton>
     </div>
@@ -176,11 +176,11 @@ const hasMore = computed(() => !!page.value && offset.value + PAGE < page.value.
         :columns="columns"
         :rows="page?.rows ?? []"
         :row-key="(row) => String(row.variant_id)"
-        caption="Every item in the catalogue, with what it cost and what it is worth"
+        caption="Every item in the catalog, with what it cost and what it is worth"
         :sort-key="sort"
         :sort-descending="descending"
         :loading="loading"
-        empty-text="Nothing in the catalogue matches that."
+        empty-text="Nothing in the catalog matches that."
         @sort="sortBy"
       >
         <template #cell="{ row, column }">
@@ -235,7 +235,7 @@ const hasMore = computed(() => !!page.value && offset.value + PAGE < page.value.
 
     <nav
       v-if="page && page.total > PAGE"
-      aria-label="Catalogue pages, bottom"
+      aria-label="Catalog pages, bottom"
       class="mt-4 flex items-center justify-between gap-3"
     >
       <UiButton

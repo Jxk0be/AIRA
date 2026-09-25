@@ -650,6 +650,10 @@ class Message(TenantMixin, Base):
     content: Mapped[str] = mapped_column(Text, nullable=False, default="")
     tool_calls: Mapped[list[Any]] = mapped_column(JSONB, nullable=False, default=list)
     charts: Mapped[list[Any]] = mapped_column(JSONB, nullable=False, default=list)
+    # Buttons the answer offered, as `app.agent.actions.ActionSpec` dumps them.
+    # Stored rather than recomputed: they are part of what was said, and an
+    # offer that vanishes when the conversation is reopened is worse than none.
+    actions: Mapped[list[Any]] = mapped_column(JSONB, nullable=False, default=list)
 
 
 class SavedChart(TenantMixin, Base):

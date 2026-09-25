@@ -1,9 +1,9 @@
 # What is still weak
 
-`python tasks.py ui-check` is green: 426 checks, twelve screens, both themes,
+`python tasks.py ui-check` is green: 442 checks, twelve screens, both themes,
 both sizes, plus 186 contrast pairs. That is a floor, not a verdict. It proves
 no screen has an axe violation, a focus trap, an unreachable control, text under
-13px, a tap target under 44px, a sideways scroll, or a colour pair that fails AA.
+13px, a tap target under 44px, a sideways scroll, or a color pair that fails AA.
 
 It proves nothing about whether the thing is good to use.
 
@@ -34,6 +34,10 @@ them rest on the one manual pass I did.
 
 That is also where regressions hide, because overlays are the thing people forget
 to re-check.
+
+Partly answered since: `brand.spec.ts` opens controls, types into a field and
+asserts on what comes back, so the pattern exists now and the remaining work is
+applying it to the four overlays rather than inventing it.
 
 **Fix:** a spec per overlay that opens it, runs axe on the open state, tabs
 through it, presses Escape, and asserts focus returned to the trigger. Same for a
@@ -72,18 +76,32 @@ tests keep passing against the old shape and the app breaks in the browser.
 and fails if the diff is non-empty. It needs the stack up, so it belongs in a
 nightly rather than on every push.
 
-## 6. The business colour picker is still a placeholder
+## 6. The business color is built, and only its edges are tested
 
-You approved it in step 1 and it is a paragraph in Settings › Appearance saying
-it does not exist. The storage question is answered (`Tenant.settings`, no
-migration) and the hard part is unbuilt: the runtime contrast gate that has to
-reject a colour the owner likes.
+This was "still a placeholder" until it wasn't. `brand.spec.ts` now picks a
+color, saves it, and measures the button the browser painted, in all four
+projects. Three gaps remain, in order.
 
-**Fix:** port `web/scripts/check-contrast.ts`'s ratio maths into the app, derive
-`--primary-fg` from the chosen colour, and show the owner *why* a colour was
-refused rather than silently correcting it.
+**The gate is only in the browser.** `PUT /appearance` validates that the value
+is a hex and nothing else. The client refuses to *apply* a stored color that
+fails, so the interface stays readable either way — but a color written straight
+to the API is accepted, stored, and then silently ignored, which is a confusing
+thing for an integration to run into. The honest fix is an error on the write,
+and it needs the palette somewhere both sides can read.
 
-## 7. `prefers-reduced-motion` is honoured but never tested
+**Only two colors are ever tested.** Rust and a pale yellow. The derivation is a
+lightness walk in OKLab with a gamut fit underneath it, and the case most likely
+to be wrong is a high-chroma hue near the sRGB boundary, where the fit pulls
+chroma out and the result drifts further than the ratio suggests. A few hundred
+random hues, asserting both derived shades clear 4.5:1, would be about twenty
+lines and would actually exercise it.
+
+**Nothing checks the rest of the interface against a shop's color.** axe runs on
+the shipped palette. A fifth Playwright project with a brand color saved in the
+profile fixture would run every existing check against a recolored app, and is
+the only thing that would catch a component that hardcoded the old accent.
+
+## 7. `prefers-reduced-motion` is honored but never tested
 
 `style.css` kills animations under it and every overlay respects it. No test runs
 with it set.

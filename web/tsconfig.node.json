@@ -3,6 +3,10 @@
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
+    // `check-contrast.ts` imports the app's own color maths so the gate and the
+    // picker cannot measure differently. Node needs the extension on that
+    // specifier; this is what lets TypeScript accept it.
+    "allowImportingTsExtensions": true,
     "lib": [
       "ES2023",
       "DOM",

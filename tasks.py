@@ -17,7 +17,7 @@ There is no `make` on Windows, so this stdlib-only script plays its part:
     python tasks.py backfill    # sync a tenant from its source system
     python tasks.py incremental
     python tasks.py conformance # the suite every adapter must pass
-    python tasks.py ingest      # embed a tenant's catalogue and documents
+    python tasks.py ingest      # embed a tenant's catalog and documents
     python tasks.py documents   # upload the fake shops' policies and FAQs
     python tasks.py reembed
     python tasks.py eval        # golden questions through the agent, graded
@@ -149,7 +149,7 @@ def task_incremental(argv: list[str]) -> int:
 
 
 def task_ingest(argv: list[str]) -> int:
-    """Embed a tenant's catalogue and documents. Cheap to repeat: unchanged
+    """Embed a tenant's catalog and documents. Cheap to repeat: unchanged
     chunks are skipped and cost nothing."""
     tenant = argv[0] if argv and not argv[0].startswith("-") else "tsundoku"
     rest = argv[1:] if argv and not argv[0].startswith("-") else argv
@@ -265,7 +265,7 @@ def task_test(argv: list[str]) -> int:
 
 
 def task_ui_check(argv: list[str]) -> int:
-    """The whole UI gate: contrast, then raw colours, then Playwright and axe.
+    """The whole UI gate: contrast, then raw colors, then Playwright and axe.
 
     Every check runs even when an earlier one fails, for the same reason `lint`
     does it: one command should tell you everything that is wrong rather than
@@ -275,7 +275,7 @@ def task_ui_check(argv: list[str]) -> int:
     by `ui-fixtures`, so this runs on a machine with nothing else started.
     """
     code = run(["node", "scripts/check-contrast.ts"], cwd=WEB)
-    code = _check_no_raw_colours() or code
+    code = _check_no_raw_colors() or code
     return npm(["run", "test:e2e", "--", *argv]) or code
 
 
@@ -295,9 +295,9 @@ def task_ui_fixtures(argv: list[str]) -> int:
     return run(["node", "scripts/record-fixtures.ts", *argv], cwd=WEB)
 
 
-# Hex, rgb()/hsl() and Tailwind's own palette are all ways of smuggling a colour
+# Hex, rgb()/hsl() and Tailwind's own palette are all ways of smuggling a color
 # past the gate. Components get semantic tokens; style.css holds the palette.
-_COLOUR_PATTERNS = (
+_COLOR_PATTERNS = (
     re.compile(r"#[0-9a-fA-F]{3,8}"),
     re.compile(r"(?:rgb|rgba|hsl|hsla)\("),
     re.compile(
@@ -308,27 +308,30 @@ _COLOUR_PATTERNS = (
 )
 
 
-def _check_no_raw_colours() -> int:
-    """A colour written into a component is a colour no theme can reach."""
+def _check_no_raw_colors() -> int:
+    """A color written into a component is a color no theme can reach."""
     offenders: list[str] = []
     for path in sorted((WEB / "src").rglob("*")):
         if path.suffix not in {".vue", ".ts"} or not path.is_file():
             continue
-        # style.css is the palette; theme.ts and the chart reader carry the
-        # fallbacks that keep a chart drawable before the CSS has loaded.
-        if path.name in {"style.css", "ChartRenderer.vue"}:
+        # Three files are color machinery rather than components:
+        # `ChartRenderer.vue` carries the fallbacks that keep a chart drawable
+        # before the CSS has loaded, and `lib/color.ts` and `lib/brand.ts` are
+        # the maths that decides whether a shop's chosen color is readable —
+        # they have to name real values to do it. Everything else gets tokens.
+        if path.name in {"ChartRenderer.vue", "color.ts", "brand.ts"}:
             continue
         for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
-            if any(pattern.search(line) for pattern in _COLOUR_PATTERNS):
+            if any(pattern.search(line) for pattern in _COLOR_PATTERNS):
                 offenders.append(f"{path.relative_to(ROOT)}:{number}: {line.strip()[:96]}")
 
     if offenders:
-        print("\nRaw colours in components — use a semantic token instead:\n", flush=True)
+        print("\nRaw colors in components — use a semantic token instead:\n", flush=True)
         for line in offenders:
             print(f"  {line}", flush=True)
         print(f"\n{len(offenders)} to fix.", flush=True)
         return 1
-    print("\n  ok   no raw colours in components", flush=True)
+    print("\n  ok   no raw colors in components", flush=True)
     return 0
 
 

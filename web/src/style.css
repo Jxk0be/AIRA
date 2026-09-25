@@ -5,11 +5,11 @@
 
    Two rules about this file.
 
-   Every colour below passed `node web/scripts/check-contrast.ts` before it was
+   Every color below passed `node web/scripts/check-contrast.ts` before it was
    written here, and that script parses THIS file — so the gate tests what
    actually ships rather than a copy of it. Text clears 4.5:1 on every surface
    it is used on, interactive borders and the focus ring clear 3:1, and the six
-   chart colours clear 3:1 on their surface while staying 20 CIEDE2000 apart
+   chart colors clear 3:1 on their surface while staying 20 CIEDE2000 apart
    from each other (11 under protanopia, deuteranopia and tritanopia).
 
    Components use semantic names only. There are no raw hex values outside the
@@ -61,7 +61,7 @@
 }
 
 /* Dark is a designed palette, not an inversion: surfaces are warm-neutral
-   greys rather than black, and every accent is desaturated so it does not
+   grays rather than black, and every accent is desaturated so it does not
    glow against them. */
 :root[data-theme="dark"] {
   color-scheme: dark;
@@ -204,7 +204,7 @@ body {
   letter-spacing: -0.02em;
 }
 
-/* Its own token rather than the primary colour: a focused primary button would
+/* Its own token rather than the primary color: a focused primary button would
    otherwise be ringed in its own background. */
 :focus-visible {
   outline: 3px solid var(--focus);
@@ -264,7 +264,7 @@ body {
 }
 
 /* Set by lib/theme.ts for one frame while the palette swaps. Without it, every
-   element carrying a colour transition cross-fades between the two themes at
+   element carrying a color transition cross-fades between the two themes at
    once, which looks like a fault rather than a change. */
 :root.theme-switching *,
 :root.theme-switching *::before,

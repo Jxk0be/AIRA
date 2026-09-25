@@ -17,7 +17,7 @@
  *
  *   "GONE FIRST" was a 9.6px badge sitting *inside* the item cell, wrapping the
  *   name onto three lines and knocking every figure in the row out of line with
- *   its header. It is a labelled badge under the name, and the figures keep
+ *   its header. It is a labeled badge under the name, and the figures keep
  *   their columns.
  *
  *   The quantity input had no label at all — a screen reader read "spin button"

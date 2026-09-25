@@ -154,6 +154,10 @@ class RunRecord:
     tools: list[ToolTrace] = field(default_factory=list)
     answer: str = ""
     charts: list[dict[str, Any]] = field(default_factory=list)
+    # Buttons the answer offered. Stored with the message so reopening a
+    # conversation gives them back: an offer that only existed while the tokens
+    # were arriving is an offer the owner loses by reading the answer twice.
+    actions: list[dict[str, Any]] = field(default_factory=list)
     error: str | None = None
     conversation_id: uuid.UUID | None = None
     title: str | None = None
@@ -299,6 +303,11 @@ class ClaudeAssistant:
                 payload = spec.model_dump(mode="json")
                 record.charts.append(payload)
                 yield events.chart(payload)
+
+            for offered in ctx.actions:
+                payload = offered.model_dump(mode="json")
+                record.actions.append(payload)
+                yield events.action(payload)
 
             record.answer = "\n\n".join(answer)
             await self._persist(session, shop, record, question)
@@ -452,6 +461,7 @@ class ClaudeAssistant:
                 content=record.answer,
                 tool_calls=[trace.as_dict() for trace in record.tools],
                 charts=record.charts,
+                actions=record.actions,
                 created_at=now,
             )
         )

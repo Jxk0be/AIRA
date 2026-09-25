@@ -214,9 +214,9 @@ Fixing it properly needs a real `--color-primary-fg` token, not a find-replace.
 **A3 — Borders do not meet 3:1.** `rule` at 1.35:1 is the border on every input,
 select and card. Input borders are UI components under WCAG 2.2 and need 3:1.
 
-**A4 — Severity is colour-only.** `SEVERITY_STYLE` (`InsightsView.vue:47`) encodes
-urgent / warn / info as border and text colour. The badge's *text* says the kind
-("Reordering", "Shrink"), never the severity. Remove the colour and the ranking
+**A4 — Severity is color-only.** `SEVERITY_STYLE` (`InsightsView.vue:47`) encodes
+urgent / warn / info as border and text color. The badge's *text* says the kind
+("Reordering", "Shrink"), never the severity. Remove the color and the ranking
 disappears. The KPI deltas are fine by contrast — the sign is in the text.
 
 **A5 — The staffing heatmap is opacity-only.** `StaffingView.vue:72` sets
@@ -253,7 +253,7 @@ Dismiss / Snooze / Yes / No row, the tool-chip disclosure and the conversation
 Rename / Delete links are all well under 44×44px.
 
 **A12 — The focus ring is `--brand`,** which is also the primary-button
-background, so a focused primary button shows a ring in its own colour. It needs
+background, so a focused primary button shows a ring in its own color. It needs
 its own token.
 
 ---
@@ -262,10 +262,10 @@ its own token.
 
 These are features, not restyling. The overhaul plan omits all five.
 
-**F1 — Business colour per shop.** *"pick a 'business color' in the Data & sync
+**F1 — Business color per shop.** *"pick a 'business color' in the Data & sync
 page so I can choose what the main color is."* `--brand` is a hardcoded hex in
 `style.css`. This needs a per-tenant stored value, a picker, and — given A2 —
-automatic foreground selection plus a refusal to accept a colour that cannot
+automatic foreground selection plus a refusal to accept a color that cannot
 clear 4.5:1 in both themes.
 
 **F2 — Chart zoom and per-day granularity.** *"drag and zoom in or change the

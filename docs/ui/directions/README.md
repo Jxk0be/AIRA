@@ -6,7 +6,7 @@ Open these in a browser — no build step, no network needed:
     docs/ui/directions/direction-b.html
 
 Each file shows the **new Home screen** from `../ia.md` at 375×812 and 1280×800,
-in light and dark, plus the six-colour chart palette in both themes.
+in light and dark, plus the six-color chart palette in both themes.
 
 ---
 
@@ -22,7 +22,7 @@ in light and dark, plus the six-colour chart palette in both themes.
 
 **A suits** an owner who opens this between customers and wants one answer fast.
 Everything is spaced for a thumb and a glance, nothing competes for attention.
-**It costs density** — long lists like the 333-item catalogue mean more scrolling.
+**It costs density** — long lists like the 333-item catalog mean more scrolling.
 
 **B suits** an owner who reads numbers all day and wants more on screen at once:
 the whole KPI line, three findings and the chart without scrolling. **It costs
@@ -47,17 +47,17 @@ These are not styling preferences — they are the audit findings, demonstrated:
 - **U11** — caveats kept, but demoted to a quiet line under the chart instead of
   a yellow block bigger than the number it qualifies.
 - **U12** — body text 16px, nothing below 12px (the notification count).
-- **U15** — the Pinned panel is shown mid-skeleton, honouring `prefers-reduced-motion`.
+- **U15** — the Pinned panel is shown mid-skeleton, honoring `prefers-reduced-motion`.
 - **U18** — a Light / Dark / System control, with **Light selected by default**.
 - **A2, A4** — severity reads "Urgent" / "Worth a look" in words as well as
-  colour. KPI deltas carry ▲/▼ and a sign, not just red and green.
+  color. KPI deltas carry ▲/▼ and a sign, not just red and green.
 - **A9** — every chart has a descriptive `aria-label` and a "View as table" toggle.
 - **A11** — every tap target is ≥44×44. Measured: zero violations.
 - **F2** — the Day / Week / Month control and "drag to zoom" are on the chart.
 
 ---
 
-## The colour work
+## The color work
 
 Both palettes passed a gate before any markup was written. Text ≥4.5:1 on its
 surface, UI and interactive borders ≥3:1, chart series ≥3:1 on their surface.
@@ -70,15 +70,15 @@ Requiring it forces a light-to-dark ramp, which makes some categories look more
 important than others — that is a sequential palette, not a qualitative one.
 The right test is perceptual distance: **CIEDE2000 ΔE ≥ 20**.
 
-**2. Six hand-picked hues do not survive colour blindness.** The first attempt
+**2. Six hand-picked hues do not survive color blindness.** The first attempt
 passed every contrast rule and still collapsed under simulation — two series
-were ΔE 1.4 apart for a deuteranope, i.e. the same colour. Both palettes are now
+were ΔE 1.4 apart for a deuteranope, i.e. the same color. Both palettes are now
 searched under **Machado (2009) simulation for protanopia, deuteranopia and
 tritanopia, requiring ΔE ≥ 11 in all three**, with the first series pinned to the
 direction's accent and chroma capped so nothing turns neon.
 
-This is also why the business-colour picker (F1) cannot just store a hex: the
-same gate has to run at runtime on whatever colour the owner picks, and derive
+This is also why the business-color picker (F1) cannot just store a hex: the
+same gate has to run at runtime on whatever color the owner picks, and derive
 `--color-primary-fg` from it rather than assuming white.
 
 ### Tokens
@@ -106,7 +106,7 @@ same gate has to run at runtime on whatever colour the owner picks, and derive
 | success / warning / danger / info | `#1B6B41` `#7E5400` `#A93122` `#1C5580` | `#63CC8D` `#DBA94A` `#E8846A` `#6FB0DE` |
 | chart 1–6 | `#0F5547` `#808A3C` `#4E4380` `#754115` `#B75D73` `#3F92A8` | `#6FC5A3` `#798EDC` `#C38AAD` `#9D9272` `#FAC785` `#D0D1FE` |
 
-Note B gives the focus ring its own colour (a warm rust) because its accent is
+Note B gives the focus ring its own color (a warm rust) because its accent is
 also the primary-button background — audit A12.
 
 ---
@@ -114,13 +114,13 @@ also the primary-button background — audit A12.
 ## Caveats on these mockups
 
 - Static HTML. Nothing is clickable; the segmented controls and buttons are
-  rendered states, not behaviour.
+  rendered states, not behavior.
 - Fonts are system stacks with the intended faces named first. Direction B is
   designed for Fraunces + IBM Plex; without them installed it falls back to
   Georgia and Consolas and reads slightly heavier than intended.
 - Phone frames are 760px tall rather than 812 so both fit side by side, so the
   fold sits a little higher here than on a real handset.
-- The data is Tsundoku &amp; Tabletop's seeded catalogue and is internally
+- The data is Tsundoku &amp; Tabletop's seeded catalog and is internally
   consistent: $12,160.45 net over 412 orders is the $29.52 average shown.
 
 ---

@@ -58,6 +58,13 @@ export interface ShopProfile {
   categories: string[]
   data_from: string | null
   data_to: string | null
+  /** The shop's own color, or null for the palette we ship. See lib/brand.ts. */
+  brand_color: string | null
+}
+
+export interface Appearance {
+  tenant: string
+  brand_color: string | null
 }
 
 export interface Period {
@@ -231,6 +238,32 @@ export interface ChartSpec {
   note?: string | null
 }
 
+/**
+ * A button an answer offered, already checked against the backend's catalogue.
+ *
+ * `route` and `task` are the API's, never the model's: an `open` action carries
+ * a path this app already has, and a `run` action carries a name this client
+ * maps onto one of its own calls rather than a URL it is told to fetch.
+ */
+export interface AssistantAction {
+  key: string
+  kind: 'open' | 'email' | 'run'
+  label: string
+  detail: string | null
+  /** For `open`: a path under `/:tenant`, e.g. `stock?tab=reorder`. */
+  route: string | null
+  /** For `run`: which of the client's own calls to make. */
+  task: string | null
+  email: EmailDraft | null
+}
+
+/** A message the owner reviews and sends themselves. We never send it. */
+export interface EmailDraft {
+  to: string | null
+  subject: string
+  body: string
+}
+
 export interface PinnedChart {
   id: string
   title: string
@@ -273,6 +306,7 @@ export interface StoredMessage {
   content: string
   tool_calls: ToolCallRecord[]
   charts: ChartSpec[]
+  actions: AssistantAction[]
   created_at: string
 }
 

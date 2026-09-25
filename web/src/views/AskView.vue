@@ -2,7 +2,7 @@
 /**
  * The shop's analyst, in conversation.
  *
- * Five things this screen has to get right, and four of them were wrong before.
+ * Six things this screen has to get right, and four of them were wrong before.
  *
  *   **The composer stays put.** The conversation scrolls; the box you type in
  *   does not. The shell gives this route the whole frame (`meta.fills`) and the
@@ -28,13 +28,27 @@
  *   **A chart has to be pinnable exactly as it was drawn.** Pinning stores the
  *   spec that was validated during the answer, not a fresh query, so a pinned
  *   chart is a record of what was said. That part was already right.
+ *
+ *   **An answer can end in a button.** "Four of these are below a week's cover"
+ *   is only half an answer if the reorder screen is three taps away, so the
+ *   assistant may offer to take you there, or hand you an email it has written.
+ *   What it may offer comes out of a catalogue on the server (`agent/actions.py`)
+ *   — the model picks a key, never a URL — and the offers are stored with the
+ *   message, so reopening the conversation gives them back.
  */
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { api } from '../api/client'
 import { ask, type DonePayload } from '../api/stream'
-import type { AssistantInfo, ChartSpec, ConversationSummary, ToolCallRecord } from '../api/types'
+import type {
+  AssistantAction,
+  AssistantInfo,
+  ChartSpec,
+  ConversationSummary,
+  ToolCallRecord,
+} from '../api/types'
+import AnswerActions from '../components/AnswerActions.vue'
 import ChartRenderer from '../components/ChartRenderer.vue'
 import ToolChip from '../components/ToolChip.vue'
 import { duration, money, sinceNow, toolLabel } from '../lib/format'
@@ -52,6 +66,7 @@ interface Turn {
   text: string
   tools: ToolCallRecord[]
   charts: ChartSpec[]
+  actions: AssistantAction[]
   done?: DonePayload | null
   failed?: string | null
   streaming?: boolean
@@ -124,6 +139,10 @@ async function openConversation(id: string) {
         text: message.content,
         tools: message.tool_calls ?? [],
         charts: message.charts ?? [],
+        // Stored with the message, so yesterday's answer still offers what it
+        // offered: an action that only lived in the stream is one the owner
+        // loses by reading the answer a second time.
+        actions: message.actions ?? [],
       }))
     await scrollDown()
   } catch {
@@ -151,13 +170,21 @@ async function send(question?: string) {
   error.value = null
   status.value = 'Working on it'
 
-  turns.value.push({ id: `you-${Date.now()}`, role: 'user', text, tools: [], charts: [] })
+  turns.value.push({
+    id: `you-${Date.now()}`,
+    role: 'user',
+    text,
+    tools: [],
+    charts: [],
+    actions: [],
+  })
   turns.value.push({
     id: `aira-${Date.now()}`,
     role: 'assistant',
     text: '',
     tools: [],
     charts: [],
+    actions: [],
     streaming: true,
   })
   // The reactive proxy, not the object that was pushed: mutating the raw one
@@ -194,6 +221,9 @@ async function send(question?: string) {
         case 'chart':
           answer.charts.push(event.spec)
           break
+        case 'action':
+          answer.actions.push(event.action)
+          break
         case 'done':
           answer.done = event.payload
           if (event.payload.conversation_id) conversationId.value = event.payload.conversation_id
@@ -204,7 +234,14 @@ async function send(question?: string) {
       }
       await scrollDown()
     }
-    status.value = answer.failed ? 'That did not work' : 'Answer ready'
+    // The offers are part of the answer, so the live region says they are
+    // there. A screen reader user who is told only "Answer ready" has no way
+    // to know two buttons just appeared under it (audit A8).
+    status.value = answer.failed
+      ? 'That did not work'
+      : answer.actions.length
+        ? `Answer ready, with ${answer.actions.length} thing${answer.actions.length === 1 ? '' : 's'} you can do`
+        : 'Answer ready'
   } catch (cause) {
     answer.failed = cause instanceof Error ? cause.message : String(cause)
     status.value = 'That did not work'
@@ -420,6 +457,15 @@ onBeforeUnmount(() => controller?.abort())
               </UiButton>
             </div>
           </div>
+
+          <!-- Only once the answer has finished arriving. A button under a
+               half-written sentence invites a click on a conclusion the model
+               has not reached yet. -->
+          <AnswerActions
+            v-if="!turn.streaming"
+            :tenant="slug"
+            :actions="turn.actions"
+          />
 
           <p v-if="turn.failed" class="mt-2 rounded-md bg-danger-subtle px-3 py-2 text-base text-ink">
             {{ turn.failed }}

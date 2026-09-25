@@ -28,7 +28,7 @@ const tab = ref('all')
  *
  * Tailwind v4 generates a utility only when it finds the literal string in the
  * source, so `bg-${name}` yields an unstyled swatch — which on a page whose
- * whole job is showing colours is the one bug that hides itself.
+ * whole job is showing colors is the one bug that hides itself.
  */
 const SURFACES = [
   { name: '--bg', box: 'bg-bg' },
@@ -68,7 +68,7 @@ const SIZES = [
       <div>
         <h1 class="display text-2xl font-semibold text-ink">Styleguide</h1>
         <p class="mt-1 text-ink-muted">
-          Direction A — “Counter”. Every colour here passed
+          Direction A — “Counter”. Every color here passed
           <code class="rounded-sm bg-raised px-1 py-0.5 font-mono text-sm">tasks.py ui-check</code>.
         </p>
       </div>
@@ -163,7 +163,7 @@ const SIZES = [
       <h2 class="mb-3 text-lg font-semibold text-ink">Toasts</h2>
       <p class="mb-3 text-sm text-ink-muted">
         Errors do not auto-dismiss; the rest clear themselves. Every one carries
-        an icon and a spoken word, never colour alone.
+        an icon and a spoken word, never color alone.
       </p>
       <div class="flex flex-wrap gap-2">
         <UiButton size="sm" variant="secondary" @click="toast.success('2 draft orders ready to review')">

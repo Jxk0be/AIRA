@@ -16,7 +16,7 @@
  *
  * It encoded everything in `opacity`, with the number hidden in a `title` on a
  * `<div>` — which is not keyboard-reachable and is read out inconsistently at
- * best (audit A5). A colour ramp is a fine *summary*, but it cannot be the only
+ * best (audit A5). A color ramp is a fine *summary*, but it cannot be the only
  * copy of the data.
  *
  * So: the grid is a real `<table>` with row and column headers, every cell
