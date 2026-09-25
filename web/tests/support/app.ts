@@ -19,7 +19,7 @@ export const TENANT = 'tsundoku'
  *
  * `shell: false` marks a page that deliberately renders outside `AppShell` —
  * only the dev styleguide. The skip link, the `<main>` landmark and the
- * labelled `<nav>` are properties *of the shell*, so asserting them on a page
+ * labeled `<nav>` are properties *of the shell*, so asserting them on a page
  * that has no shell would be testing something nobody built. Everything else —
  * axe, layout, focus visibility — still runs on it.
  */
@@ -97,8 +97,9 @@ function fixtureFor(url: URL): string | null {
  *
  * A GET with no fixture is failed loudly rather than passed through: a silent
  * fall-through to a live API is how a suite starts depending on a database
- * again without anyone noticing. Writes get a bare 200 — no spec asserts on a
- * write body yet, and inventing one would be a fixture nobody recorded.
+ * again without anyone noticing. Writes get a bare 200, except the one whose
+ * body a spec reads back; inventing the rest would be fixtures nobody
+ * recorded.
  */
 export async function mockApi(page: Page): Promise<string[]> {
   const missing: string[] = []
@@ -113,6 +114,18 @@ export async function mockApi(page: Page): Promise<string[]> {
       const url = new URL(request.url())
 
       if (request.method() !== 'GET') {
+        // The one write with a body a spec asserts on: saving the shop's color
+        // has to come back with the color, or the page cannot recolor without
+        // a reload and `brand.spec.ts` would be testing the mock's shrug.
+        if (url.pathname.endsWith('/appearance')) {
+          const sent = JSON.parse(request.postData() ?? '{}') as { brand_color?: string | null }
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({ tenant: TENANT, brand_color: sent.brand_color ?? null }),
+          })
+          return
+        }
         await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' })
         return
       }

@@ -4,7 +4,7 @@
  *
  * Reka gives this arrow-key roving focus and the right roles, which a row of
  * <button>s does not. The active tab is marked by weight and a rule as well as
- * colour, and the strip scrolls horizontally with a visible edge rather than
+ * color, and the strip scrolls horizontally with a visible edge rather than
  * silently hiding destinations the way the old nine-item nav did.
  */
 import { TabsIndicator, TabsList, TabsRoot, TabsTrigger } from 'reka-ui'

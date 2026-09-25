@@ -66,6 +66,8 @@ class MessageOut(BaseModel):
     content: str
     tool_calls: list[Any]
     charts: list[Any]
+    # Buttons the answer offered, so reopening a conversation gives them back.
+    actions: list[Any]
     created_at: Any
 
 
@@ -181,6 +183,7 @@ async def conversation_messages(
             content=row.content,
             tool_calls=row.tool_calls,
             charts=row.charts,
+            actions=row.actions,
             created_at=row.created_at,
         )
         for row in rows
@@ -271,8 +274,8 @@ async def chat(
     """Ask the shop's analyst something.
 
     Events: `token` as the answer is written, `tool_start` / `tool_end` around
-    each tool call, `chart` for a validated chart, then exactly one `done` or
-    one `error`.
+    each tool call, `chart` for a validated chart, `action` for each button the
+    answer offers, then exactly one `done` or one `error`.
     """
     return StreamingResponse(
         _events(slug, body, assistant),

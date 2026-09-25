@@ -18,7 +18,7 @@
  *   anything happened.
  *
  *   The active tab is marked by a filled icon, a heavier label and a rule —
- *   never colour alone.
+ *   never color alone.
  *
  *   `main` is the scroll container rather than the window, which is what keeps
  *   the Ask composer above the mobile keyboard. The cost is that the browser
@@ -295,7 +295,7 @@ onMounted(() => {
           :class="isCurrent(destination.name) ? 'font-bold text-primary' : 'font-medium text-ink-muted'"
           :aria-current="isCurrent(destination.name) ? 'page' : undefined"
         >
-          <!-- Not colour alone: a rule above, a filled icon, a heavier label. -->
+          <!-- Not color alone: a rule above, a filled icon, a heavier label. -->
           <span
             v-if="isCurrent(destination.name)"
             class="absolute inset-x-0 top-0 mx-auto h-0.5 w-8 rounded-b bg-primary"

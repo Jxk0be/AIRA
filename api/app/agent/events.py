@@ -1,9 +1,10 @@
 """What the client sees while an answer is being built.
 
-Six event types, and the UI can be written against them without knowing
+Seven event types, and the UI can be written against them without knowing
 anything about how the agent loop works: text arrives as `token`, each tool call
 brackets its own work with `tool_start` and `tool_end`, a validated chart comes
-through as `chart`, and every run ends with exactly one `done` or one `error`.
+through as `chart`, a button the answer offers to press comes through as
+`action`, and every run ends with exactly one `done` or one `error`.
 
 `tool_start` and `tool_end` exist because a question that takes six seconds
 needs to show its working. "Checking last December's sales" is the difference
@@ -23,6 +24,7 @@ class EventType(StrEnum):
     TOOL_START = "tool_start"
     TOOL_END = "tool_end"
     CHART = "chart"
+    ACTION = "action"
     DONE = "done"
     ERROR = "error"
 
@@ -66,6 +68,16 @@ def tool_end(name: str, ms: int, error: str | None = None, result: str | None = 
 
 def chart(spec: dict[str, Any]) -> AgentEvent:
     return AgentEvent(EventType.CHART, spec)
+
+
+def action(spec: dict[str, Any]) -> AgentEvent:
+    """One button the answer offers, already checked against the catalogue.
+
+    Sent after the answer rather than during it, for the same reason a chart is:
+    a button that appears mid-sentence invites a click on an answer that is
+    still being written.
+    """
+    return AgentEvent(EventType.ACTION, spec)
 
 
 def error(message: str) -> AgentEvent:

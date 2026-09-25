@@ -51,7 +51,7 @@ const props = withDefaults(
 /**
  * Read the palette off the page, so a chart is never a different product.
  *
- * The six series colours are tokens rather than literals here. They are chosen
+ * The six series colors are tokens rather than literals here. They are chosen
  * by `scripts/check-contrast.ts`, which holds them to 3:1 against the surface
  * and 20 CIEDE2000 apart from each other — 11 apart after simulating
  * protanopia, deuteranopia and tritanopia. Hand-picked hues passed the contrast

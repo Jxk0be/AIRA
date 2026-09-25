@@ -1,6 +1,6 @@
 # Automated UI checks
 
-    python tasks.py ui-check      # contrast + raw-colour lint + Playwright + axe
+    python tasks.py ui-check      # contrast + raw-color lint + Playwright + axe
     python tasks.py ui-shots      # full-page screenshots into docs/ui/after/
     python tasks.py ui-fixtures   # re-record the API responses the tests replay
 
@@ -10,14 +10,20 @@
 
 | | |
 |---|---|
-| **Contrast gate** | `web/scripts/check-contrast.ts` — 186 token pairs, both themes. Parses `style.css`, so it tests what ships. |
-| **Raw-colour lint** | In `tasks.py`. Fails on hex, `rgb()`/`hsl()`, or a Tailwind palette colour inside a component. |
+| **Contrast gate** | `web/scripts/check-contrast.ts` — 186 token pairs, both themes. Parses `style.css`, so it tests what ships, and imports the app's own `lib/color.ts` so the gate and the picker cannot measure differently. |
+| **Raw-color lint** | In `tasks.py`. Fails on hex, `rgb()`/`hsl()`, or a Tailwind palette color inside a component. |
+| **Business color** | `brand.spec.ts` — picks a color in Settings, then measures the button the browser actually painted. The luminance maths is written out again in the spec: an app that checked its own contrast with the function that chose the color would agree with itself whatever it did. |
 | **axe** | WCAG 2.2 AA tags only, every screen, every theme, every size. Nothing excluded. |
-| **Keyboard** | Focus always visible, never trapped, skip link present, one labelled `<main>` and `<nav>`. |
+| **Keyboard** | Focus always visible, never trapped, skip link present, one labeled `<main>` and `<nav>`. |
 | **Layout** | No horizontal scroll, no text under 13px, tap targets ≥44px on mobile. |
 
 Ten screens × four projects (375×812 and 1280×800, each light and dark) = 40 runs
 per check.
+
+`lib/brand.ts` carries a hardcoded copy of the four surfaces, for the case where
+it cannot read the loaded stylesheet. That copy decides whether an owner's color
+is readable, so the contrast gate checks it against `style.css` on every run and
+fails if the two have drifted.
 
 ## No database required
 
@@ -34,6 +40,12 @@ Re-record with `python tasks.py ui-fixtures` (needs `python tasks.py api`)
 whenever a response model changes. The diff is the review.
 
 ## Baseline
+
+### After the business color — 442 passed, 0 failed, 0 flaky
+
+Sixteen more than the step-7 baseline: four `brand.spec.ts` cases across four
+projects. They are the first in the suite to open a control and use it rather
+than scan a page as it loads.
 
 ### After step 6, all screens — 426 passed, 0 failed, 0 flaky
 
@@ -104,7 +116,7 @@ rebuilds one screen at a time.
 | 16/40 | text ≥13px | The `text-[0.6rem]`–`text-[0.7rem]` spans from audit U12. |
 | 15 | axe violations | `scrollable-region-focusable` on the reorder tables, the staffing heatmap and the month-end `<pre>`; `target-size` on the inventory search; `color-contrast` on the four `text-white` buttons (audit A2). |
 
-Now passing that were not: the skip link, the `<main>` landmark and labelled
+Now passing that were not: the skip link, the `<main>` landmark and labeled
 `<nav>` (40 each), the Data & sync horizontal overflow, and the dashboard's
 stock tables.
 
@@ -113,7 +125,7 @@ stock tables.
 | Failures | Check |
 |---|---|
 | 40/40 | skip link — did not exist |
-| 40/40 | `<main id>` + labelled `<nav>` — did not exist |
+| 40/40 | `<main id>` + labeled `<nav>` — did not exist |
 | 36/40 | text ≥13px |
 | 20/20 | tap targets ≥44px |
 | 15 | axe violations |

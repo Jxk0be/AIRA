@@ -9,6 +9,7 @@
  */
 
 import type {
+  Appearance,
   AssistantInfo,
   CatalogPage,
   CatalogSort,
@@ -109,6 +110,14 @@ export const api = {
   tenants: () => request<TenantSummary[]>('/tenants'),
 
   profile: (tenant: string) => request<ShopProfile>(`/tenants/${tenant}/profile`),
+
+  /** `null` puts the shop back on the palette we ship. */
+  setAppearance: (tenant: string, brandColor: string | null) =>
+    request<Appearance>(`/tenants/${tenant}/appearance`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ brand_color: brandColor }),
+    }),
 
   /**
    * `grain` is optional and the API defaults to weeks, so leaving it off is the

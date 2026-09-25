@@ -14,8 +14,13 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
+# Anchored to the repo root. Unanchored, `lib/` matches a directory called
+`lib` at ANY depth -- which silently excluded `web/src/lib/` (theme.ts,
+format.ts, markdown.ts and the color maths) from every commit, so a fresh
+clone did not build. These two are Python build artifacts and only ever
+appear at the top level.
+/lib/
+/lib64/
 parts/
 sdist/
 var/

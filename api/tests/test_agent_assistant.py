@@ -66,6 +66,18 @@ def of_type(events: list[AgentEvent], kind: EventType) -> list[AgentEvent]:
     return [event for event in events if event.type is kind]
 
 
+async def last_answer(db: AsyncSession, shop: ShopContext) -> t.Message:
+    """The assistant message this turn just wrote."""
+    return (
+        await db.execute(
+            select(t.Message)
+            .where(t.Message.tenant_id == shop.tenant_id, t.Message.role == MessageRole.ASSISTANT)
+            .order_by(t.Message.created_at.desc())
+            .limit(1)
+        )
+    ).scalar_one()
+
+
 # ---------------------------------------------------------------------------
 # The loop
 # ---------------------------------------------------------------------------
@@ -288,6 +300,143 @@ async def test_a_chart_with_an_invented_number_is_refused(
     assert chart_end and chart_end[0].data["error"] is not None
     told = client.stream_calls[2]["messages"][-1]["content"][0]
     assert "did not come from any tool" in told["content"]
+
+
+# ---------------------------------------------------------------------------
+# Buttons the answer offers
+# ---------------------------------------------------------------------------
+
+
+async def test_an_offered_action_reaches_the_client_and_the_message(
+    db: AsyncSession, pos: ShopContext
+) -> None:
+    """The route is ours, not the model's, and it survives the conversation."""
+    client = FakeAnthropic.scripted(
+        message([tool_block("low_stock", {})], stop_reason="tool_use"),
+        message(
+            [
+                tool_block(
+                    "offer_action",
+                    {
+                        "action": "open_reorder",
+                        "label": "Order the ones that are low",
+                        "detail": "four are under a week of cover",
+                    },
+                    call_id="toolu_2",
+                )
+            ],
+            stop_reason="tool_use",
+        ),
+        message([text_block("Four are getting low.")]),
+    )
+    events = await collect(assistant_with(client), db, pos, "Anything running out?")
+
+    offered = of_type(events, EventType.ACTION)
+    assert len(offered) == 1
+    assert offered[0].data["label"] == "Order the ones that are low"
+    # The model named a key; the route came out of the catalogue.
+    assert offered[0].data["route"] == "stock?tab=reorder"
+    assert offered[0].data["kind"] == "open"
+
+    # After the answer, so a button never lands under a half-written sentence.
+    kinds = [event.type for event in events]
+    assert kinds.index(EventType.ACTION) > max(
+        index for index, kind in enumerate(kinds) if kind is EventType.TOKEN
+    )
+
+    stored = await last_answer(db, pos)
+    assert stored.actions and stored.actions[0]["route"] == "stock?tab=reorder"
+
+
+async def test_an_action_that_is_not_in_the_catalogue_is_refused(
+    db: AsyncSession, pos: ShopContext
+) -> None:
+    """The one check this whole mechanism exists for.
+
+    A model that can write its own route will eventually write one that 404s,
+    so a key we do not have reaches the client as nothing at all — and the
+    model is told which keys are real.
+    """
+    client = FakeAnthropic.scripted(
+        message(
+            [tool_block("offer_action", {"action": "open_the_till"})],
+            stop_reason="tool_use",
+        ),
+        message([text_block("I cannot do that one.")]),
+    )
+    events = await collect(assistant_with(client), db, pos, "Open the till")
+
+    assert not of_type(events, EventType.ACTION), "an invented action reached the client"
+    ends = [
+        event
+        for event in of_type(events, EventType.TOOL_END)
+        if event.data["tool"] == "offer_action"
+    ]
+    assert ends and ends[0].data["error"] is not None
+    told = client.stream_calls[1]["messages"][-1]["content"][0]
+    assert "open_reorder" in told["content"]
+
+
+async def test_an_email_is_offered_as_a_draft_and_never_sent(
+    db: AsyncSession, pos: ShopContext
+) -> None:
+    """`draft_email` produces words, not a message. Nothing leaves the machine."""
+    client = FakeAnthropic.scripted(
+        message([tool_block("reorder_suggestions", {})], stop_reason="tool_use"),
+        message(
+            [
+                tool_block(
+                    "draft_email",
+                    {
+                        "subject": "Restock order",
+                        "body": "Hello — could we get these on the next delivery?",
+                        "to": "orders@example.test",
+                    },
+                    call_id="toolu_2",
+                )
+            ],
+            stop_reason="tool_use",
+        ),
+        message([text_block("Here is an email you can send.")]),
+    )
+    events = await collect(assistant_with(client), db, pos, "Email my distributor")
+
+    offered = of_type(events, EventType.ACTION)
+    assert len(offered) == 1
+    assert offered[0].data["kind"] == "email"
+    assert offered[0].data["email"]["subject"] == "Restock order"
+    # An email action goes nowhere on its own: no route, no task to run.
+    assert offered[0].data["route"] is None
+    assert offered[0].data["task"] is None
+
+    stored = await last_answer(db, pos)
+    assert stored.actions[0]["email"]["to"] == "orders@example.test"
+
+
+async def test_a_third_button_is_refused_without_losing_the_first_two(
+    db: AsyncSession, pos: ShopContext
+) -> None:
+    client = FakeAnthropic.scripted(
+        message(
+            [
+                tool_block("offer_action", {"action": "open_reorder"}, call_id="a"),
+                tool_block("offer_action", {"action": "open_not_selling"}, call_id="b"),
+                tool_block("offer_action", {"action": "open_stock"}, call_id="c"),
+            ],
+            stop_reason="tool_use",
+        ),
+        message([text_block("Two places to look.")]),
+    )
+    events = await collect(assistant_with(client), db, pos, "Where should I look?")
+
+    offered = of_type(events, EventType.ACTION)
+    assert [event.data["key"] for event in offered] == ["open_reorder", "open_not_selling"]
+    refused = [
+        event
+        for event in of_type(events, EventType.TOOL_END)
+        if event.data["tool"] == "offer_action" and event.data["error"]
+    ]
+    assert len(refused) == 1
 
 
 # ---------------------------------------------------------------------------

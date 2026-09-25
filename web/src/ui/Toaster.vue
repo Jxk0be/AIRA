@@ -66,7 +66,7 @@ const TONE_TEXT: Record<ToastTone, string> = {
 
       <div class="min-w-0 flex-1">
         <ToastTitle class="text-base leading-snug font-semibold text-ink">
-          <!-- The word, for anyone who cannot use the colour. -->
+          <!-- The word, for anyone who cannot use the color. -->
           <span class="sr-only">{{ TONE[item.tone].word }}: </span>{{ item.title }}
         </ToastTitle>
         <ToastDescription v-if="item.detail" class="mt-0.5 text-sm text-ink-muted">

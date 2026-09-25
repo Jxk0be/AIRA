@@ -120,7 +120,7 @@ for (const route of ROUTES) {
       expect(first?.href ?? '', 'the skip link should point at #main').toContain('#')
     })
 
-    test('has one main landmark and a labelled nav (audit A7)', async ({ page }, testInfo) => {
+    test('has one main landmark and a labeled nav (audit A7)', async ({ page }, testInfo) => {
       test.skip(!route.shell, 'renders outside AppShell on purpose')
       await open(page, route.path, testInfo)
 

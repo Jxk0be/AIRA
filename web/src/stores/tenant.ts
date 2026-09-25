@@ -28,6 +28,16 @@ export const useTenantStore = defineStore('tenant', () => {
   const currency = computed(() => profile.value?.currency ?? current.value?.currency ?? 'USD')
   const timezone = computed(() => profile.value?.timezone ?? current.value?.timezone ?? 'UTC')
 
+  /**
+   * The shop's own color, or null for the palette we ship.
+   *
+   * Stored on the tenant rather than in this browser, so it is the same color
+   * on the laptop in the back office and the phone behind the counter. Whether
+   * it is usable is not this store's business: `lib/brand.ts` decides that, and
+   * `App.vue` is where it reaches the page.
+   */
+  const brandColor = computed(() => profile.value?.brand_color ?? null)
+
   const capabilities = computed<Capabilities>(
     () =>
       profile.value?.capabilities ??
@@ -49,6 +59,16 @@ export const useTenantStore = defineStore('tenant', () => {
     if (tenants.value.length) return tenants.value
     tenants.value = await api.tenants()
     return tenants.value
+  }
+
+  /**
+   * Save the shop's color, and keep the loaded profile in step so the page
+   * recolors without a reload.
+   */
+  async function setBrandColor(next: string | null): Promise<void> {
+    if (!slug.value) return
+    const saved = await api.setAppearance(slug.value, next)
+    if (profile.value) profile.value = { ...profile.value, brand_color: saved.brand_color }
   }
 
   /** Point the app at a shop. Idempotent, so route guards can call it freely. */
@@ -79,8 +99,10 @@ export const useTenantStore = defineStore('tenant', () => {
     currency,
     timezone,
     capabilities,
+    brandColor,
     can,
     loadTenants,
     select,
+    setBrandColor,
   }
 })

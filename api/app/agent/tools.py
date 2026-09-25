@@ -24,7 +24,7 @@ import uuid
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
 from datetime import date, timedelta
-from typing import Any, Literal
+from typing import Any, Literal, get_args
 
 from anthropic.types import ToolParam
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
@@ -32,6 +32,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import analytics as an
+from app.agent import actions as act
 from app.agent.charts import ChartRejected, ChartSpec, ChartType, Observed, validate
 from app.agent.context import ShopContext
 from app.canonical import tables as t
@@ -58,6 +59,8 @@ class ToolContext:
     # Every scalar every tool has returned this turn, for chart validation.
     observed: Observed = field(default_factory=Observed)
     charts: list[ChartSpec] = field(default_factory=list)
+    # Buttons this turn has offered, capped and deduplicated by `actions.add`.
+    actions: list[act.ActionSpec] = field(default_factory=list)
 
     @property
     def analytics(self) -> an.AnalyticsContext:
@@ -228,6 +231,70 @@ class MakeChartArgs(BaseModel):
         ),
     )
     note: str | None = Field(default=None, max_length=400)
+
+
+# The catalogue, as a type. Written out rather than generated because a tool
+# schema is built once at import and Pydantic needs the literal — the assertion
+# below is what keeps the two from drifting apart in silence.
+ActionKey = Literal[
+    "open_worth_doing",
+    "open_reorder",
+    "open_not_selling",
+    "open_stock",
+    "open_sales_report",
+    "open_busy_hours",
+    "open_month_end",
+    "open_data",
+    "open_documents",
+    "open_notifications",
+    "run_checks",
+]
+assert set(get_args(ActionKey)) == set(act.OFFERABLE), "ActionKey has drifted from the catalogue"
+
+
+class OfferActionArgs(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    action: ActionKey = Field(description="Which of the shop's screens or jobs to offer.")
+    label: str | None = Field(
+        default=None,
+        max_length=40,
+        description=(
+            "What the button should say, in the owner's own terms — 'Order the four that are "
+            "low'. Leave it out for the plain wording."
+        ),
+    )
+    detail: str | None = Field(
+        default=None,
+        max_length=140,
+        description="One short line under the button saying why it is being offered.",
+    )
+
+
+class DraftEmailArgs(BaseModel):
+    """A message for the owner to read, edit and send. We never send it."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    subject: str = Field(max_length=200, description="The subject line.")
+    body: str = Field(
+        max_length=4000,
+        description=(
+            "The whole message, in plain text, signed off as the shop. Only facts a tool "
+            "returned this turn — the owner is about to send this to someone."
+        ),
+    )
+    to: str | None = Field(
+        default=None,
+        max_length=320,
+        description="The recipient, only if a tool actually returned their address.",
+    )
+    label: str | None = Field(
+        default=None, max_length=40, description="What the button should say."
+    )
+    detail: str | None = Field(
+        default=None, max_length=140, description="One short line under the button."
+    )
 
 
 # --------------------------------------------------------------------------
@@ -592,6 +659,35 @@ async def _make_chart(ctx: ToolContext, args: MakeChartArgs) -> dict[str, Any]:
     return {"charted": True, "title": spec.title, "rows": len(spec.data)}
 
 
+def _offer(ctx: ToolContext, action: act.ActionSpec) -> dict[str, Any]:
+    try:
+        act.add(ctx.actions, action)
+    except act.ActionRejected as exc:
+        raise ToolError(str(exc)) from exc
+    return {"offered": action.key, "label": action.label}
+
+
+async def _offer_action(ctx: ToolContext, args: OfferActionArgs) -> dict[str, Any]:
+    try:
+        action = act.resolve(args.action, label=args.label, detail=args.detail)
+    except act.ActionRejected as exc:
+        raise ToolError(str(exc)) from exc
+    return _offer(ctx, action)
+
+
+async def _draft_email(ctx: ToolContext, args: DraftEmailArgs) -> dict[str, Any]:
+    try:
+        action = act.resolve(
+            "draft_email",
+            label=args.label,
+            detail=args.detail,
+            email=act.EmailDraft(to=args.to, subject=args.subject, body=args.body),
+        )
+    except act.ActionRejected as exc:
+        raise ToolError(str(exc)) from exc
+    return _offer(ctx, action)
+
+
 # --------------------------------------------------------------------------
 # The registry
 # --------------------------------------------------------------------------
@@ -732,6 +828,32 @@ ALL_TOOLS: tuple[Tool, ...] = (
         ),
         args=MakeChartArgs,
         handler=_make_chart,
+    ),
+    Tool(
+        name="offer_action",
+        description=(
+            "Put a button at the end of your answer that takes the owner where the answer "
+            "points. Use it when the next step is a screen this app already has, and name the "
+            "screen in the button rather than describing how to find it.\n\n"
+            f"{act.catalogue_lines()}\n\n"
+            "Offer one, two at the very most, and only when the answer actually leads there. "
+            "A button on every answer is a button nobody reads."
+        ),
+        args=OfferActionArgs,
+        handler=_offer_action,
+    ),
+    Tool(
+        name="draft_email",
+        description=(
+            "Write an email for the owner to send — to a supplier about a restock, to a "
+            "bookkeeper with a month's numbers, to staff about a busy weekend. The draft "
+            "opens in their own mail app: nothing is sent by pressing the button, and no "
+            "address is looked up that a tool did not return. Use it when the owner asks for "
+            "an email, or when the action your answer lands on is one they send rather than "
+            "one they click. Put only figures a tool returned this turn in the body."
+        ),
+        args=DraftEmailArgs,
+        handler=_draft_email,
     ),
 )
 

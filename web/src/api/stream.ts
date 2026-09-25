@@ -12,7 +12,7 @@
  * that guesses will one day drop a paragraph of someone's answer.
  */
 
-import type { ChartSpec } from './types'
+import type { AssistantAction, ChartSpec } from './types'
 
 const BASE = import.meta.env.VITE_API_BASE ?? '/api'
 
@@ -33,6 +33,7 @@ export type AgentEvent =
   | { type: 'tool_start'; tool: string; args: Record<string, unknown> }
   | { type: 'tool_end'; tool: string; ms: number; error: string | null; result: string | null }
   | { type: 'chart'; spec: ChartSpec }
+  | { type: 'action'; action: AssistantAction }
   | { type: 'done'; payload: DonePayload }
   | { type: 'error'; message: string }
 
@@ -64,6 +65,8 @@ function toEvent(name: string, raw: string): AgentEvent | null {
       }
     case 'chart':
       return { type: 'chart', spec: data as ChartSpec }
+    case 'action':
+      return { type: 'action', action: data as AssistantAction }
     case 'done':
       return { type: 'done', payload: data as DonePayload }
     case 'error':
@@ -87,7 +90,8 @@ export interface AskOptions {
  *
  * The caller gets exactly one `done` or one `error` last — the API guarantees
  * it, and a dropped connection surfaces as a thrown error here rather than as
- * a stream that simply stops.
+ * a stream that simply stops. Charts and actions arrive after the last token,
+ * so a button never appears under a half-written answer.
  */
 export async function* ask(options: AskOptions): AsyncGenerator<AgentEvent> {
   const response = await fetch(`${BASE}/tenants/${options.tenant}/chat`, {

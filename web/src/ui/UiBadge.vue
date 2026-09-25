@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /**
- * A short status, in a word as well as a colour.
+ * A short status, in a word as well as a color.
  *
  * The old severity badge encoded urgent/warn/info purely as border and text
- * colour while its text said the *kind* ("Reordering"), so the ranking vanished
+ * color while its text said the *kind* ("Reordering"), so the ranking vanished
  * for anyone who could not see the difference. The label here is the meaning.
  */
 withDefaults(

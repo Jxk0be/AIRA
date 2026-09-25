@@ -13,6 +13,7 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+import BrandColorPicker from '../components/BrandColorPicker.vue'
 import ThemeToggle from '../ui/ThemeToggle.vue'
 import UiTabs from '../ui/UiTabs.vue'
 import { useTenantStore } from '../stores/tenant'
@@ -75,14 +76,9 @@ function switchShop(event: Event) {
         <ThemeToggle />
       </section>
 
-      <section class="mt-4 rounded-md border border-border bg-surface p-5">
-        <h2 class="text-lg font-semibold text-ink">Business colour</h2>
-        <p class="mt-1 text-ink-muted">
-          Not built yet. It will be stored per shop, so it follows you to your
-          phone — and any colour you pick has to clear 4.5:1 against both themes
-          before it is accepted, or the buttons become unreadable in the dark.
-        </p>
-      </section>
+      <div class="mt-4">
+        <BrandColorPicker />
+      </div>
 
       <section v-if="shop.tenants.length > 1" class="mt-4 rounded-md border border-border bg-surface p-5">
         <h2 class="text-lg font-semibold text-ink">Shop</h2>

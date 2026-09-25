@@ -14,6 +14,7 @@ model-shaped lives behind it, so replacing what drives the loop is a change in
 one file.
 """
 
+from app.agent.actions import ActionKind, ActionRejected, ActionSpec, EmailDraft
 from app.agent.assistant import (
     Assistant,
     AssistantRefused,
@@ -30,6 +31,9 @@ from app.agent.tools import ALL_TOOLS, Tool, ToolContext, ToolError, tools_for
 
 __all__ = [
     "ALL_TOOLS",
+    "ActionKind",
+    "ActionRejected",
+    "ActionSpec",
     "AgentEvent",
     "Assistant",
     "AssistantRefused",
@@ -37,6 +41,7 @@ __all__ = [
     "ChartSpec",
     "ChartType",
     "ClaudeAssistant",
+    "EmailDraft",
     "EventType",
     "Observed",
     "RunRecord",
